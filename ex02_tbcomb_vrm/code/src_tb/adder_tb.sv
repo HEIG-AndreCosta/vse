@@ -81,8 +81,9 @@ module adder_tb #(
 
 
   task automatic test_scenario0;
-    for (int a = 0; a < 256; a++) begin
-      for (int b = 0; b < 256; b++) begin
+    int len = (1 << DATASIZE);
+    for (int a = 0; a < len; a++) begin
+      for (int b = 0; b < len; b++) begin
         input_itf.a = a;
         input_itf.b = b;
         compute_reference(input_itf.a, input_itf.b, result_ref);
