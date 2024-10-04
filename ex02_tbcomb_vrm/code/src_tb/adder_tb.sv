@@ -83,7 +83,13 @@ module adder_tb #(
 
 
   task automatic test_scenario0;
-    int len = (1 << DATASIZE);
+    int len;
+    if (DATASIZE > 10) begin
+      $display("Skipping Test Scenario 0 because DATASIZE is too big (%d)", DATASIZE);
+      return;
+    end
+
+    len = (1 << DATASIZE);
     for (int a = 0; a < len; a++) begin
       for (int b = 0; b < len; b++) begin
         input_itf.a = a;
@@ -91,6 +97,17 @@ module adder_tb #(
         compute_reference(input_itf.a, input_itf.b, result_ref);
         @(posedge (synchro));
       end
+    end
+  endtask
+
+  task automatic test_scenario1;
+    int MAX = (1 << DATASIZE) - 1;
+    int MIN = 0;
+    input_itf.a = MAX;
+    for (int b = 0; b < 10; ++b) begin
+      input_itf.b = b;
+      compute_reference(input_itf.a, input_itf.b, result_ref);
+      @(posedge (synchro));
     end
   endtask
 
@@ -122,9 +139,18 @@ module adder_tb #(
     end
   endtask
 
+  task automatic run_all_scenarios;
+    fork
+      test_scenario0;
+      test_scenario1;
+    join
+  endtask
+
   task automatic test_scenario;
     case (TESTCASE)
-      0: test_scenario0;
+      0: run_all_scenarios;
+      1: test_scenario0;
+      2: test_scenario1;
       default: $diplay("Invalid test case %d", TESTCASE);
     endcase
 
