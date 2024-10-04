@@ -15,6 +15,8 @@
       <member>dirtest8_1</member>
       <member>dirtest16_0</member>
       <member>dirtest16_1</member>
+      <member>dirtest32_0</member>
+      <member>dirtest32_1</member>
     </members>
 
     <execScript>
@@ -59,6 +61,18 @@
     <parameters>
       <parameter name="testcase">1</parameter>
       <parameter name="datasize">16</parameter>
+    </parameters>
+  </runnable>
+  <runnable name="dirtest32_0" type="task">
+    <parameters>
+      <parameter name="testcase">0</parameter>
+      <parameter name="datasize">32</parameter>
+    </parameters>
+  </runnable>
+  <runnable name="dirtest32_1" type="task">
+    <parameters>
+      <parameter name="testcase">1</parameter>
+      <parameter name="datasize">32</parameter>
     </parameters>
   </runnable>
 </rmdb>
