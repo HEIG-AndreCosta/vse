@@ -90,6 +90,7 @@ module adder_tb #(
     end
 
     len = (1 << DATASIZE);
+    $display("Going through [0;%d[", len);
     for (int a = 0; a < len; a++) begin
       for (int b = 0; b < len; b++) begin
         input_itf.a = a;
@@ -140,10 +141,8 @@ module adder_tb #(
   endtask
 
   task automatic run_all_scenarios;
-    fork
-      test_scenario0;
-      test_scenario1;
-    join
+    test_scenario0;
+    test_scenario1;
   endtask
 
   task automatic test_scenario;
