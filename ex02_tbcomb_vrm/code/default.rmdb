@@ -31,7 +31,7 @@
       <command>vsim -coverage -t 10ps -GDATASIZE=(%datasize%) -GTESTCASE=(%testcase%) work.adder_tb</command>
       <command>set StdArithNoWarnings 1</command>
       <command>set NumericStdNoWarnings 1</command>
-      <command>run 2 ns</command>
+      <!--<command>run 2 ns</command>-->
       <command>set StdArithNoWarnings 0</command>
       <command>set NumericStdNoWarnings 0</command>
       <command>run -all</command>
@@ -41,37 +41,37 @@
   </runnable>
   <runnable name="dirtest8_0" type="task">
     <parameters>
-      <parameter name="testcase">0</parameter>
+      <parameter name="testcase">1</parameter>
       <parameter name="datasize">8</parameter>
     </parameters>
   </runnable>
   <runnable name="dirtest8_1" type="task">
     <parameters>
-      <parameter name="testcase">1</parameter>
+      <parameter name="testcase">2</parameter>
       <parameter name="datasize">8</parameter>
     </parameters>
   </runnable>
   <runnable name="dirtest16_0" type="task">
     <parameters>
-      <parameter name="testcase">0</parameter>
+      <parameter name="testcase">1</parameter>
       <parameter name="datasize">16</parameter>
     </parameters>
   </runnable>
   <runnable name="dirtest16_1" type="task">
     <parameters>
-      <parameter name="testcase">1</parameter>
+      <parameter name="testcase">2</parameter>
       <parameter name="datasize">16</parameter>
     </parameters>
   </runnable>
   <runnable name="dirtest32_0" type="task">
     <parameters>
-      <parameter name="testcase">0</parameter>
+      <parameter name="testcase">1</parameter>
       <parameter name="datasize">32</parameter>
     </parameters>
   </runnable>
   <runnable name="dirtest32_1" type="task">
     <parameters>
-      <parameter name="testcase">1</parameter>
+      <parameter name="testcase">2</parameter>
       <parameter name="datasize">32</parameter>
     </parameters>
   </runnable>
