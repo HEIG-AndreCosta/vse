@@ -71,7 +71,9 @@ module adder_tb #(
   adder_out_if #(DATASIZE) output_itf ();
 
   // DUV instantiation
-  adder duv (
+  adder #(
+      .SIZE(DATASIZE)
+  ) duv (
       .a_i(input_itf.a),
       .b_i(input_itf.b),
       .carryin_i(input_itf.carry),
