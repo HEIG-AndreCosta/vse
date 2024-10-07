@@ -2,3 +2,6 @@ ex02_tbcomb_vrm/code/scripts/work
 ex02_tbcomb_vrm/code/qverify_ui_cmds.tcl
 ex02_tbcomb_vrm/code/qverify_ui.log
 ex02_tbcomb_vrm/code/.qverify_ui_local_prefs
+ex03_sv_random/code/scripts/work
+ex03_sv_random/code/scripts/transcript
+ex03_sv_random/code/scripts/vsim.wlf
