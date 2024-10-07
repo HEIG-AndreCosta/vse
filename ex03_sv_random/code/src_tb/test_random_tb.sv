@@ -18,55 +18,55 @@ Ver    Date         Who    Description
 
 module test_random_tb;
 
-    logic clk = 0;
+  logic clk = 0;
 
-    logic[15:0] a;
-    logic[15:0] b;
-    logic[15:0] c;
-    logic[1:0]  m;
+  logic [15:0] a;
+  logic [15:0] b;
+  logic [15:0] c;
+  logic [1:0] m;
 
-    // clock generation
-    always #5 clk = ~clk;
+  // clock generation
+  always #5 clk = ~clk;
 
-    // clocking block
-    default clocking cb @(posedge clk);
-    endclocking
-
-
-    class RTest;
-
-    endclass
+  // clocking block
+  default clocking cb @(posedge clk);
+  endclocking
 
 
-    task test_case0();
+  class RTest;
 
-        a = 0;
-        b = 0;
-        c = 0;
-        m = 0;
-
-        // Create the object
+  endclass
 
 
-        ##1;
+  task test_case0();
 
-        repeat (10) begin
-            // Randomize the object
+    a = 0;
+    b = 0;
+    c = 0;
+    m = 0;
 
-            // Apply its values to the signals (for nice view in the chronogram)
-            ##1;
-        end
-    endtask
-
+    // Create the object
 
 
-    // Program launched at simulation start
-    program TestSuite;
-        initial begin
-            test_case0();
-            $stop;
-        end
+    ##1;
 
-    endprogram
+    repeat (10) begin
+      // Randomize the object
+
+      // Apply its values to the signals (for nice view in the chronogram)
+      ##1;
+    end
+  endtask
+
+
+
+  // Program launched at simulation start
+  program TestSuite;
+    initial begin
+      test_case0();
+      $stop;
+    end
+
+  endprogram
 
 endmodule
