@@ -37,16 +37,32 @@ module test_random_tb;
     rand bit [15:0] a;
     rand bit [15:0] b;
     rand bit [15:0] c;
-    rand bit [ 1:0] m;
+    rand bit [1:0] m;
+    rand STest s;
+    rand STest [] s_tab;
     constraint m_c {m inside {[0 : 2]};}
     constraint a_c {
       (m == 0) -> a < 10;
       (m == 1) -> b inside {[12 : 16]};
     }
 
+    constraint m_dist_c {
+      m dist {
+        0 := 9,
+        1 := 1
+      };
+    }
     constraint c_c {c > (a + b);}
     constraint order_a_c {solve m before a, b;}
     constraint order_c_c {solve a, b before c;}
+    function void post_randomize();
+      if (super) super.post_randomize();
+      for (int i = 0; i < s_tab.size; ++i) begin
+        s_tab[i] = new;
+        assert (s_tab[i].randomize())
+        else $fatal("No solutions for s_tab[i].randomize");
+      end
+    endfunction
 
   endclass
 
@@ -60,7 +76,34 @@ module test_random_tb;
   endclass
 
 
+  function automatic verify();
+
+    assert (m >= 0 && m <= 2)
+    else $fatal("M constraint failed. Expected  0 <= %d <= 2", obj.m);
+
+    if (obj.m == 0) begin
+      assert (obj.a < 10)
+      else $fatal("A constraint failed. m == 0. Expected a to be < 10. Actual value: %d", obj.a);
+    end else if (obj.m == 1) begin
+      assert (obj.b >= 12 && obj.b <= 16)
+      else
+        $fatal(
+            "B constraint failed. m == 1. Expected b to be >= 12 && obj.b <= 16."+
+              "Actual value: %d",
+            obj.b
+        );
+    end
+    assert (obj.c > obj.a + obj.b)
+    else $fatal("C constraint failed. Expected %d > %d + %d.", obj.c, obj.a, obj.b);
+
+    if (obj.s.sa[0] == 1'b0) begin
+      assert (obj.s.sb[0] == 1'b0)
+      else $fatal("Expected sb to be pair because sa is pair (%d)", obj.sb);
+    end
+  endfunction
+
   task automatic test_case0();
+    int   count;
     RTest obj;
     a   = 0;
     b   = 0;
@@ -77,23 +120,10 @@ module test_random_tb;
       assert (obj.randomize())
       else $fatal("No solutions for obj.randomize");
 
-      assert (m >= 0 && m <= 2)
-      else $fatal("M constraint failed. Expected  0 <= %d <= 2", obj.m);
-
-      if (obj.m == 0) begin
-        assert (obj.a < 10)
-        else $fatal("A constraint failed. m == 0. Expected a to be < 10. Actual value: %d", obj.a);
-      end else if (obj.m == 1) begin
-        assert (obj.b >= 12 && obj.b <= 16)
-        else
-          $fatal(
-              "B constraint failed. m == 1. Expected b to be >= 12 && obj.b <= 16."+
-              "Actual value: %d",
-              obj.b
-          );
+      verify;
+      if (obj.a >= 10) begin
+        ++count;
       end
-      assert (obj.c > obj.a + obj.b)
-      else $fatal("C constraint failed. Expected %d > %d + %d.", obj.c, obj.a, obj.b);
 
       // Apply its values to the signals (for nice view in the chronogram)
       a = obj.a;
@@ -102,28 +132,32 @@ module test_random_tb;
       m = obj.m;
       ##1;
     end
-  endtask
+    $display("A was > 10 %d times with constraint on", count);
+    count = 0;
+    obj.m_dist_c.constraint_mode(0);
 
-  task automatic test_case1();
-
-    STest obj;
-    // Create the object
-    obj = new();
-
-    ##1;
     repeat (1000) begin
+      // Randomize the object
 
       assert (obj.randomize())
       else $fatal("No solutions for obj.randomize");
 
-      if (obj.sa[0] == 1'b0) begin
-        assert (obj.sb[0] == 1'b0)
-        else $fatal("Expected sb to be pair because sa is pair (%d)", obj.sb);
+
+      verify;
+
+      if (obj.a >= 10) begin
+        ++count;
       end
-
-
+      // Apply its values to the signals (for nice view in the chronogram)
+      a = obj.a;
+      b = obj.b;
+      c = obj.c;
+      m = obj.m;
+      ##1;
     end
+    $display("A was > 10 %d times with constraint off", count);
   endtask
+
 
 
 
@@ -131,7 +165,6 @@ module test_random_tb;
   program TestSuite;
     initial begin
       test_case0();
-      test_case1();
       $stop;
     end
 
