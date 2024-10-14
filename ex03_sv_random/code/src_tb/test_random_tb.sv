@@ -63,8 +63,30 @@ module test_random_tb;
     constraint c_c {c > (a + b);}
     constraint order_a_c {solve m before a, b;}
     constraint order_c_c {solve a, b before c;}
+    covergroup cov_group;
+      cov_m: coverpoint m;
+      cov_a: coverpoint a {
+        bins petit = {[0 : 10]};
+        bins big = {[2 ** 16 - 10 : (2 ** 16) - 1]};
+        bins moyen = {[2 ** 16 / 2 - 10 : (2 ** 16) / 2 + 10]};
+        bins others = default;
+      }
+      cov_b: coverpoint b {
+        bins petit = {[0 : 10]};
+        bins big = {[2 ** 16 - 10 : (2 ** 16) - 1]};
+        bins moyen = {[2 ** 16 / 2 - 10 : (2 ** 16) / 2 + 10]};
+        bins others = default;
+      }
+      cov_c: coverpoint c {
+        bins petit = {[0 : 10]};
+        bins big = {[2 ** 16 - 10 : (2 ** 16) - 1]};
+        bins moyen = {[2 ** 16 / 2 - 10 : (2 ** 16) / 2 + 10]};
+        bins others = default;
+      }
+    endgroup
     function new();
       s = new;
+      cov_group = new;
     endfunction
     function void post_randomize();
       //if (super) super.post_randomize;
@@ -122,6 +144,7 @@ module test_random_tb;
       // Randomize the object
       assert (obj.randomize())
       else $fatal("No solutions for obj.randomize");
+      obj.cov_group.sample();
 
       verify(obj);
       if (obj.a >= 10) begin
@@ -139,12 +162,10 @@ module test_random_tb;
     count = 0;
     obj.m_dist_c.constraint_mode(0);
 
-    repeat (1000) begin
+    forever begin
       // Randomize the object
-
       assert (obj.randomize())
       else $fatal("No solutions for obj.randomize");
-
 
       verify(obj);
 
@@ -161,13 +182,19 @@ module test_random_tb;
     $display("A was > 10 %d times with constraint off", count);
   endtask
 
+  task automatic check_coverage();
+    do @(posedge clk); while ($get_coverage() < 100);
+  endtask
 
 
 
   // Program launched at simulation start
   program TestSuite;
     initial begin
-      test_case0();
+      fork
+        check_coverage;
+        test_case0;
+      join_any
       $stop;
     end
 
