@@ -32,6 +32,14 @@ module test_random_tb;
   default clocking cb @(posedge clk);
   endclocking
 
+  class STest;
+    rand bit [7:0] sa;
+    rand bit [7:0] sb;
+
+    constraint pair_c {sa[0] == 1'b0 -> sb[0] == 1'b0;}
+    constraint order_c {solve sa before sb;}
+
+  endclass
 
   class RTest;
     rand bit [15:0] a;
@@ -39,7 +47,7 @@ module test_random_tb;
     rand bit [15:0] c;
     rand bit [1:0] m;
     rand STest s;
-    rand STest [] s_tab;
+    rand STest s_tab[];
     constraint m_c {m inside {[0 : 2]};}
     constraint a_c {
       (m == 0) -> a < 10;
@@ -55,8 +63,11 @@ module test_random_tb;
     constraint c_c {c > (a + b);}
     constraint order_a_c {solve m before a, b;}
     constraint order_c_c {solve a, b before c;}
+    function new();
+      s = new;
+    endfunction
     function void post_randomize();
-      if (super) super.post_randomize();
+      //if (super) super.post_randomize;
       for (int i = 0; i < s_tab.size; ++i) begin
         s_tab[i] = new;
         assert (s_tab[i].randomize())
@@ -66,19 +77,11 @@ module test_random_tb;
 
   endclass
 
-  class STest;
-    rand bit [7:0] sa;
-    rand bit [7:0] sb;
-
-    constraint pair_c {sa[0] == 1'b0 -> sb[0] == 1'b0;}
-    constraint order_c {solve sa before sb;}
-
-  endclass
 
 
-  function automatic verify();
+  function automatic void verify(RTest obj);
 
-    assert (m >= 0 && m <= 2)
+    assert (obj.m >= 0 && obj.m <= 2)
     else $fatal("M constraint failed. Expected  0 <= %d <= 2", obj.m);
 
     if (obj.m == 0) begin
@@ -98,7 +101,7 @@ module test_random_tb;
 
     if (obj.s.sa[0] == 1'b0) begin
       assert (obj.s.sb[0] == 1'b0)
-      else $fatal("Expected sb to be pair because sa is pair (%d)", obj.sb);
+      else $fatal("Expected sb to be pair because sa is pair (%d)", obj.s);
     end
   endfunction
 
@@ -120,7 +123,7 @@ module test_random_tb;
       assert (obj.randomize())
       else $fatal("No solutions for obj.randomize");
 
-      verify;
+      verify(obj);
       if (obj.a >= 10) begin
         ++count;
       end
@@ -143,7 +146,7 @@ module test_random_tb;
       else $fatal("No solutions for obj.randomize");
 
 
-      verify;
+      verify(obj);
 
       if (obj.a >= 10) begin
         ++count;
