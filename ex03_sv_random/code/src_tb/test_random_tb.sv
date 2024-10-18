@@ -67,21 +67,23 @@ module test_random_tb;
       cov_m: coverpoint m;
       cov_a: coverpoint a {
         bins petit = {[0 : 10]};
-        bins big = {[2 ** 16 - 10 : (2 ** 16) - 1]};
+        //bins big = {[2 ** 16 - 10 : (2 ** 16) - 1]};
         bins moyen = {[2 ** 16 / 2 - 10 : (2 ** 16) / 2 + 10]};
-        bins others = default;
+      //bins others = default;
+      //ignore_bins others = default;
       }
       cov_b: coverpoint b {
-        bins petit = {[0 : 10]};
-        bins big = {[2 ** 16 - 10 : (2 ** 16) - 1]};
-        bins moyen = {[2 ** 16 / 2 - 10 : (2 ** 16) / 2 + 10]};
-        bins others = default;
+        bins petit = {[12 : 16]}; bins moyen = {[2 ** 16 / 2 - 10 : (2 ** 16) / 2 + 10]};
+      //ignore_bins others = default;
+      //bins egal[16] = {[0 : 65535]};
       }
       cov_c: coverpoint c {
-        bins petit = {[0 : 10]};
-        bins big = {[2 ** 16 - 10 : (2 ** 16) - 1]};
+        //bins petit = {[0 : 10]};
+        bins big = {[(2 ** 16) - 10 : (2 ** 16) - 1]};
         bins moyen = {[2 ** 16 / 2 - 10 : (2 ** 16) / 2 + 10]};
-        bins others = default;
+      //bins others = default;
+      //bins egal[16] = {[0 : 65535]};
+      //ignore_bins others = default;
       }
     endgroup
     function new();
@@ -89,7 +91,6 @@ module test_random_tb;
       cov_group = new;
     endfunction
     function void post_randomize();
-      //if (super) super.post_randomize;
       for (int i = 0; i < s_tab.size; ++i) begin
         s_tab[i] = new;
         assert (s_tab[i].randomize())
@@ -144,7 +145,6 @@ module test_random_tb;
       // Randomize the object
       assert (obj.randomize())
       else $fatal("No solutions for obj.randomize");
-      obj.cov_group.sample();
 
       verify(obj);
       if (obj.a >= 10) begin
@@ -162,7 +162,7 @@ module test_random_tb;
     count = 0;
     obj.m_dist_c.constraint_mode(0);
 
-    forever begin
+    repeat (1000) begin
       // Randomize the object
       assert (obj.randomize())
       else $fatal("No solutions for obj.randomize");
@@ -181,19 +181,48 @@ module test_random_tb;
     end
     $display("A was > 10 %d times with constraint off", count);
   endtask
+  task automatic test_case1();
+    RTest obj;
+    a   = 0;
+    b   = 0;
+    c   = 0;
+    m   = 0;
+    obj = new;
+    forever begin
+      // Randomize the object
+      assert (obj.randomize())
+      else $fatal("No solutions for obj.randomize");
+      obj.cov_group.sample();
 
-  task automatic check_coverage();
-    do @(posedge clk); while ($get_coverage() < 100);
+      verify(obj);
+
+      // Apply its values to the signals (for nice view in the chronogram)
+      a = obj.a;
+      b = obj.b;
+      c = obj.c;
+      m = obj.m;
+      ##1;
+    end
   endtask
 
-
-
+  task automatic check_coverage();
+    int last_milestone;
+    int coverage;
+    do begin
+      @(posedge clk);
+      coverage = $get_coverage();
+      if (coverage >= last_milestone + 1) begin
+        last_milestone = coverage;
+        $display("Coverage: %d%%\n", coverage);
+      end
+    end while (coverage < 98);
+  endtask
   // Program launched at simulation start
   program TestSuite;
     initial begin
       fork
         check_coverage;
-        test_case0;
+        test_case1;
       join_any
       $stop;
     end
