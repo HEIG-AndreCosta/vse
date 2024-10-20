@@ -74,35 +74,62 @@ module min_max_top_tb #(
   typedef logic [VALSIZE-1:0] input_t;
   typedef logic [2**VALSIZE-1:0] output_t;
 
+  function automatic int max_value();
+    return (2 ** VALSIZE) - 1;
+  endfunction
+
+  function automatic int nb_iterations();
+    int max = max_value();
+    if (max > 1000) begin
+      return 1000;
+    end
+    return max;
+  endfunction
+
   class Input;
-    logic [1:0] com;
+    rand logic [1:0] com;
 
     rand logic [VALSIZE-1:0] max;
     rand logic [VALSIZE-1:0] min;
     rand logic [VALSIZE-1:0] value;
     logic osci;
 
+    constraint com_distribution_c {
+      com dist {
+        0 := 7,
+        1 := 1,
+        2 := 1,
+        3 := 1
+      };
+    }
+
     constraint max_bigger_than_min_c {max > min;}
     constraint value_bigger_than_max_c {value > max;}
     constraint value_smaller_than_min_c {value < min;}
     constraint value_between_max_and_min_c {value <= max && value >= min;}
+    constraint order_max_c {solve max before min;}
+    constraint order_value_c {solve max, min before value;}
 
     covergroup cov_group;
+      option.auto_bin_max = 1000;
+      cov_com: coverpoint com;
       cov_max: coverpoint max {
         option.auto_bin_max = 1000;
-        bins petit = {[0 : 10]};
-        bins grand = {[(2 ** VALSIZE) - 10 : (2 ** VALSIZE) - 1]};
-
+        bins petit = {[0 : max_value() / 4]};
+        bins grand = {[max_value() - (max_value() / 4) : max_value()]};
+        bins all_values[VALSIZE] = {[max_value() / 4 + 1 : max_value() - (max_value() / 4) - 1]};
       }
       cov_min: coverpoint min {
         option.auto_bin_max = 1000;
-        bins petit = {[0 : 10]};
-        bins grand = {[(2 ** VALSIZE) - 10 : (2 ** VALSIZE) - 1]};
+        bins petit = {[0 : max_value() / 4]};
+        bins grand = {[max_value() - (max_value() / 4) : max_value()]};
+        bins all_values[VALSIZE] = {[max_value() / 4 + 1 : max_value() - (max_value() / 4) - 1]};
       }
       cov_val: coverpoint value {
         option.auto_bin_max = 1000;
-        bins petit = {[0 : 10]};
-        bins grand = {[(2 ** VALSIZE) - 10 : (2 ** VALSIZE) - 1]};
+        bins petit = {[0 : max_value() / 4]};
+        bins grand = {[max_value() - (max_value() / 4) : max_value()]};
+        bins all_values[VALSIZE] = {[max_value() / 4 + 1 : max_value() - (max_value() / 4) - 1]};
       }
     endgroup
     function new();
@@ -123,18 +150,19 @@ module min_max_top_tb #(
       .leds_o(output_itf.leds)
   );
 
-  function automatic random_or_fatal(Input obj);
+  function automatic void random_or_fatal(Input obj);
     assert (obj.randomize())
     else $fatal("No solutions for obj.randomize");
   endfunction
 
-  function automatic map_obj_to_input_itf(Input obj);
+  function automatic void map_obj_to_input_itf(Input obj);
     input_itf.com   = obj.com;
     input_itf.osci  = obj.osci;
     input_itf.min   = obj.min;
     input_itf.max   = obj.max;
     input_itf.value = obj.value;
   endfunction
+
 
   task automatic test_both_osci_state();
     input_itf.osci = 0;
@@ -148,20 +176,70 @@ module min_max_top_tb #(
   endtask
 
   task automatic test_marche_normale_values_between_min_and_max;
-    Input obj;
-    obj = new;
-    obj.com = 0;
-    obj.value_bigger_than_max_c.constraint_mode(0);
-    obj.value_smaller_than_min_c.constraint_mode(0);
-    obj.value_between_max_and_min_c.constraint_mode(1);
-
-    $display("Running Test Marche Normale Between Min and Max");
-    while (obj.cov_group.get_inst_coverage() < 100) begin
-      random_or_fatal(obj);
-      obj.cov_group.sample();
-      map_obj_to_input_itf(obj);
-      test_both_osci_state();
+    int max_iterations = nb_iterations() / 100;
+    int mid_value = 2 ** (VALSIZE - 1);
+    input_itf.com = 0;
+    $display("Test Marche Normale min <= val < max. Min [0:%d[", max_iterations);
+    for (int i = 0; i < max_iterations; ++i) begin
+      input_itf.min = i;
+      for (int max = input_itf.min + 1; max < max_iterations; ++max) begin
+        input_itf.max = max;
+        for (int val = input_itf.min; val < max; ++val) begin
+          input_itf.value = val;
+          test_both_osci_state();
+        end
+      end
     end
+    $display("Test Marche Normale min <= val < max. Min [%d:%d[", max_value() - max_iterations,
+             max_value());
+    for (int i = 0; i < max_iterations; ++i) begin
+      input_itf.min = max_value() - max_iterations + i;
+      for (int max = input_itf.min + 1; max < max_iterations; ++max) begin
+        input_itf.max = max;
+        for (int val = input_itf.min; val < max; ++val) begin
+          input_itf.value = val;
+          test_both_osci_state();
+        end
+      end
+    end
+
+    $display("Test Marche Normale min <= val < max. Min [%d:%d[", mid_value - (max_iterations / 2),
+             mid_value + (max_iterations / 2));
+    for (int i = 0; i < max_iterations; ++i) begin
+      input_itf.min = mid_value - (max_iterations / 2) + i;
+      for (int max = input_itf.min + 1; max < max_iterations; ++max) begin
+        input_itf.max = max;
+        for (int val = input_itf.min; val < max; ++val) begin
+          input_itf.value = val;
+          test_both_osci_state();
+        end
+      end
+    end
+  endtask
+
+  task automatic test_every_combination;
+    assert (VALSIZE <= 10)
+    else $fatal("Can't Run Every combination with VALSIZE > 10");
+
+    input_itf.com = 0;
+    for (int val = 0; val < 2 ** VALSIZE; ++val) begin
+      for (int min = 0; min <= val; ++min) begin
+        for (int max = val + 1; max < 2 ** VALSIZE; ++max) begin
+          input_itf.min   = min;
+          input_itf.max   = max;
+          input_itf.value = val;
+          test_both_osci_state();
+        end
+      end
+    end
+    for (int com = 1; com <= 3; ++com) begin
+      input_itf.com = com;
+      for (int val = 0; val < 2 ** VALSIZE; ++val) begin
+        input_itf.value = val;
+        test_both_osci_state();
+      end
+    end
+
   endtask
 
   task automatic test_marche_normale_values_bigger_than_max;
@@ -172,10 +250,9 @@ module min_max_top_tb #(
     obj.value_smaller_than_min_c.constraint_mode(0);
     obj.value_between_max_and_min_c.constraint_mode(0);
 
-    $display("Running Test Marche Normale Val > Max");
-    while (obj.cov_group.get_inst_coverage() < 100) begin
+    $display("Running Test Marche Normale val > max");
+    for (int i = 0; i < 10; ++i) begin
       random_or_fatal(obj);
-      obj.cov_group.sample();
       map_obj_to_input_itf(obj);
       test_both_osci_state();
     end
@@ -189,7 +266,22 @@ module min_max_top_tb #(
     obj.value_smaller_than_min_c.constraint_mode(1);
     obj.value_between_max_and_min_c.constraint_mode(0);
 
-    $display("Running Test Marche Normale Val < Min");
+    $display("Running Test Marche Normale val < min");
+    for (int i = 0; i < 10; ++i) begin
+      random_or_fatal(obj);
+      map_obj_to_input_itf(obj);
+      test_both_osci_state();
+    end
+  endtask
+
+  task automatic test_random_values;
+    Input obj;
+    obj = new;
+    obj.value_bigger_than_max_c.constraint_mode(0);
+    obj.value_smaller_than_min_c.constraint_mode(0);
+    obj.value_between_max_and_min_c.constraint_mode(0);
+
+    $display("Running Test With Random Values");
     while (obj.cov_group.get_inst_coverage() < 100) begin
       random_or_fatal(obj);
       obj.cov_group.sample();
@@ -199,18 +291,15 @@ module min_max_top_tb #(
   endtask
 
   task automatic test_val_lineaire;
-    Input obj;
-    obj = new;
-    obj.com = 1;
-    obj.value_bigger_than_max_c.constraint_mode(0);
-    obj.value_smaller_than_min_c.constraint_mode(0);
-    obj.value_between_max_and_min_c.constraint_mode(0);
-
-    $display("Running Test Value Lineaire");
-    while (obj.cov_group.cov_val.get_inst_coverage() < 100) begin
-      random_or_fatal(obj);
-      obj.cov_group.sample();
-      map_obj_to_input_itf(obj);
+    int max = max_value();
+    input_itf.com = 1;
+    $display("Running Test Lineaire");
+    for (int val = 0; val < 10; ++val) begin
+      input_itf.value = val;
+      test_both_osci_state();
+    end
+    for (int val = max - 10; val < max; ++val) begin
+      input_itf.value = val;
       test_both_osci_state();
     end
   endtask
@@ -224,15 +313,15 @@ module min_max_top_tb #(
     obj.value_between_max_and_min_c.constraint_mode(0);
 
     $display("Running Test Eteint");
-    while (obj.cov_group.cov_val.get_inst_coverage() < 100) begin
+    for (int i = 0; i < 10; ++i) begin
       random_or_fatal(obj);
-      obj.cov_group.sample();
       map_obj_to_input_itf(obj);
       test_both_osci_state();
     end
   endtask
 
   task automatic test_allume_fort;
+    int   max_iterations = nb_iterations();
     Input obj;
     obj = new;
     obj.com = 3;
@@ -240,10 +329,9 @@ module min_max_top_tb #(
     obj.value_smaller_than_min_c.constraint_mode(0);
     obj.value_between_max_and_min_c.constraint_mode(0);
 
-    $display("Running Test Allume fort");
-    while (obj.cov_group.cov_val.get_inst_coverage() < 100) begin
+    $display("Running Test Allume Fort");
+    for (int i = 0; i < 10; ++i) begin
       random_or_fatal(obj);
-      obj.cov_group.sample();
       map_obj_to_input_itf(obj);
       test_both_osci_state();
     end
@@ -256,6 +344,7 @@ module min_max_top_tb #(
     test_marche_normale_values_between_min_and_max;
     test_marche_normale_values_less_than_min;
     test_marche_normale_values_bigger_than_max;
+    test_random_values;
   endtask
 
   task automatic test_scenario;
@@ -268,6 +357,8 @@ module min_max_top_tb #(
       4: test_marche_normale_values_between_min_and_max;
       5: test_marche_normale_values_less_than_min;
       6: test_marche_normale_values_bigger_than_max;
+      7: test_random_values;
+      8: test_every_combination;
       default: $diplay("Invalid test case %d", TESTCASE);
     endcase
 
@@ -301,7 +392,7 @@ module min_max_top_tb #(
         end
       end
       2: leds = 0;
-      3: leds = 1;
+      3: leds = 2 ** (2 ** VALSIZE) - 1;
       default: ;
     endcase
 
@@ -322,15 +413,9 @@ module min_max_top_tb #(
     forever begin
       if (output_itf.leds != leds_ref) begin
         nb_errors++;
-        if (ERRNO <= 3) begin
-          $display(
-              "Error for input: com = %d osci = %d val_i = %d max_i = %d min_i %d. Expected: %d, Observed: %d",
-              input_itf.com, input_itf.osci, input_itf.value, input_itf.max, input_itf.min,
-              leds_ref, output_itf.leds);
-          error_signal = 1;
-          #pulse;
-          error_signal = 0;
-        end
+        error_signal = 1;
+        #pulse;
+        error_signal = 0;
       end
       @(negedge (synchro));
     end
@@ -347,17 +432,9 @@ module min_max_top_tb #(
 
     $display("Ending simulation");
     if (nb_errors > 0) begin
-      if (ERRNO > 3) begin
-        $display("OK Detected %d with errno: %d.", nb_errors, ERRNO);
-      end else begin
-        $display("ERROR %d errors detected.", nb_errors, ERRNO);
-      end
+      $error("ERROR %d errors detected.", nb_errors);
     end else begin
-      if (ERRNO > 3) begin
-        $display("ERROR. Bad TB. 0 errors detected with ERRNO > 3 (%d).", ERRNO);
-      end else begin
-        $display("OK No errors detected.");
-      end
+      $display("OK No errors detected.");
     end
 
 
