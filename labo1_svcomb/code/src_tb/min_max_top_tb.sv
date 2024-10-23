@@ -184,7 +184,7 @@ module min_max_top_tb #(
       input_itf.min = i;
       for (int max = input_itf.min + 1; max < max_iterations; ++max) begin
         input_itf.max = max;
-        for (int val = input_itf.min; val < max; ++val) begin
+        for (int val = input_itf.min; val <= max; ++val) begin
           input_itf.value = val;
           test_both_osci_state();
         end
@@ -196,7 +196,7 @@ module min_max_top_tb #(
       input_itf.min = max_value() - max_iterations + i;
       for (int max = input_itf.min + 1; max < max_iterations; ++max) begin
         input_itf.max = max;
-        for (int val = input_itf.min; val < max; ++val) begin
+        for (int val = input_itf.min; val <= max; ++val) begin
           input_itf.value = val;
           test_both_osci_state();
         end
@@ -209,7 +209,7 @@ module min_max_top_tb #(
       input_itf.min = mid_value - (max_iterations / 2) + i;
       for (int max = input_itf.min + 1; max < max_iterations; ++max) begin
         input_itf.max = max;
-        for (int val = input_itf.min; val < max; ++val) begin
+        for (int val = input_itf.min; val <= max; ++val) begin
           input_itf.value = val;
           test_both_osci_state();
         end
