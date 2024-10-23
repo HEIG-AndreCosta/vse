@@ -293,13 +293,8 @@ module min_max_top_tb #(
   task automatic test_val_lineaire;
     int max = max_value();
     input_itf.com = 1;
-    $display("Running Test Lineaire");
-    for (int val = 0; val < 10; ++val) begin
-      input_itf.value = val;
-      test_both_osci_state();
-    end
-    for (int val = max - 10; val < max; ++val) begin
-      input_itf.value = val;
+    for(int i = 0; i < VALSIZE; ++i) begin
+      input_itf.value = 2**i;
       test_both_osci_state();
     end
   endtask
