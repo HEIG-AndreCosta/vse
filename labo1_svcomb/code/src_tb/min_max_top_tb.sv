@@ -404,6 +404,7 @@ module min_max_top_tb #(
     forever begin
       if (output_itf.leds != leds_ref) begin
         nb_errors++;
+        $error("Expected: %0h Output: %0h", leds_ref, output_itf.leds);
         error_signal = 1;
         #pulse;
         error_signal = 0;
@@ -423,12 +424,10 @@ module min_max_top_tb #(
 
     $display("Ending simulation");
     if (nb_errors > 0) begin
-      $error("ERROR %d errors detected.", nb_errors);
+      $display("KO %d errors detected.", nb_errors);
     end else begin
       $display("OK No errors detected.");
     end
-
-
     $finish;
   end
 
