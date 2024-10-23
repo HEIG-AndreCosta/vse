@@ -166,12 +166,8 @@ module min_max_top_tb #(
 
   task automatic test_both_osci_state();
     input_itf.osci = 0;
-    compute_reference(input_itf.com, input_itf.min, input_itf.max, input_itf.value, input_itf.osci,
-                      leds_ref);
     @(posedge (synchro));
     input_itf.osci = 1;
-    compute_reference(input_itf.com, input_itf.min, input_itf.max, input_itf.value, input_itf.osci,
-                      leds_ref);
     @(posedge (synchro));
   endtask
 
