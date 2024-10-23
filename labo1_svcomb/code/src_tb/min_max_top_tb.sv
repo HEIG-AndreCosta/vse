@@ -307,7 +307,6 @@ module min_max_top_tb #(
   task automatic test_eteint;
     Input obj;
     obj = new;
-    obj.com = 2;
     obj.value_bigger_than_max_c.constraint_mode(0);
     obj.value_smaller_than_min_c.constraint_mode(0);
     obj.value_between_max_and_min_c.constraint_mode(0);
@@ -315,16 +314,16 @@ module min_max_top_tb #(
     $display("Running Test Eteint");
     for (int i = 0; i < 10; ++i) begin
       random_or_fatal(obj);
+      obj.com = 2;
       map_obj_to_input_itf(obj);
       test_both_osci_state();
     end
   endtask
 
   task automatic test_allume_fort;
-    int   max_iterations = nb_iterations();
+    int max_iterations = nb_iterations();
     Input obj;
     obj = new;
-    obj.com = 3;
     obj.value_bigger_than_max_c.constraint_mode(0);
     obj.value_smaller_than_min_c.constraint_mode(0);
     obj.value_between_max_and_min_c.constraint_mode(0);
@@ -332,6 +331,7 @@ module min_max_top_tb #(
     $display("Running Test Allume Fort");
     for (int i = 0; i < 10; ++i) begin
       random_or_fatal(obj);
+      obj.com = 3;
       map_obj_to_input_itf(obj);
       test_both_osci_state();
     end
