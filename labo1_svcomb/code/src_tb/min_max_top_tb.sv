@@ -357,7 +357,6 @@ module min_max_top_tb #(
 
   task automatic compute_reference(logic [1:0] com, input_t min, input_t max, input_t value,
                                    logic osci, output output_t leds);
-
     case (com)
       0: begin
         if (value < min || value > max) begin
@@ -386,8 +385,6 @@ module min_max_top_tb #(
       3: leds = 2 ** (2 ** VALSIZE) - 1;
       default: ;
     endcase
-
-
   endtask
 
   task automatic compute_reference_task;
