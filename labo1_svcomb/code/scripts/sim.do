@@ -9,14 +9,14 @@ proc compile_duv { } {
   puts "\nVHDL DUV compilation :"
 
   vlib Aff_Min_Max
-  vcom -2008 -work Aff_Min_Max $Path_DUV/bin_lin.vhd
-  vcom -2008 -work Aff_Min_Max $Path_DUV/comparator_nbits.vhd
-  vcom -2008 -work Aff_Min_Max $Path_DUV/affichage.vhd
+  vcom +cover -2008 -work Aff_Min_Max $Path_DUV/bin_lin.vhd
+  vcom +cover -2008 -work Aff_Min_Max $Path_DUV/comparator_nbits.vhd
+  vcom +cover -2008 -work Aff_Min_Max $Path_DUV/affichage.vhd
 
   vmap Aff_Min_Max Aff_Min_Max
 
   vlib work
-  vcom -2008 $Path_DUV/min_max_top.vhd
+  vcom +cover -2008 $Path_DUV/min_max_top.vhd
 }
 
 #------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ proc sim_start {TESTCASE VALSIZE ERRNO} {
   global StdArithNoWarnings
   global NumericStdNoWarnings
   
-  vsim -t 1ns -GVALSIZE=$VALSIZE -GERRNO=$ERRNO -GTESTCASE=$TESTCASE work.min_max_top_tb
+  vsim -coverage -t 1ns -GVALSIZE=$VALSIZE -GERRNO=$ERRNO -GTESTCASE=$TESTCASE work.min_max_top_tb
 #  do wave.do
   add wave -r *
   wave refresh
