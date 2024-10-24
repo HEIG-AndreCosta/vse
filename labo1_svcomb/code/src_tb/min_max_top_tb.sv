@@ -357,22 +357,13 @@ module min_max_top_tb #(
 
   task automatic compute_reference(logic [1:0] com, input_t min, input_t max, input_t value,
                                    logic osci, output output_t leds);
+    int borne_fin = osci == 1'b1 ? max : value;
+    leds = 0;
     case (com)
       0: begin
-        if (value < min || value > max) begin
-          leds = 0;
-        end else begin
-          for (int i = 0; i < min; ++i) begin
-            leds[i] = 0;
-          end
-          for (int i = min; i <= value; ++i) begin
+        if (value >= min && value <= max) begin
+          for (int i = min; i <= borne_fin; ++i) begin
             leds[i] = 1'b1;
-          end
-          for (int i = value + 1; i <= max; ++i) begin
-            leds[i] = osci;
-          end
-          for (int i = max + 1; i < VALSIZE; ++i) begin
-            leds[i] = 0;
           end
         end
       end
@@ -401,7 +392,8 @@ module min_max_top_tb #(
     forever begin
       if (output_itf.leds != leds_ref) begin
         nb_errors++;
-        $error("Expected: %0h Output: %0h", leds_ref, output_itf.leds);
+        $error("Wrong Output with input: Com: 0x%0h Osci: 0x%0h Min: 0x%0h Max: 0x%0h Value: 0x%0h",
+               input_itf.com, input_itf.osci, input_itf.min, input_itf.max, input_itf.value);
         error_signal = 1;
         #pulse;
         error_signal = 0;
