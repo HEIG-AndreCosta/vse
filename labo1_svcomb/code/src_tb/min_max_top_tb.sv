@@ -314,7 +314,7 @@ module min_max_top_tb #(
   endtask
 
   task automatic test_allume_fort;
-    int max_iterations = nb_iterations();
+    int   max_iterations = nb_iterations();
     Input obj;
     obj = new;
     obj.value_bigger_than_max_c.constraint_mode(0);
