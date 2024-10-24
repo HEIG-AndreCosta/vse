@@ -175,7 +175,7 @@ module min_max_top_tb #(
     int max_iterations = nb_iterations() / 100;
     int mid_value = 2 ** (VALSIZE - 1);
     input_itf.com = 0;
-    $display("Test Marche Normale min <= val < max. Min [0:%d[", max_iterations);
+    $display("Test Marche Normale min <= val <= max. Min [0:%d[", max_iterations);
     for (int i = 0; i < max_iterations; ++i) begin
       input_itf.min = i;
       for (int max = input_itf.min + 1; max < max_iterations; ++max) begin
@@ -186,7 +186,7 @@ module min_max_top_tb #(
         end
       end
     end
-    $display("Test Marche Normale min <= val < max. Min [%d:%d[", max_value() - max_iterations,
+    $display("Test Marche Normale min <= val <= max. Min [%d:%d[", max_value() - max_iterations,
              max_value());
     for (int i = 0; i < max_iterations; ++i) begin
       input_itf.min = max_value() - max_iterations + i;
@@ -199,8 +199,8 @@ module min_max_top_tb #(
       end
     end
 
-    $display("Test Marche Normale min <= val < max. Min [%d:%d[", mid_value - (max_iterations / 2),
-             mid_value + (max_iterations / 2));
+    $display("Test Marche Normale min <= val <= max. Min [%d:%d[",
+             mid_value - (max_iterations / 2), mid_value + (max_iterations / 2));
     for (int i = 0; i < max_iterations; ++i) begin
       input_itf.min = mid_value - (max_iterations / 2) + i;
       for (int max = input_itf.min + 1; max < max_iterations; ++max) begin
