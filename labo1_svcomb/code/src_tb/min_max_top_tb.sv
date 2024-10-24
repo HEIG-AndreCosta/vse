@@ -289,8 +289,10 @@ module min_max_top_tb #(
   task automatic test_val_lineaire;
     int max = max_value();
     input_itf.com = 1;
-    for(int i = 0; i < VALSIZE; ++i) begin
-      input_itf.value = 2**i;
+    input_itf.min = 0;
+    input_itf.max = 1;
+    for (int i = 0; i < VALSIZE; ++i) begin
+      input_itf.value = 2 ** i;
       test_both_osci_state();
     end
   endtask
