@@ -34,7 +34,7 @@ proc sim_start {TESTCASE VALSIZE ERRNO} {
   global StdArithNoWarnings
   global NumericStdNoWarnings
   
-  vsim -coverage -t 1ns -GVALSIZE=$VALSIZE -GERRNO=$ERRNO -GTESTCASE=$TESTCASE work.min_max_top_tb
+  vsim -coverage -t 1ns -GVALSIZE=$VALSIZE -GERRNO=$ERRNO -GTESTCASE=$TESTCASE -voptargs="+acc" work.min_max_top_tb
 #  do wave.do
   add wave -r *
   wave refresh
