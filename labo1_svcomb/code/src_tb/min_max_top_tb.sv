@@ -241,7 +241,6 @@ module min_max_top_tb #(
   task automatic test_marche_normale_values_bigger_than_max;
     Input obj;
     obj = new;
-    obj.com = 0;
     obj.value_bigger_than_max_c.constraint_mode(1);
     obj.value_smaller_than_min_c.constraint_mode(0);
     obj.value_between_max_and_min_c.constraint_mode(0);
@@ -249,6 +248,7 @@ module min_max_top_tb #(
     $display("Running Test Marche Normale val > max");
     for (int i = 0; i < 10; ++i) begin
       random_or_fatal(obj);
+      obj.com = 0;
       map_obj_to_input_itf(obj);
       test_both_osci_state();
     end
@@ -257,7 +257,6 @@ module min_max_top_tb #(
   task automatic test_marche_normale_values_less_than_min;
     Input obj;
     obj = new;
-    obj.com = 0;
     obj.value_bigger_than_max_c.constraint_mode(0);
     obj.value_smaller_than_min_c.constraint_mode(1);
     obj.value_between_max_and_min_c.constraint_mode(0);
@@ -265,6 +264,7 @@ module min_max_top_tb #(
     $display("Running Test Marche Normale val < min");
     for (int i = 0; i < 10; ++i) begin
       random_or_fatal(obj);
+      obj.com = 0;
       map_obj_to_input_itf(obj);
       test_both_osci_state();
     end
