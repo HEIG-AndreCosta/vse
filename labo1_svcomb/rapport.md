@@ -1,13 +1,13 @@
 # VSE Labo 1 - Affichage linéaire d’une valeur entre deux bornes
 
-## André Costa
+#### André Costa
 
-### Introduction
+## Introduction
 
 Ce labo consiste à développer un banc de test pour un système permettant l'affichage linéaire d'une valeur.
 L'affichage est commandée de façon à indiquer où se situe cette valeur par rapport à deux bornes Min et Max.
 
-### Paramètres Génériques
+## Paramètres Génériques
 
 Les paramètres génériques sont les suivants:
 
@@ -15,7 +15,7 @@ Les paramètres génériques sont les suivants:
 - `ERRNO` : Utilisé pour générer des erreurs dans le code `vhdl`
 - `TESTCASE` : Indique le numéro du test à effectuer. 0 devra indiquer que tous les tests doivent être effectués.
 
-### Entrées et Sorties
+## Entrées et Sorties
 
 - `Com_i` : Signal de commande
 - `Val_i` : Valeur à afficher
@@ -24,7 +24,7 @@ Les paramètres génériques sont les suivants:
 - `Osc_i` : Signal d'oscillation
 - `Leds_o` : Afficheur linéaire composé de leds.
 
-### Procédure
+## Procédure
 
 Pour développer un système de test, j'ai commencé par le calcul de la valeur de référence.
 
@@ -93,23 +93,69 @@ end
 
 Une fois que nous arrivons à calculer correctement quel devrait être la sortie du système selon les différentes entrées possibles, nous pouvons décider quelles tests effectuer.
 
-### Tests
+## Tests
 
 Pour tester le système, idéalement, nous devrions tester toutes les combinaisons possibles des entrées. Cependant, cela est impossible en pratique car le nombre de combinaisons possibles selon `VALSIZE` peut être gigantesque.
 
 Alors, divisons des tests selon les différents modes de fonctionnement du système.
 
-Pour le test allumé et éteint, la sortie du système ne devrait pas dépendre des valeurs d'entrée. Nous pouvons donc effectuer un simple test pour vérifier que toutes les leds sont allumées ou éteintes. Bien sûr que pour garder le système un peu plus robuste nous pouvons itérerer sur plusieurs valeurs de `Val_i`, `Min_i` et `Max_i` pour être sûr que le développeur a bien compris le cahier de charges.
+### Test puissance de deux
 
-Pour le test linéaire, pour éviter le soucis de performance avec un `VALSIZE` très grand, nous pouvons calculer pour toutes les puissances de 2. Permettant ainsi de tester des valeurs petites, moyennes et grandes sans sacrifier la performance.
+Pour garder une bonne robustesse des tests, nous pouvons tester les puissances de 2 pour `Min_i`, `Max_i` et `Val_i`. Cela nous permet de tester des valeurs petites, moyennes et grandes sans sacrifier la performance. Vu qu'il s'avére intéressant de le faire avec plusieurs modes différentes, la tâche a été refactorisée en une fonction.
 
-Pour le test marche normale, il faut tester les cas où `Val_i` est inférieur à `Min_i`, `Val_i` est supérieur à `Max_i` et `Min_i` <= `Val_i` <= `Max_i`.
+Ainsi, cette idée est utilisé pour tester les 4 modes de fonctionnement du système.
 
-Pour les cas où `Val_i` est inférieur à `Min_i` ou `Val_i` est supérieur à `Max_i`, je suis parti sur la même approche que pour les tests éteint et allumé. C'est-à-dire, que je teste pour plusieurs valeurs de `Val_i`, `Min_i` et `Max_i` pour être sûr que le système est robuste. Pour cela, je génère plusieurs fois des valeurs aléatoires pour `Val_i`, `Min_i` et `Max_i` et je vérifie que les leds sont éteintes. Bien évidemment que pour que cela marche, j'ai ajouté une contrainte pour que `Val_i` soit inférieur à `Min_i` ou `Val_i` soit supérieur à `Max_i` que je active seulement pour ces tests.
+### Tests Allumé, Éteint et Linéaire
+
+Vu la simplicité de ces trois modes, ces modes sont seulement testés avec toutes les valeurs de puissance de deux.
+
+### Tests marche normale
+
+En plus du test des puissances de deux, j'ai encore ajouté des autres tests pour ce mode de fonctionnement.
+Pour le test marche normale, il faut tester 3 cas:
+
+1. `Val_i` < `Min_i`
+2. `Val_i` > `Max_i`
+3. `Min_i` <= `Val_i` <= `Max_i`.
+
+Pour les cas 1. et 2., j'utilise la randomisation avec contrainte.
+Je fais quelques intérations avec des valeurs aléatoires pour `Val_i`, `Min_i` et `Max_i` pour être sûr que le système est robuste.
+
+Bien évidemment que pour que cela marche, j'ai ajouté une contrainte pour que `Val_i` soit inférieur à `Min_i` ou `Val_i` soit supérieur à `Max_i` que je active seulement pour ces tests.
+
+```verilog
+    constraint value_bigger_than_max_c {value > max;}
+    constraint value_smaller_than_min_c {value < min;}
+```
+
+Exemple avec le test `Val_i` > `Max_i`:
+
+```verilog
+task automatic test_marche_normale_values_bigger_than_max;
+    Input obj;
+    obj = new;
+    obj.value_bigger_than_max_c.constraint_mode(1);
+    obj.value_smaller_than_min_c.constraint_mode(0);
+    obj.value_between_max_and_min_c.constraint_mode(0);
+
+    $display("Running Test Marche Normale val > max");
+    for (int i = 0; i < 10; ++i) begin
+      random_or_fatal(obj);
+      obj.com = 0;
+      map_obj_to_input_itf(obj);
+      test_both_osci_state();
+    end
+  endtask
+```
 
 Pour le cas où `Min_i` <= `Val_i` <= `Max_i`, j'ai décidé de tester des valeurs vers la plage inférieur de valeurs, vers la plage supérieur de valeurs et des valeurs au milieu de la plage.
 
-Pour garantir que les tests ne prennent pas beaucoup de temps, la plupart de tests mentionnés auparavant ne testent pas beaucoup de combinaisons différentes. Pour complémenter ces tests, un test qui teste des valeurs aléatoires a été ajouté. Ce test est le plus long à exécuter, mais il permet de tester des combinaisons de valeurs différentes.
+Ceci avec le test des puissances de deux, me permet déjà de garantir une bonne couverture des valeurs possibles.
+
+### Tests aléatoires
+
+Pour complémenter ces tests, un test qui teste des valeurs aléatoires a été ajouté.
+Ceci me permet de tester des valeurs autres que la puissance de deux par exemple.
 
 Pour garantir que je couvre bien toutes les plages de valeurs possibles, voici comment j'ai procédé:
 
@@ -125,7 +171,7 @@ class Input;
     logic osci;
 ```
 
-2. Ensuite, j'ai ajouté une distribution sur `Com_i` pour que le mode normale soit plus probable que les autres:
+2. Ensuite, j'ai ajouté une distribution sur `com_i` pour que le mode normale soit plus probable que les autres:
 
 ```verilog
     constraint com_distribution_c {
@@ -138,8 +184,7 @@ class Input;
     }
 ```
 
-3. Niveau contraintes, j'ai ajouté la contrainte que `Max` doit être plus grand que `Min` car sinon le résultat est indéfini.
-   Ainsi que des contraintes sur l'ordre de randomisation des valeurs.
+3. Niveau contraintes, j'ai ajouté la contrainte que `Max` doit être plus grand que `Min` car sinon le résultat est indéfini, ainsi que des contraintes sur l'ordre de randomisation des valeurs.
 
 ```verilog
     constraint max_bigger_than_min_c {max > min;}
@@ -147,7 +192,15 @@ class Input;
     constraint order_value_c {solve max, min before value;}
 ```
 
-4. Enfin, j'ai ajouté le `covergroup qui me permettra de garantir qu'on teste bien toutes les plages de valeurs:
+4. J'ai aussi ajouté une contrainte pour être sûr que `Val_i`, `Max_i` et `Min_i` ne soient pas des puissances de deux, vu que ces tests ont déjà été effectués.
+
+```verilog
+    constraint not_power_of_two_c {!(value & (value - 1) == 0);}
+    constraint not_power_of_two_max_c {!(max & (max - 1) == 0);}
+    constraint not_power_of_two_min_c {!(min & (min - 1) == 0);}
+```
+
+5. Enfin, j'ai ajouté le `covergroup` qui me permettra de garantir qu'on teste bien toutes les plages de valeurs:
 
 ```verilog
     covergroup cov_group;
@@ -194,8 +247,45 @@ Une fois tout ça mis en place, le test avec les valeurs aléatoires est tout si
   endtask
 ```
 
-### Conclusion
+## Verification Run Manager
+
+Une fois mes test écrits, j'ai complété le fichier `default.rmdb` pour y ajouter des tests.
+
+J'ai ajouté des tests avec `VALSIZE` à 4, 8 et 16.
+Et avec `ERRNO` dans les intervalles [0,3] et [16, 21].
+
+![](image.png)
+
+Comme attendu, les tests avec `ERRNO` dans l'intervalle [0,3] passent, tandis que les tests avec `ERRNO` dans l'intervalle [16, 21] échouent.
+
+Le temps de simulation est très court même pour `VALSIZE` à 16, ce qui est très bien pour itérer rapidement sur les tests.
+
+## Lancement de tests spécifiques
+
+Comme demandé sur la donnée, le TESTCASE=0 lance tous les tests.
+
+Chaque test peut être lancé individuellement en spécifiant un autre numéro de test. La liste des tests est la suivante:
+
+```verilog
+case (TESTCASE)
+      0: run_all_scenarios;
+      1: test_eteint;
+      2: test_allume_fort;
+      3: test_val_lineaire;
+      4: test_marche_normale_powers_of_2;
+      5: test_marche_normale_values_between_min_and_max;
+      6: test_marche_normale_values_less_than_min;
+      7: test_marche_normale_values_bigger_than_max;
+      8: test_random_values;
+      9: test_every_combination;
+      default: $diplay("Invalid test case %d", TESTCASE);
+    endcase
+```
+
+Notons le cas 9 qui teste toutes les combinaisons possibles des valeurs mais seulement si `VALSIZE` est inférieur à 10. Ceci est le seul test qui n'est pas lancé automatiquement avec TESTCASE=0.
+
+## Conclusion
 
 Ce labo m'a permis de comprendre comment développer un banc de test pour un système en `vhdl`. J'ai appris à utiliser les `covergroup` pour garantir que je teste bien toutes les plages de valeurs possibles. J'ai aussi appris à utiliser les `constraint` pour garantir que les valeurs générées aléatoirement respectent les contraintes du système.
 
-J'ai aussi appris à gérer le fait qu'il n'est pas toujours possible de tester toutes les combinaisons possibles des valeurs d'entrée. Pour résoudre cela, j'ai testé quelques cas limites et j'ai ajouté un peu de randomisation sous contraintes pour garantir que mon test couvre bien assez de possibilités pour que nous puissions être sûr que le système marche correctement.
+J'ai aussi appris à gérer le fait qu'il n'est pas toujours possible de tester toutes les combinaisons possibles des valeurs d'entrée. Pour résoudre cela, j'ai testé quelques cas limites et j'ai ajouté un peu de randomisation sous contraintes pour garantir que mon test couvre bien assez de possibilités pour que nous puissions être sûr que le système marche correctement. L'idée de tester les puissances de deux est aussi très intéressant et je remercie le prof pour l'idée.
