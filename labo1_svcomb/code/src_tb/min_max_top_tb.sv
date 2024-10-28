@@ -107,6 +107,9 @@ module min_max_top_tb #(
     constraint value_bigger_than_max_c {value > max;}
     constraint value_smaller_than_min_c {value < min;}
     constraint value_between_max_and_min_c {value <= max && value >= min;}
+    constraint not_power_of_two_value_c {!(value & (value - 1) == 0);}
+    constraint not_power_of_two_max_c {!(max & (max - 1) == 0);}
+    constraint not_power_of_two_min_c {!(min & (min - 1) == 0);}
     constraint order_max_c {solve max before min;}
     constraint order_value_c {solve max, min before value;}
 
@@ -171,6 +174,14 @@ module min_max_top_tb #(
     @(posedge (synchro));
   endtask
 
+  task automatic test_marche_normale_powers_of_2;
+    Input obj;
+    obj = new;
+    $display("Running Test Marche Normale - Powers of 2");
+    obj.com = 0;
+    test_power_of_2(obj);
+  endtask
+
   task automatic test_marche_normale_values_between_min_and_max;
     int max_iterations = nb_iterations() / 100;
     int mid_value = 2 ** (VALSIZE - 1);
@@ -219,7 +230,7 @@ module min_max_top_tb #(
 
     input_itf.com = 0;
     for (int val = 0; val < 2 ** VALSIZE; ++val) begin
-      for (int min = 0; min <= val; ++min) begin
+      for (int min = 0; min < val; ++min) begin
         for (int max = val + 1; max < 2 ** VALSIZE; ++max) begin
           input_itf.min   = min;
           input_itf.max   = max;
@@ -235,7 +246,6 @@ module min_max_top_tb #(
         test_both_osci_state();
       end
     end
-
   endtask
 
   task automatic test_marche_normale_values_bigger_than_max;
@@ -285,55 +295,54 @@ module min_max_top_tb #(
       test_both_osci_state();
     end
   endtask
-
-  task automatic test_val_lineaire;
-    int max = max_value();
-    input_itf.com = 1;
-    input_itf.min = 0;
-    input_itf.max = 1;
+  // Generic task that iterates over powers of 2 for min, max and value
+  task automatic test_power_of_2(Input obj);
     for (int i = 0; i < VALSIZE; ++i) begin
-      input_itf.value = 2 ** i;
-      test_both_osci_state();
+      obj.min = 2 ** i;
+      for (int j = 0; j < VALSIZE; ++j) begin
+        obj.max = 2 ** j;
+        if (obj.max <= obj.min) begin
+          continue;
+        end
+        for (int k = 0; k < VALSIZE; ++k) begin
+          obj.value = 2 ** k;
+          map_obj_to_input_itf(obj);
+          test_both_osci_state();
+        end
+      end
     end
+  endtask
+  task automatic test_val_lineaire;
+    Input obj;
+    obj = new;
+    $display("Running Test Lineaire");
+    obj.com = 1;
+    test_power_of_2(obj);
   endtask
 
   task automatic test_eteint;
     Input obj;
     obj = new;
-    obj.value_bigger_than_max_c.constraint_mode(0);
-    obj.value_smaller_than_min_c.constraint_mode(0);
-    obj.value_between_max_and_min_c.constraint_mode(0);
-
     $display("Running Test Eteint");
-    for (int i = 0; i < 10; ++i) begin
-      random_or_fatal(obj);
-      obj.com = 2;
-      map_obj_to_input_itf(obj);
-      test_both_osci_state();
-    end
+    obj.com = 2;
+    test_power_of_2(obj);
   endtask
 
+
   task automatic test_allume_fort;
-    int   max_iterations = nb_iterations();
     Input obj;
     obj = new;
-    obj.value_bigger_than_max_c.constraint_mode(0);
-    obj.value_smaller_than_min_c.constraint_mode(0);
-    obj.value_between_max_and_min_c.constraint_mode(0);
 
     $display("Running Test Allume Fort");
-    for (int i = 0; i < 10; ++i) begin
-      random_or_fatal(obj);
-      obj.com = 3;
-      map_obj_to_input_itf(obj);
-      test_both_osci_state();
-    end
+    obj.com = 3;
+    test_power_of_2(obj);
   endtask
 
   task automatic run_all_scenarios;
     test_eteint;
     test_allume_fort;
     test_val_lineaire;
+    test_marche_normale_powers_of_2;
     test_marche_normale_values_between_min_and_max;
     test_marche_normale_values_less_than_min;
     test_marche_normale_values_bigger_than_max;
@@ -347,11 +356,12 @@ module min_max_top_tb #(
       1: test_eteint;
       2: test_allume_fort;
       3: test_val_lineaire;
-      4: test_marche_normale_values_between_min_and_max;
-      5: test_marche_normale_values_less_than_min;
-      6: test_marche_normale_values_bigger_than_max;
-      7: test_random_values;
-      8: test_every_combination;
+      4: test_marche_normale_powers_of_2;
+      5: test_marche_normale_values_between_min_and_max;
+      6: test_marche_normale_values_less_than_min;
+      7: test_marche_normale_values_bigger_than_max;
+      8: test_random_values;
+      9: test_every_combination;
       default: $diplay("Invalid test case %d", TESTCASE);
     endcase
 
@@ -375,7 +385,7 @@ module min_max_top_tb #(
         end
       end
       2: leds = 0;
-      3: leds = 2 ** (2 ** VALSIZE) - 1;
+      3: leds = -1;
       default: ;
     endcase
   endtask
