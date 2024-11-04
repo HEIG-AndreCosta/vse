@@ -42,6 +42,9 @@ proc sim_start {AVALONMODE TESTCASE} {
     0 {
         # Add corresponding assertions
         add wave /avalon_assertions_wrapper/duv/binded/assert_waitreq1
+        add wave /avalon_assertions_wrapper/duv/binded/assert_rd_or_wr_active_while_wait_request
+        add wave /avalon_assertions_wrapper/duv/binded/assert_data_is_stable_during_read
+        add wave /avalon_assertions_wrapper/duv/binded/assert_data_is_stable_during_write
     }
     1 {
         # Add corresponding assertions
