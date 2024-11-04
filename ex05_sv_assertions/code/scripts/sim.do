@@ -32,7 +32,7 @@ proc compile_tb { AVALONMODE } {
 proc sim_start {AVALONMODE TESTCASE} {
   # Do not forget the '-voptargs=+acc=a', which enables assertion visibility
   # (otherwise '-assertdebug' will be ignored, and the whole simulation will hang)
-  vsim -voptargs=+acc=a -assertdebug -GAVALONMODE=$AVALONMODE -GTESTCASE=$TESTCASE work.avalon_assertions_wrapper
+  vsim -voptargs=+acc -assertdebug -GAVALONMODE=$AVALONMODE -GTESTCASE=$TESTCASE work.avalon_assertions_wrapper
   view assertions
   # atv = Assertion Thead Viewer: graphically shows activation of an assertion
   atv log -enable /avalon_assertions_wrapper/duv/binded
