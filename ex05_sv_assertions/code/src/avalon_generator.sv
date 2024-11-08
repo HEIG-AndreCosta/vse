@@ -94,10 +94,12 @@ module avalon_generator #(
             address = 1;
             byteenable = 1;
             write = 1;
-            waitrequest = 1;
             writedata = 3;
 
-            ##2;
+            if (i > 0)
+                waitrequest = 1;
+            for (int j = 0; j < i; j++)
+                ##1;
 
             waitrequest = 0;
 
