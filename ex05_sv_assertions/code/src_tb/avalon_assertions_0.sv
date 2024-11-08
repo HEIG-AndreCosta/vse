@@ -32,11 +32,18 @@ module avalon_assertions #(
   assert_waitreq1 :
   assert property (!(read & write));
 
-  //assert_wait_request_on_rd :
-  //assert property ($rose(read) |=> waitrequest);
-
-  //assert_wait_request_on_wr :
-  //assert property (write |=> waitrequest);
+  assert_stability :
+  assert property (waitrequest |-> $stable(
+      address
+  ) && $stable(
+      byteenable
+  ) && $stable(
+      read
+  ) && $stable(
+      write
+  ) && $stable(
+      writedata
+  ));
 
   assert_rd_or_wr_active_while_wait_request :
   assert property (waitrequest |-> read || write);
