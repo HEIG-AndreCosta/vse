@@ -37,7 +37,7 @@ proc check_sva {Module} {
       formal compile -d datapath_wrapper -work work
     }
   }
-  # formal verify
+  formal verify
 }
 
 compile_duv
