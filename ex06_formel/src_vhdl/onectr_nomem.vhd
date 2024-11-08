@@ -16,7 +16,7 @@ use ieee.math_real.all;
 
 entity OneCtr_Nomem is
     generic(INPUTSIZE : integer := 64;
-        PCSIZE : integer := 8);
+            PCSIZE : integer := 8);
     port(
         clk:         in  std_logic;
         rst:         in  std_logic;
@@ -73,6 +73,7 @@ architecture struct of OneCtr_Nomem is
  begin
 
     ctr: ProgramCounter
+    generic map(N => PCSIZE)
     port map(
         clk   => clk,
         start => start_i,

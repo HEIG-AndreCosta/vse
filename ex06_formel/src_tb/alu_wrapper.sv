@@ -7,9 +7,9 @@ module alu_wrapper(
 );
 
     // Instantiation of the DUV
-    alu_wrapper duv(.*);
+    alu duv(.*);
 
     // Binding of the DUV and the assertions module
-    bind duv alu_assertions#(INPUTSIZE) binded(.*);
+    bind duv alu_assertions binded(.*);
 
 endmodule

@@ -1,4 +1,4 @@
-module onectr_nomem_wrapper#(int INPUTSIZE = 64, int PCSIZE = 8)(
+module onectr_nomem_assertions#(int INPUTSIZE = 64, int PCSIZE = 8)(
         input logic                            clk,
         input logic                            rst,
         input logic                            start_i,
@@ -16,11 +16,4 @@ module onectr_nomem_wrapper#(int INPUTSIZE = 64, int PCSIZE = 8)(
         input logic[PCSIZE-1:0]                JumpAddress,
         output logic[PCSIZE-1:0]               PCAddress
 );
-
-    // Instantiation of the DUV
-    onectr_nomem#(INPUTSIZE,PCSIZE) duv(.*);
-
-    // Binding of the DUV and the assertions module
-    bind duv onectr_nomem_assertions#(INPUTSIZE,PCSIZE) binded(.*);
-
 endmodule

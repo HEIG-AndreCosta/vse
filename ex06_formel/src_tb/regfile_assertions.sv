@@ -1,4 +1,4 @@
-module regfile_wrapper(
+module regfile_assertions(
         input  logic      clk,
         input  logic[7:0] W,
         output logic[7:0] A,
@@ -8,11 +8,4 @@ module regfile_wrapper(
         input  logic[3:0] RAA,
         input  logic[3:0] RAB
 );
-
-    // Instantiation of the DUV
-    regfile duv(.*);
-
-    // Binding of the DUV and the assertions module
-    bind duv regfile_assertions binded(.*);
-
 endmodule

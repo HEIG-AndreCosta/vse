@@ -6,7 +6,7 @@ proc compile_duv { } {
   vcom -mixedsvvh ../src_vhdl/datapath.vhd -work work    -2008
   vcom -mixedsvvh ../src_vhdl/control.vhd -work work    -2008
   vcom -mixedsvvh ../src_vhdl/onectr_nomem.vhd -work work    -2008
-  vcom -mixedsvvh ../src_vhdl/onectr.vhd -work work    -2008
+  vcom -mixedsvvh ../src_vhdl/onectr_proc.vhd -work work    -2008
 }
 
 proc check_sva {Module} {
