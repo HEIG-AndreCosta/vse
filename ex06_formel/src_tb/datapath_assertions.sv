@@ -20,16 +20,38 @@ module datapath_assertions (
     end
     return result;
   endfunction
+  function automatic get_last_value;
+    logic [ 6:0] result;
+    logic [63:0] prev_in = $previous(InPort);
+    for (int i = 0, index = $previous(Sel) * 8; i < 7; i++, index++) begin
+      result[i] = prev_in[index];
+    end
+    return result;
+  endfunction
 
-  property p_basic_check;
+  property p_check_mov;
+    @(posedge clk) (Wen ##1 Op == 4 && (RAA == $previous(
+        WA
+    ))) |-> (OutPort == get_last_value());
+  endproperty
+  assert property (p_check_mov);
+
+  property p_check_shr;
+    @(posedge clk) (Wen ##1 Op == 1 && (RAA == $previous(
+        WA
+    ))) |-> (OutPort == get_last_value() >> 1);
+  endproperty
+  assert property (p_check_shr);
+
+  property p_check_mov_after_long_time;
     logic [7:0] value
     ;
     logic [3:0] address;
     @(posedge clk) (Wen,
-    address = WA
-    ,
     value = get_value()
-    ) |=> ((##[0:$] (Op == 4 && RAA == address))) |-> (OutPort == value[6:0]);
+    ,
+    address = WA
+    ) |=> ((##[0:$] (Op == 1 && RAA == address))) |-> (OutPort == value[6:0]);
   endproperty
-  assert property (p_basic_check);
+
 endmodule
