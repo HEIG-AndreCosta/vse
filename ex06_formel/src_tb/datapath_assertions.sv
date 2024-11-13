@@ -13,13 +13,6 @@ module datapath_assertions (
 );
   //`define ASSERT_PROP(p) assert property (@(posedge clk) p);
 
-  function automatic get_value;
-    logic [7:0] result;
-    for (int i = 0, index = Sel * 8; i < 8; i++, index++) begin
-      result[i] = InPort[index];
-    end
-    return result;
-  endfunction
   function automatic get_last_value;
     logic [ 6:0] result;
     logic [63:0] prev_in = $previous(InPort);
@@ -43,15 +36,5 @@ module datapath_assertions (
   endproperty
   assert property (p_check_shr);
 
-  property p_check_mov_after_long_time;
-    logic [7:0] value
-    ;
-    logic [3:0] address;
-    @(posedge clk) (Wen,
-    value = get_value()
-    ,
-    address = WA
-    ) |=> ((##[0:$] (Op == 1 && RAA == address))) |-> (OutPort == value[6:0]);
-  endproperty
 
 endmodule
