@@ -106,3 +106,126 @@ constraint order {
 ```
 
 ![alt text](image-5.png)
+
+----
+
+![alt text](image-6.png)
+    
+```sv
+    class MyClass;
+        logic [7:0] a;
+        logic [7:0] b;
+        logic [7:0] c;
+
+        covergroup my_group;
+            //(a)
+            a_cov : coverpoint a{
+                bins low[]={[0:3]};
+                ignore_bins high[]={[4:255]};
+            }
+            //(a)
+            b_cov : coverpoint b {
+                bins middle[]={[8:11]};
+                ignore_bins low[]={[0:7]};
+                ignore_bins high[]={[12:255]};
+            }
+            //(b) 
+            c_cov : coverpoint c {
+                option.at_least = 15;
+                bins high[]={[250:255]};
+            }
+            //(a)
+            cov_a_cross_b : cross a_cov, b_cov;
+
+        endgroup
+
+        //(c) toute combinaison de a, b et c pair
+        covergroup parity_of_properties:
+
+            a_cov : coverpoint a[0];
+            b_cov : coverpoint b[0];
+            c_cov : coverpoint c[0];
+
+        cross a_cov, b_cov, c_cov;
+
+        endgroup
+
+    end class : MyClass
+```
+![alt text](image-7.png)
+
+```sv
+default clocking cb @(posedge clk);
+endclocking
+
+assert_1: assert property ($rose(a) |-> (a throughout (##[0:$] $rose(b) ##[1:$] $rose(b) ##[1:$] $rose(b))));
+
+assert_2: assert property (a[*3] |-> (!b[*2]##[1:3] b[*3] ##1 !b) || (!b[*6]##[1:2] b[*4:5]##1 !b));
+
+assert_3_sending: assert property (sending |-> valid); 
+
+assert_3_starting: assert property ($rose(starting) |-> $rose(sending) ##1 !sending);
+
+assert_3_first: assert property ($rose(sending) |-> first ##1 !first);
+
+assert_3_ending: assert property (ending |=> !sending));
+
+assert_3_last: assert property (last |-> sending ##1 !sending);
+
+assert_3_valid: assert property ($rose(sending) |-> !valid[*0:$] ##[1:$](valid && data>0));
+
+```
+
+![alt text](image-8.png)
+
+```sv
+class MyClass ;
+
+rand logic[7:0] a;
+rand logic[7:0] b;
+rand logic[7:0] c;
+rand logic[7:0] d;
+
+// ajouté pour la contrainte 2
+rand logic c_parity;
+
+constraint constraint_1 {
+    // les trois derniers bits de a sont 0 donc un multiple de 8
+    a[2:0] == 0 -> b[1:0] == 0;
+}
+
+
+constraint constraint_2 {
+    
+    a[0] == 0 -> c[0] == c_parity;
+}
+
+constraint constraint_2_1 {
+    c_parity dist {
+        0 := 10,
+        1 := 90
+    };
+}
+
+constraint constraint_3 {
+     a[0] == 0 -> (d % 5) == 0;
+}
+
+endclass : MyClass
+```
+
+4) Ajout d'un biais sur b. 
+5) On va avoir un conflic entre les contraintes précedente (expliquer pk)
+
+
+![alt text](image-9.png)
+
+Assume permet de dire au systeme qu'on suppose qu'une condition est toujours vrai, par exemple read n'est jamais en même temps que write. 
+
+Assert va vérifier une condition et nous informer si elle est pas respectée. 
+
+![alt text](image-10.png)
+![alt text](image-11.png)
+![alt text](image-12.png)
+![alt text](image-13.png)
+![alt text](image-14.png)
