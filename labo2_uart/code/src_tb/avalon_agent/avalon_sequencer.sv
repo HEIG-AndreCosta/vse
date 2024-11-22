@@ -30,57 +30,63 @@ Ver   Date        Person     Comments
 `ifndef AVALON_SEQUENCER_SV
 `define AVALON_SEQUENCER_SV
 
-class simple_sequencer extends avalon_sequencer;
-  rand logic [DATASIZE - 1:0] data;
-
-  function new;
-    $display("%t [AVL simple_sequencer] Created", $time);
-    assert (!this.randomize());
-  endfunction : new
-
-  task run;
-    automatic avalon_transaction transaction;
-    $display("%t [AVL simple_sequencer] Start", $time);
-    transaction.data = data;
-    sequencer_to_driver_fifo.put(transaction);
-    $display("%t [AVL simple_sequencer] End", $time);
-  endtask : run
-
-endclass : simple_sequencer
-
 class avalon_sequencer #(
     int DATASIZE = 20,
     int FIFOSIZE = 10
 );
 
   int testcase;
-
-  task all_sequencers;
-    simple_sequencer simple_sequencer;
-    simple_sequencer.run;
-  endtask : all_sequencers
-
-  task play_sequencers;
-
-    case (testcase)
-      0: begin
-        all_sequencers;
-      end
-      1: begin
-        simple_sequencer simple_sequencer;
-        simple_sequencer.run;
-      end
-      default: begin
-        $display("%t [AVL Sequencer] Testcase %d not implemented", $time, testcase);
-      end
-    endcase
-  endtask : play_sequencers
-
   avalon_fifo_t sequencer_to_driver_fifo;
+
+  task run_all_scenarios;
+    test_write;
+    test_read;
+    test_fifo_empty;
+    test_fifo_full;
+  endtask
+
+  task test_write();
+    automatic avalon_transaction trans = new;
+    trans.transaction_type = UART_SEND;
+    trans.data = 'hcafe1234cafe4321;
+    sequencer_to_driver_fifo.put(trans);
+  endtask
+
+  task test_read;
+    automatic avalon_transaction trans = new;
+    trans.transaction_type = UART_READ;
+    sequencer_to_driver_fifo.put(trans);
+  endtask
+
+  task test_fifo_empty;
+    automatic avalon_transaction trans = new;
+    trans.transaction_type = STATUS_READ;
+    sequencer_to_driver_fifo.put(trans);
+  endtask
+
+  task test_fifo_full;
+    automatic avalon_transaction trans;
+    for (int i = 0; i < FIFOSIZE + 1; ++i) begin
+      trans = new;
+      trans.transaction_type = UART_SEND;
+      sequencer_to_driver_fifo.put(trans);
+    end
+    trans = new;
+    trans.transaction_type = STATUS_READ;
+    sequencer_to_driver_fifo.put(trans);
+  endtask
+
 
   task run;
     $display("%t [AVL Sequencer] Testcase %d", $time, testcase);
-    play_sequencers;
+    case (testcase)
+      0: run_all_scenarios;
+      1: test_write;
+      2: test_read;
+      3: test_fifo_empty;
+      4: test_fifo_full;
+      default: $diplay("Invalid test case %d", testcase);
+    endcase
     $display("%t [AVL Sequencer] End", $time);
   endtask : run
 
