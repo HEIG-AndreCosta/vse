@@ -57,11 +57,11 @@ class avalon_driver #(
   endtask : send_to_scoreboard
 
   function void write(avalon_itf vif, avl_transaction transaction);
-    vif.address_i = 1;
-    vif.write_i = 1;
-    vif.read_i = 0;
+    vif.address_i = transaction.address;
+    vif.write_i = transaction.is_write;
+    vif.read_i = !transaction.is_write;
     vif.writedata_i = transaction.data;
-  endfunction : set_to_vif
+  endfunction
 
   task automatic get_status(avalon_itf vif, output logic [3:0] status);
     vif.address_i = 0;
@@ -101,7 +101,7 @@ class avalon_driver #(
       sequencer_to_driver_fifo.get(transaction);
       @(posedge vif.clk_i) begin
         send_to_scoreboard(transaction);
-        set_to_vif(vif, transaction);
+        write(vif, transaction);
       end
       @(negedge vif.clk_i);
     end

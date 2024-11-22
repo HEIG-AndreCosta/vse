@@ -42,6 +42,8 @@ class avalon_transaction #(
 );
 
   logic [FIFOSIZE - 1:0] data;
+  logic [14:0] address;
+  logic is_write;
 
 endclass : avalon_transaction
 
