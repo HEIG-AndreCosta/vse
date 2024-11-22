@@ -31,33 +31,35 @@ Ver   Date        Person     Comments
 
 import objections_pkg::*;
 
-class uart_monitor#(int DATASIZE=20, int FIFOSIZE=10);
+class uart_monitor #(
+    int DATASIZE = 20,
+    int FIFOSIZE = 10
+);
 
-    int testcase;
+  int testcase;
 
-    int ns_per_bit;
+  int ns_per_bit;
 
-    uart_fifo_t uart_to_scoreboard_tx_fifo;
+  uart_fifo_t uart_to_scoreboard_tx_fifo;
 
-    virtual uart_itf vif;
+  virtual uart_itf vif;
 
-    task run;
-        $display("%t [UART Monitor] Start", $time);
+  task run;
+    $display("%t [UART Monitor] Start", $time);
 
-        #20;
+    #20;
 
-        while (1) begin
-            uart_transaction#(DATASIZE, FIFOSIZE) transaction = new;
+    while (1) begin
+      uart_transaction #(DATASIZE, FIFOSIZE) transaction = new;
 
-            @(negedge vif.tx_o);
+      @(negedge vif.tx_o);
 
-            // TODO : Something
 
-            uart_to_scoreboard_tx_fifo.put(transaction);
-        end
-    endtask
+      uart_to_scoreboard_tx_fifo.put(transaction);
+    end
+  endtask
 
 
 endclass : uart_monitor
 
-`endif // UART_MONITOR_SV
+`endif  // UART_MONITOR_SV
