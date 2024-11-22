@@ -30,15 +30,22 @@ Ver   Date        Person     Comments
 `ifndef AVALON_TRANSACTION_SV
 `define AVALON_TRANSACTION_SV
 
-typedef enum {UART_SEND, UART_READ, WRITE_REGISTER} avalon_transaction_type_t;
+typedef enum {
+  UART_SEND,
+  UART_READ,
+  WRITE_REGISTER
+} avalon_transaction_type_t;
 
-class avalon_transaction#(int DATASIZE=20, int FIFOSIZE=10);
+class avalon_transaction #(
+    int DATASIZE = 20,
+    int FIFOSIZE = 10
+);
 
-    // TODO : Populate this transaction
+  logic [FIFOSIZE - 1:0] data;
 
 endclass : avalon_transaction
 
 
-typedef mailbox #(avalon_transaction) avalon_fifo_t;
+typedef mailbox#(avalon_transaction) avalon_fifo_t;
 
-`endif // AVALON_TRANSACTION_SV
+`endif  // AVALON_TRANSACTION_SV

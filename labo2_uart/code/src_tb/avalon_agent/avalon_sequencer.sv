@@ -30,23 +30,60 @@ Ver   Date        Person     Comments
 `ifndef AVALON_SEQUENCER_SV
 `define AVALON_SEQUENCER_SV
 
-class avalon_sequencer#(int DATASIZE=20, int FIFOSIZE=10);
+class simple_sequencer extends avalon_sequencer;
+  rand logic [DATASIZE - 1:0] data;
 
-    int testcase;
+  function new;
+    $display("%t [AVL simple_sequencer] Created", $time);
+    assert (!this.randomize());
+  endfunction : new
 
-    avalon_fifo_t sequencer_to_driver_fifo;
+  task run;
+    automatic avalon_transaction transaction;
+    $display("%t [AVL simple_sequencer] Start", $time);
+    transaction.data = data;
+    sequencer_to_driver_fifo.put(transaction);
+    $display("%t [AVL simple_sequencer] End", $time);
+  endtask : run
 
-    task run;
-        automatic avalon_transaction transaction;
-        $display("%t [AVL Sequencer] Start", $time);
+endclass : simple_sequencer
 
-        // TODO : Generate something meaningfull
-        transaction = new;
-        sequencer_to_driver_fifo.put(transaction);
-        
-        $display("%t [AVL Sequencer] End", $time);
-    endtask : run
+class avalon_sequencer #(
+    int DATASIZE = 20,
+    int FIFOSIZE = 10
+);
+
+  int testcase;
+
+  task all_sequencers;
+    simple_sequencer simple_sequencer;
+    simple_sequencer.run;
+  endtask : all_sequencers
+
+  task play_sequencers;
+
+    case (testcase)
+      0: begin
+        all_sequencers;
+      end
+      1: begin
+        simple_sequencer simple_sequencer;
+        simple_sequencer.run;
+      end
+      default: begin
+        $display("%t [AVL Sequencer] Testcase %d not implemented", $time, testcase);
+      end
+    endcase
+  endtask : play_sequencers
+
+  avalon_fifo_t sequencer_to_driver_fifo;
+
+  task run;
+    $display("%t [AVL Sequencer] Testcase %d", $time, testcase);
+    play_sequencers;
+    $display("%t [AVL Sequencer] End", $time);
+  endtask : run
 
 endclass : avalon_sequencer
 
-`endif // AVALON_SEQUENCER_SV
+`endif  // AVALON_SEQUENCER_SV
