@@ -46,40 +46,50 @@ class avalon_driver #(
 
   virtual avalon_itf vif;
 
-  task send_to_scoreboard(avl_transaction transaction);
-    if (transaction.write_i == 1) begin
-      $display("%t [AVL Driver] Sending write transaction to scoreboard", $time);
-      driver_to_scoreboard_tx_fifo.put(transaction);
-    end else begin
-      $display("%t [AVL Driver] Sending read transaction to scoreboard", $time);
-      driver_to_scoreboard_rx_fifo.put(transaction);
-    end
-  endtask : send_to_scoreboard
-
-  function void write(avalon_itf vif, avl_transaction transaction);
-    vif.address_i = transaction.address;
-    vif.write_i = transaction.is_write;
-    vif.read_i = !transaction.is_write;
-    vif.writedata_i = transaction.data;
-  endfunction
-
-  task automatic get_status(avalon_itf vif, output logic [3:0] status);
-    vif.address_i = 0;
-    vif.write_i = 0;
-    vif.read_i = 1;
-    do begin
-      @(posedge vif.clk_i);
-    end while (vif.readdatavalid_i == 0);
-
-    status = vif.readdata_i;
-  endtask : get_status
-
-  function bool send_buffer_is_full;
-    vif.read_i = 1;
-    vif.write_i = 0;
-    vif.address_i = 0;
-
-  endfunction : send_buffer_is_full
+  task do_transaction(avalon_transaction transaction);
+    case (transaction.transaction_type)
+      UART_SEND: begin
+        vif.address_i = 1;
+        vif.write_i = 1;
+        vif.read_i = 0;
+        vif.writedata_i = transaction.data;
+        @(negedge vif.clk_i);
+        vif.write_i = 0;
+        avalon_to_scoreboard_tx_fifo.put(transaction);
+      end
+      UART_READ: begin
+        vif.address_i = 2;
+        vif.write_i = 0;
+        vif.read_i = 1;
+        while (!vif.readdatavalid_o) begin
+          @(negedge vif.clk_i);
+          vif.read_i = 0;
+        end
+        vif.read_i = transaction.data;
+        avalon_to_scoreboard_rx_fifo.put(transaction);
+      end
+      WRITE_REGISTER: begin
+        vif.address_i = 3;
+        vif.write_i = 1;
+        vif.read_i = 0;
+        vif.writedata_i = transaction.data;
+        @(negedge vif.clk_i);
+        vif.write_i = 0;
+      end
+      STATUS_READ: begin
+        vif.address_i = 0;
+        vif.write_i = 0;
+        vif.read_i = 1;
+        while (!vif.readdatavalid_o) begin
+          @(negedge vif.clk_i);
+          vif.read_i = 0;
+        end
+        vif.read_i = transaction.data;
+      end
+      default: begin
+      end  //should never get here
+    endcase
+  endtask
 
   task run;
     automatic avalon_transaction transaction;
@@ -99,11 +109,8 @@ class avalon_driver #(
     @(posedge vif.clk_i);
     while (1) begin
       sequencer_to_driver_fifo.get(transaction);
-      @(posedge vif.clk_i) begin
-        send_to_scoreboard(transaction);
-        write(vif, transaction);
-      end
       @(negedge vif.clk_i);
+      do_transaction(transaction);
     end
 
   endtask : run
