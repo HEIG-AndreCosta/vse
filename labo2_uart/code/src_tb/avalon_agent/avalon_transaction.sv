@@ -33,7 +33,8 @@ Ver   Date        Person     Comments
 typedef enum {
   UART_SEND,
   UART_READ,
-  WRITE_REGISTER
+  WRITE_REGISTER,
+  STATUS_READ
 } avalon_transaction_type_t;
 
 class avalon_transaction #(
@@ -41,9 +42,8 @@ class avalon_transaction #(
     int FIFOSIZE = 10
 );
 
+  avalon_transaction_type_t transaction_type;
   logic [FIFOSIZE - 1:0] data;
-  logic [14:0] address;
-  logic is_write;
 
 endclass : avalon_transaction
 
