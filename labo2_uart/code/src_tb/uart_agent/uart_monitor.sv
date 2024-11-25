@@ -51,13 +51,15 @@ class uart_monitor #(
 
     while (1) begin
       uart_transaction #(DATASIZE, FIFOSIZE) transaction = new;
-
-      @(negedge vif.tx_o);
-
-
-      uart_to_scoreboard_tx_fifo.put(transaction);
+      @(negedge vif.tx_o) begin
+        for (int i = 0; i < DATASIZE; i++) begin
+          #ns_per_bit;
+          transaction.data[i] = vif.tx_i;
+        end
+        uart_to_scoreboard_tx_fifo.put(transaction);
+      end
     end
-  endtask
+  endtask : run
 
 
 endclass : uart_monitor
