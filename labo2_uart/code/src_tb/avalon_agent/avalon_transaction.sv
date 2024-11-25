@@ -33,8 +33,12 @@ Ver   Date        Person     Comments
 typedef enum {
   UART_SEND,
   UART_READ,
-  WRITE_REGISTER,
-  STATUS_READ
+  SET_CLK_PER_BIT,
+  ASSERT_TX_FIFO_EMPTY,
+  ASSERT_RX_FIFO_FULL,
+  ASSERT_RX_FIFO_HAS_DATA,
+  ASSERT_RX_FIFO_EMPTY,
+  ASSERT_TX_FIFO_FULL
 } avalon_transaction_type_t;
 
 class avalon_transaction #(
@@ -43,7 +47,7 @@ class avalon_transaction #(
 );
 
   avalon_transaction_type_t transaction_type;
-  logic [FIFOSIZE - 1:0] data;
+  logic [31:0] data;
 
 endclass : avalon_transaction
 
