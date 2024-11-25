@@ -41,12 +41,13 @@ class uart_sequencer #(
   uart_fifo_t sequencer_to_driver_fifo;
 
   task run_all_scenarios;
+
     test_write;
   endtask : run_all_scenarios
 
   task test_write;
     automatic uart_transaction trans = new;
-    data = 'hcafe8;
+    data = 'hAAAAA;
     trans.data = data;
     sequencer_to_driver_fifo.put(trans);
   endtask : test_write

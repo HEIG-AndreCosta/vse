@@ -54,7 +54,7 @@ class uart_monitor #(
       @(negedge vif.tx_o) begin
         for (int i = 0; i < DATASIZE; i++) begin
           #ns_per_bit;
-          transaction.data[i] = vif.tx_i;
+          transaction.data[i] = vif.tx_o;
         end
         uart_to_scoreboard_tx_fifo.put(transaction);
       end

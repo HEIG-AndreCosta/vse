@@ -33,7 +33,6 @@ Ver   Date        Person     Comments
 import objections_pkg::*;
 
 class uart_driver #(
-    int DATASIZE = 20,
     int FIFOSIZE = 10
 );
 
@@ -49,6 +48,7 @@ class uart_driver #(
   task run;
     automatic uart_transaction transaction;
     $display("%t [UART Driver] Start", $time);
+    $display("%t [UART Driver] ns_per_bit %d", $time, ns_per_bit);
 
     vif.rx_i = 1;
     // Allow setup of the DUV baudrate
@@ -57,13 +57,15 @@ class uart_driver #(
     while (1) begin
       automatic logic [DATASIZE:0] data = 0;
 
+      objections_pkg::objection::get_inst().drop();
       sequencer_to_driver_fifo.get(transaction);
+      objections_pkg::objection::get_inst().raise();
 
       data[0] = 0;
-      //TODO : faire une boucle for pour faire la copie de transaction.data
-      //dans data
-      //data[1:DATASIZE] = transaction.data;
-      for (int i = 0; i < DATASIZE; i++) begin
+      for (int i = 1; i < DATASIZE + 1; i++) begin
+        data[i] = transaction.data[i-1];
+      end
+      for (int i = 0; i < DATASIZE + 1; i++) begin
         #ns_per_bit;
         vif.rx_i = data[i];
       end
