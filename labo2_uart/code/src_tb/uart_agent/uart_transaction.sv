@@ -30,14 +30,22 @@ Ver   Date        Person     Comments
 `ifndef UART_TRANSACTION_SV
 `define UART_TRANSACTION_SV
 
+typedef enum {
+  TX,
+  RX
+} uart_transaction_type_t;
 
-class uart_transaction#(int DATASIZE=20, int FIFOSIZE=10);
+class uart_transaction #(
+    int DATASIZE = 20,
+    int FIFOSIZE = 10
+);
 
-    // TODO : Put something in there
+  uart_transaction_type_t transaction_type;
+  logic [DATASIZE-1:0] data;
 
 endclass : uart_transaction
 
 
-typedef mailbox #(uart_transaction) uart_fifo_t;
+typedef mailbox#(uart_transaction) uart_fifo_t;
 
-`endif // UART_TRANSACTION_SV
+`endif  // UART_TRANSACTION_SV

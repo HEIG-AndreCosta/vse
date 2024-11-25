@@ -36,22 +36,28 @@ class uart_sequencer #(
 );
 
   int testcase;
+  logic [DATASIZE-1:0] data;
 
   uart_fifo_t sequencer_to_driver_fifo;
 
+  task run_all_scenarios;
+    test_write;
+  endtask : run_all_scenarios
+
+  task test_write;
+    automatic uart_transaction trans = new;
+    data = 'hcafe8;
+    trans.data = data;
+    sequencer_to_driver_fifo.put(trans);
+  endtask : test_write
+
   task run;
-    automatic uart_transaction transaction;
-    $display("%t [UART Sequencer] Start", $time);
-
-    begin
-      // TODO : Generate something meaningfull
-      transaction = new;
-      void'(transaction.randomize());
-
-      sequencer_to_driver_fifo.put(transaction);
-      $display("%t [UART Sequencer] New transaction sent", $time);
-    end
-
+    $display("%t [UART Sequencer] Testcase %d", $time, testcase);
+    case (testcase)
+      0: run_all_scenarios;
+      1: test_write;
+      default: $diplay("Invalid test case %d", testcase);
+    endcase
     $display("%t [UART Sequencer] End", $time);
   endtask : run
 
