@@ -38,6 +38,7 @@ class avalon_sequencer #(
   int testcase;
   avalon_fifo_t sequencer_to_driver_fifo;
 
+  const logic [31:0] DEFAULT_CLK_PER_BIT = 10;  //10_416_700;  //9600 baudrate with 10 ns clock
   task run_all_scenarios;
     test_write;
     test_read;
@@ -45,34 +46,45 @@ class avalon_sequencer #(
     test_fifo_full;
   endtask
 
+  task set_clk_per_bit(logic [31:0] clk_per_bit);
+    automatic avalon_transaction trans = new;
+    trans.transaction_type = SET_CLK_PER_BIT;
+    trans.data = clk_per_bit;
+    sequencer_to_driver_fifo.put(trans);
+  endtask
   task test_write();
     automatic avalon_transaction trans = new;
+    set_clk_per_bit(DEFAULT_CLK_PER_BIT);
     trans.transaction_type = UART_SEND;
-    trans.data = 'hcafe1234cafe4321;
+    trans.data = 32'hcafe4321;
     sequencer_to_driver_fifo.put(trans);
   endtask
 
   task test_read;
     automatic avalon_transaction trans = new;
+    set_clk_per_bit(DEFAULT_CLK_PER_BIT);
     trans.transaction_type = UART_READ;
     sequencer_to_driver_fifo.put(trans);
   endtask
 
   task test_fifo_empty;
     automatic avalon_transaction trans = new;
-    trans.transaction_type = STATUS_READ;
+    set_clk_per_bit(DEFAULT_CLK_PER_BIT);
+    trans.transaction_type = ASSERT_TX_FIFO_EMPTY;
     sequencer_to_driver_fifo.put(trans);
   endtask
 
   task test_fifo_full;
     automatic avalon_transaction trans;
+    set_clk_per_bit(DEFAULT_CLK_PER_BIT);
     for (int i = 0; i < FIFOSIZE + 1; ++i) begin
       trans = new;
       trans.transaction_type = UART_SEND;
+      trans.data = i;
       sequencer_to_driver_fifo.put(trans);
     end
     trans = new;
-    trans.transaction_type = STATUS_READ;
+    trans.transaction_type = ASSERT_TX_FIFO_FULL;
     sequencer_to_driver_fifo.put(trans);
   endtask
 
