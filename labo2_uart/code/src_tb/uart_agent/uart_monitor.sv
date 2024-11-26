@@ -51,7 +51,9 @@ class uart_monitor #(
 
     while (1) begin
       uart_transaction #(DATASIZE, FIFOSIZE) transaction = new;
+      objections_pkg::objection::get_inst().drop();
       @(negedge vif.tx_o) begin
+        objections_pkg::objection::get_inst().raise();
         for (int i = 0; i < DATASIZE; i++) begin
           #ns_per_bit;
           transaction.data[i] = vif.tx_o;
