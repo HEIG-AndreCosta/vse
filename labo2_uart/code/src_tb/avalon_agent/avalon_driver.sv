@@ -136,7 +136,7 @@ class avalon_driver #(
         assert (!(status & 32'h8));
       end
       SET_CLK_PER_BIT: begin
-        set_clk_per_bit;
+        set_clk_per_bit(transaction.data);
       end
       default: begin
       end  //should never get here
