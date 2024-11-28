@@ -33,6 +33,7 @@ Ver   Date        Person     Comments
 import objections_pkg::*;
 
 class uart_driver #(
+    int DATASIZE = 20,
     int FIFOSIZE = 10
 );
 
