@@ -48,6 +48,7 @@ class uart_sequencer #(
   task test_write;
     automatic uart_transaction trans = new;
     data = 'hAAAAA;
+    trans.transaction_type = RX;
     trans.data = data;
     sequencer_to_driver_fifo.put(trans);
   endtask : test_write
