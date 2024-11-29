@@ -38,7 +38,9 @@ class avalon_sequencer #(
   int testcase;
   avalon_fifo_t sequencer_to_driver_fifo;
 
-  const logic [31:0] DEFAULT_CLK_PER_BIT = 10;  //10_416_700;  //9600 baudrate with 10 ns clock
+  const
+  logic [31:0]
+  DEFAULT_CLK_PER_BIT = (1_000_000_000 / 9600) / 20;  //9600 baudrate with 10 ns clock
   task run_all_scenarios;
     test_write;
     test_read;
@@ -52,18 +54,22 @@ class avalon_sequencer #(
     trans.data = clk_per_bit;
     sequencer_to_driver_fifo.put(trans);
   endtask
+
   task test_write();
-    automatic avalon_transaction trans = new;
+    automatic avalon_transaction trans;
     set_clk_per_bit(DEFAULT_CLK_PER_BIT);
+    trans = new;
     trans.transaction_type = UART_SEND;
-    trans.data = 32'hcafe4321;
+    trans.data = 32'hAAAAA;
     sequencer_to_driver_fifo.put(trans);
   endtask
 
   task test_read;
-    automatic avalon_transaction trans = new;
+    automatic avalon_transaction trans;
     set_clk_per_bit(DEFAULT_CLK_PER_BIT);
+    trans = new;
     trans.transaction_type = UART_READ;
+    trans.clk_to_wait_before_read = DEFAULT_CLK_PER_BIT * 2;
     sequencer_to_driver_fifo.put(trans);
   endtask
 

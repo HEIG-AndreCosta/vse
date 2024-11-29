@@ -41,23 +41,37 @@ class uart_sequencer #(
   uart_fifo_t sequencer_to_driver_fifo;
 
   task run_all_scenarios;
-
     test_write;
-  endtask : run_all_scenarios
+    test_read;
+    test_fifo_empty;
+    test_fifo_full;
+  endtask
 
-  task test_write;
+  task test_write();
+  endtask
+
+  task test_read;
     automatic uart_transaction trans = new;
     data = 'hAAAAA;
     trans.transaction_type = RX;
     trans.data = data;
     sequencer_to_driver_fifo.put(trans);
-  endtask : test_write
+  endtask
+
+  task test_fifo_empty;
+  endtask
+
+  task test_fifo_full;
+  endtask
 
   task run;
     $display("%t [UART Sequencer] Testcase %d", $time, testcase);
     case (testcase)
       0: run_all_scenarios;
       1: test_write;
+      2: test_read;
+      3: test_fifo_empty;
+      4: test_fifo_full;
       default: $display("Invalid test case %d", testcase);
     endcase
     $display("%t [UART Sequencer] End", $time);

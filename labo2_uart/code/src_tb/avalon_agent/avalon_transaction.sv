@@ -48,6 +48,7 @@ class avalon_transaction #(
 
   avalon_transaction_type_t transaction_type;
   logic [31:0] data;
+  logic [31:0] clk_to_wait_before_read;
 
 endclass : avalon_transaction
 

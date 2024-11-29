@@ -46,12 +46,20 @@ class avalon_driver #(
 
   virtual avalon_itf vif;
 
+
   task wait_ready();
     while (vif.waitrequest_o) begin
       @(posedge vif.clk_i);
     end
-
   endtask
+
+  task wait_nb_clks(int nb_clks);
+    automatic int i;
+    for (i = 0; i < nb_clks; ++i) begin
+      @(posedge vif.clk_i);
+    end
+  endtask
+
   task do_read(logic [13:0] address);
     wait_ready;
     vif.address_i = address;
@@ -68,11 +76,9 @@ class avalon_driver #(
     vif.address_i = address;
     vif.write_i = 1;
     vif.read_i = 0;
+    vif.writedata_i = data;
     @(posedge vif.clk_i);
-    while (!vif.readdatavalid_o) begin
-      @(posedge vif.clk_i);
-      vif.read_i = 0;
-    end
+    wait_ready;
     vif.write_i = 0;
   endtask
 
@@ -91,6 +97,13 @@ class avalon_driver #(
   task set_clk_per_bit(logic [31:0] clk_per_bit);
     do_write(3, clk_per_bit);
   endtask
+  task assert_fifo_rx_not_empty();
+    automatic logic [31:0] status;
+    read_status_register;
+    status = vif.readdata_o;
+    assert (!(status & 32'h2));
+    assert (status & 32'h4);
+  endtask
 
   task do_transaction(avalon_transaction transaction);
     automatic logic [31:0] status;
@@ -101,6 +114,8 @@ class avalon_driver #(
         avalon_to_scoreboard_tx_fifo.put(transaction);
       end
       UART_READ: begin
+        wait_nb_clks(transaction.clk_to_wait_before_read);
+        assert_fifo_rx_not_empty;
         read_rx_data();
         transaction.data = vif.readdata_o;
         avalon_to_scoreboard_rx_fifo.put(transaction);
@@ -118,10 +133,7 @@ class avalon_driver #(
         assert (status & 32'h4);
       end
       ASSERT_RX_FIFO_HAS_DATA: begin
-        read_status_register;
-        status = vif.readdata_o;
-        assert (!(status & 32'h2));
-        assert (status & 32'h4);
+        assert_fifo_rx_not_empty;
       end
       ASSERT_RX_FIFO_EMPTY: begin
         read_status_register;

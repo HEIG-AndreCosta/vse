@@ -65,7 +65,6 @@ class avl_uart_scoreboard_rx #(
     $display("%t [Scoreboard RX] Start", $time);
 
     while (1) begin
-      objections_pkg::objection::get_inst().drop();
       uart_to_scoreboard_rx_fifo.get(uart_trans);
       waiting_avalon_trans = 1;
       avalon_to_scoreboard_rx_fifo.get(avalon_trans);
@@ -78,11 +77,13 @@ class avl_uart_scoreboard_rx #(
       for (int i = 0; i < DATASIZE; ++i) begin
         result[i] = avalon_trans.data[i];
       end
+      $display("Got Tx Data Uart: %x Avalon: %x", uart_trans.data, result);
       nb_transactions++;
       if (result != uart_trans.data) begin
         nb_errors++;
         $error("Wrong Tx Data Expected: %x Got: %x", uart_trans.data, result);
       end
+      objections_pkg::objection::get_inst().drop();
     end
 
     $display("%t [Scoreboard RX] End", $time);
