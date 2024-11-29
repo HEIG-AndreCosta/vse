@@ -37,26 +37,46 @@ class avl_uart_scoreboard_tx #(
 
   int testcase;
 
+  logic waiting_uart_trans = 0;
+
+  int nb_transactions = 0;
+  int nb_errors = 0;
   avalon_fifo_t avalon_to_scoreboard_tx_fifo;
   uart_fifo_t uart_to_scoreboard_tx_fifo;
 
   task end_display;
-    // TODO : Maybe some last checks and display
+    $display("%t [Scoreboard TX] Transactions: %d Errors: %d Waiting Uart Transaction: %d", $time,
+             nb_transactions, nb_errors, waiting_uart_trans);
   endtask : end_display
 
   task run;
     automatic avalon_transaction avalon_trans;
-    automatic uart_transaction   uart_trans;
+    automatic uart_transaction uart_trans;
+    automatic int i;
+    automatic logic [DATASIZE -1:0] expected;
 
     $display("%t [Scoreboard TX] Start", $time);
 
     while (1) begin
+      objections_pkg::objection::get_inst().drop();
       avalon_to_scoreboard_tx_fifo.get(avalon_trans);
+      waiting_uart_trans = 1;
       uart_to_scoreboard_tx_fifo.get(uart_trans);
+      objections_pkg::objection::get_inst().raise();
+      waiting_uart_trans = 0;
+      assert (uart_trans.transaction_type == TX);
+      assert (avalon_trans.transaction_type == UART_SEND);
 
-      // TODO : Something
+      for (int i = 0; i < DATASIZE; ++i) begin
+
+        expected[i] = avalon_trans.data[i];
+      end
+      nb_transactions++;
+      if (expected != uart_trans.data) begin
+        nb_errors++;
+        $error("Wrong Tx Data Expected: %x Got: %x", expected, uart_trans.data);
+      end
     end
-
     $display("%t [Scoreboard TX] End", $time);
   endtask : run
 
