@@ -57,7 +57,7 @@ class uart_sequencer #(
     case (testcase)
       0: run_all_scenarios;
       1: test_write;
-      default: $diplay("Invalid test case %d", testcase);
+      default: $display("Invalid test case %d", testcase);
     endcase
     $display("%t [UART Sequencer] End", $time);
   endtask : run

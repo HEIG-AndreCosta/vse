@@ -97,7 +97,7 @@ class avalon_sequencer #(
       2: test_read;
       3: test_fifo_empty;
       4: test_fifo_full;
-      default: $diplay("Invalid test case %d", testcase);
+      default: $display("Invalid test case %d", testcase);
     endcase
     $display("%t [AVL Sequencer] End", $time);
   endtask : run
