@@ -55,6 +55,7 @@ class avalon_driver #(
 
   task wait_nb_clks(int nb_clks);
     automatic int i;
+    $display("%t [AVL Driver] Waiting %d", $time, nb_clks);
     for (i = 0; i < nb_clks; ++i) begin
       @(posedge vif.clk_i);
     end
@@ -68,9 +69,11 @@ class avalon_driver #(
       @(posedge vif.clk_i);
       vif.read_i = 0;
     end while (!vif.readdatavalid_o);
+    $display("%t [AVL Driver] Do Read %d %x", $time, address, vif.readdata_o);
   endtask
   task do_write(logic [13:0] address, logic [31:0] data);
     wait_ready;
+    $display("%t [AVL Driver] Do Write %d %x", $time, address, data);
     vif.address_i = address;
     vif.write_i = 1;
     vif.read_i = 0;
