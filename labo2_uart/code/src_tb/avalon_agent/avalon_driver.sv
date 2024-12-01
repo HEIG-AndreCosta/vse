@@ -174,7 +174,9 @@ class avalon_driver #(
     while (1) begin
       @(posedge vif.clk_i);
       sequencer_to_driver_fifo.get(transaction);
+      objections_pkg::objection::get_inst().raise();
       do_transaction(transaction);
+      objections_pkg::objection::get_inst().drop();
     end
 
   endtask : run
