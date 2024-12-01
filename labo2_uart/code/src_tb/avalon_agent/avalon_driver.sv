@@ -61,15 +61,13 @@ class avalon_driver #(
   endtask
 
   task do_read(logic [13:0] address);
-    wait_ready;
     vif.address_i = address;
     vif.write_i = 0;
     vif.read_i = 1;
-    while (!vif.readdatavalid_o) begin
+    do begin
       @(posedge vif.clk_i);
       vif.read_i = 0;
-    end
-    vif.write_i = 0;
+    end while (!vif.readdatavalid_o);
   endtask
   task do_write(logic [13:0] address, logic [31:0] data);
     wait_ready;
