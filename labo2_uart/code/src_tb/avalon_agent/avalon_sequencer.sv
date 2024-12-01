@@ -61,7 +61,7 @@ class avalon_sequencer #(
     set_clk_per_bit(DEFAULT_CLK_PER_BIT);
     trans = new;
     trans.transaction_type = UART_SEND;
-    trans.data = 32'hAAAAA;
+    trans.data = 32'h12345;
     sequencer_to_driver_fifo.put(trans);
   endtask
 
