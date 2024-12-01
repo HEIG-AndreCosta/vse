@@ -68,7 +68,7 @@ class uart_sequencer #(
   task test_rx_fifo_full;
     for (int i = 0; i < FIFOSIZE; ++i) begin
       automatic uart_transaction trans = new;
-      data = 20'h12345;
+      data = i;
       trans.transaction_type = RX;
       trans.data = data;
       sequencer_to_driver_fifo.put(trans);
