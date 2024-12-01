@@ -58,10 +58,19 @@ class avalon_sequencer #(
 
   task test_write();
     automatic avalon_transaction trans;
+
+    trans = new;
+    trans.transaction_type = ASSERT_TX_FIFO_EMPTY;
+    sequencer_to_driver_fifo.put(trans);
+
     set_clk_per_bit(DEFAULT_CLK_PER_BIT);
     trans = new;
     trans.transaction_type = UART_SEND;
     trans.data = 32'h12345;
+    sequencer_to_driver_fifo.put(trans);
+
+    trans = new;
+    trans.transaction_type = ASSERT_TX_FIFO_NOT_EMPTY;
     sequencer_to_driver_fifo.put(trans);
   endtask
 
@@ -69,8 +78,16 @@ class avalon_sequencer #(
     automatic avalon_transaction trans;
     set_clk_per_bit(DEFAULT_CLK_PER_BIT);
     trans = new;
+    trans.transaction_type = ASSERT_RX_FIFO_EMPTY;
+    sequencer_to_driver_fifo.put(trans);
+
+    trans = new;
     trans.transaction_type = UART_READ;
     trans.clk_to_wait_before_read = DEFAULT_CLK_PER_BIT * 20 * 2;
+    sequencer_to_driver_fifo.put(trans);
+
+    trans = new;
+    trans.transaction_type = ASSERT_RX_FIFO_EMPTY;
     sequencer_to_driver_fifo.put(trans);
   endtask
 
@@ -78,6 +95,9 @@ class avalon_sequencer #(
     automatic avalon_transaction trans = new;
     set_clk_per_bit(DEFAULT_CLK_PER_BIT);
     trans.transaction_type = ASSERT_TX_FIFO_EMPTY;
+    sequencer_to_driver_fifo.put(trans);
+    trans = new;
+    trans.transaction_type = ASSERT_RX_FIFO_EMPTY;
     sequencer_to_driver_fifo.put(trans);
   endtask
 
