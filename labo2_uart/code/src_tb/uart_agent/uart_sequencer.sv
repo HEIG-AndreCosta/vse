@@ -66,7 +66,7 @@ class uart_sequencer #(
   endtask
 
   task test_rx_fifo_full;
-    for (int i = 0; i < FIFOSIZE + 1; ++i) begin
+    for (int i = 0; i < FIFOSIZE; ++i) begin
       automatic uart_transaction trans = new;
       data = 20'h12345;
       trans.transaction_type = RX;
