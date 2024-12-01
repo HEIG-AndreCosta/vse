@@ -46,6 +46,7 @@ class avalon_sequencer #(
     test_read;
     test_fifo_empty;
     test_fifo_full;
+    test_rx_fifo_full;
   endtask
 
   task set_clk_per_bit(logic [31:0] clk_per_bit);
@@ -117,6 +118,7 @@ class avalon_sequencer #(
       2: test_read;
       3: test_fifo_empty;
       4: test_fifo_full;
+      5: test_rx_fifo_full;
       default: $display("Invalid test case %d", testcase);
     endcase
     $display("%t [AVL Sequencer] End", $time);
