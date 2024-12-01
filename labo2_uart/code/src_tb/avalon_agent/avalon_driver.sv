@@ -104,7 +104,7 @@ class avalon_driver #(
 
   task do_transaction(avalon_transaction transaction);
     automatic logic [31:0] status;
-    $display("[AVL Driver] Do Transaction %d", transaction.transaction_type);
+    $display("%t [AVL Driver] Do Transaction %d", $time, transaction.transaction_type);
     case (transaction.transaction_type)
       UART_SEND: begin
         send_tx_data(transaction.data);
@@ -113,7 +113,7 @@ class avalon_driver #(
       UART_READ: begin
         wait_nb_clks(transaction.clk_to_wait_before_read);
         assert_fifo_rx_not_empty;
-        read_rx_data();
+        read_rx_data;
         transaction.data = vif.readdata_o;
         avalon_to_scoreboard_rx_fifo.put(transaction);
       end
