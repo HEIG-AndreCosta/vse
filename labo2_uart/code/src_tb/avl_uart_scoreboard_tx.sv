@@ -69,11 +69,13 @@ class avl_uart_scoreboard_tx #(
       for (int i = 0; i < DATASIZE; ++i) begin
         expected[i] = avalon_trans.data[i];
       end
-      $display("Got Tx Data Uart: %x Avalon: %x", expected, uart_trans.data);
+      $display("%t [Scoreboard TX] Got Tx Data Uart: %x Avalon: %x", $time, expected,
+               uart_trans.data);
       nb_transactions++;
       if (expected != uart_trans.data) begin
         nb_errors++;
-        $error("Wrong Tx Data Expected: %x Got: %x", expected, uart_trans.data);
+        $error("%t [Scoreboard TX] Wrong Tx Data Expected: %x Got: %x", $time, expected,
+               uart_trans.data);
       end
       objections_pkg::objection::get_inst().drop();
     end
