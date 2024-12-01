@@ -106,6 +106,7 @@ class avalon_sequencer #(
       trans = new;
       trans.transaction_type = UART_READ;
       trans.clk_to_wait_before_read = 0;
+      sequencer_to_driver_fifo.put(trans);
     end
   endtask
 
