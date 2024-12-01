@@ -133,9 +133,6 @@ class avalon_driver #(
         assert (status & 32'h2);
         assert (status & 32'h4);
       end
-      ASSERT_RX_FIFO_HAS_DATA: begin
-        assert_fifo_rx_not_empty;
-      end
       ASSERT_RX_FIFO_EMPTY: begin
         read_status_register;
         status = vif.readdata_o;
