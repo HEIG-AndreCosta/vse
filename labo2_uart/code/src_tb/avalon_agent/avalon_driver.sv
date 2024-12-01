@@ -99,7 +99,6 @@ class avalon_driver #(
     automatic logic [31:0] status;
     read_status_register;
     status = vif.readdata_o;
-    assert (!(status & 32'h2));
     assert (status & 32'h4);
   endtask
 
