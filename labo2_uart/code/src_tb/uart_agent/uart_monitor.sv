@@ -54,14 +54,12 @@ class uart_monitor #(
       @(negedge vif.tx_o);
       objections_pkg::objection::get_inst().raise();
       $display("%t [UART Monitor] Detected Start Condition", $time);
-      $display("%t [UART Monitor] Ns Per Bit %d", $time, ns_per_bit);
-      $display("%t [UART Monitor] Objection%d", $time, ns_per_bit);
       transaction = new;
       transaction.transaction_type = TX;
       #(ns_per_bit + (ns_per_bit / 2));
-      for (int i = 0; i < DATASIZE; i++) begin
+      for (int i = DATASIZE; i > 0; i--) begin
+        transaction.data[i-1] = vif.tx_o;
         #ns_per_bit;
-        transaction.data[i] = vif.tx_o;
       end
       uart_to_scoreboard_tx_fifo.put(transaction);
       objections_pkg::objection::get_inst().drop();

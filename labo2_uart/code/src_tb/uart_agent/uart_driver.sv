@@ -56,21 +56,19 @@ class uart_driver #(
     #1000;
 
     while (1) begin
-      automatic logic [DATASIZE:0] data = 0;
-
       sequencer_to_driver_fifo.get(transaction);
       objections_pkg::objection::get_inst().raise();
-
-      data[0] = 0;
-      for (int i = 1; i < DATASIZE + 1; i++) begin
-        data[i] = transaction.data[i-1];
-      end
-      for (int i = 0; i < DATASIZE + 1; i++) begin
-        vif.rx_i = data[i];
+      #ns_per_bit;
+      // Start Bit
+      vif.rx_i = 0;
+      #ns_per_bit;
+      for (int i = DATASIZE; i > 0; i--) begin
+        vif.rx_i = transaction.data[i-1];
         #ns_per_bit;
       end
+      // Stop Bit
       vif.rx_i = 1;
-      $display("%t [UART Driver] Sent data %x", $time, data);
+      $display("%t [UART Driver] Sent data %d", $time, transaction.data);
       uart_to_scoreboard_rx_fifo.put(transaction);
       objections_pkg::objection::get_inst().drop();
     end
