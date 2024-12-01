@@ -148,6 +148,11 @@ class avalon_driver #(
         assert (status & 32'h1);
         assert (!(status & 32'h8));
       end
+      ASSERT_TX_FIFO_NOT_EMPTY: begin
+        read_status_register;
+        status = vif.readdata_o;
+        assert (!(status & 32'h8));
+      end
       SET_CLK_PER_BIT: begin
         set_clk_per_bit(transaction.data);
       end
