@@ -70,7 +70,7 @@ class avalon_sequencer #(
     set_clk_per_bit(DEFAULT_CLK_PER_BIT);
     trans = new;
     trans.transaction_type = UART_READ;
-    trans.clk_to_wait_before_read = DEFAULT_CLK_PER_BIT * 2;
+    trans.clk_to_wait_before_read = DEFAULT_CLK_PER_BIT * 20 * 2;
     sequencer_to_driver_fifo.put(trans);
   endtask
 
