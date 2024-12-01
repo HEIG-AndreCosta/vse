@@ -127,6 +127,7 @@ class avalon_driver #(
         assert (status & 32'h8);
       end
       ASSERT_RX_FIFO_FULL: begin
+        wait_nb_clks(transaction.clk_to_wait_before_read);
         read_status_register;
         status = vif.readdata_o;
         assert (status & 32'h2);
