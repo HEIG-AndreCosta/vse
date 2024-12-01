@@ -100,8 +100,8 @@ module avl_uart_tb #(
     // This allows to click on log in QuestaSim to go to the see it in the wave
     $timeformat(-9, 0, " ns", 15);
 
-    // Set the drain time for objections, 50000 for aprox two times the baudrate
-    objections_pkg::objection::get_inst().set_drain_time(10000 * 5);
+    // Set the drain time for objections, 210000 for aprox two times the baudrate
+    objections_pkg::objection::get_inst().set_drain_time(210000);
 
     // Wait for the TB to start
     ##10;
