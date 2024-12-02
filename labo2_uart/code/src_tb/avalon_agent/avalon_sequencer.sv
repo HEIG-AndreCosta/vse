@@ -85,8 +85,13 @@ class avalon_sequencer #(
     sequencer_to_driver_fifo.put(trans);
 
     trans = new;
+    trans.transaction_type = ASSERT_RX_FIFO_NOT_EMPTY;
+    trans.clk_to_wait_before_transaction = DEFAULT_TIME_TO_SEND;
+    sequencer_to_driver_fifo.put(trans);
+
+    trans = new;
     trans.transaction_type = UART_READ;
-    trans.clk_to_wait_before_read = DEFAULT_CLK_PER_BIT * 20 * 2;
+    trans.clk_to_wait_before_transaction = 0;
     sequencer_to_driver_fifo.put(trans);
 
     trans = new;
