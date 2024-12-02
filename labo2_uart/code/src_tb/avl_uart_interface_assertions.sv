@@ -33,9 +33,9 @@ module avl_uart_interface_assertions #(
   //Le signal byteenable n’est pas utilisé.
   assume_byteenable_is_not_used :
   assume property (avl_byteenable_i == 8'hf);
+
   //En écriture, avl_waitrequest_o permet de faire patienter le master, selon le fonction-
   //nement normal du bus avalon.
-
   assume_wait_request_is_respected :
   assume property (avl_waitrequest_o && avl_write_i |=> avl_write_i && (avl_writedata_i == $past(
       avl_writedata_i
@@ -53,6 +53,29 @@ module avl_uart_interface_assertions #(
   // élément disponible
   assume_status_register_rx_fifo_status_coherence :
   assume property (avl_read_i && (avl_address_i == 0) ##1 avl_readdata_o[1] |-> avl_readdata_o[2]);
+
+  // vérifie que la ligne tx_o repasse `eventuellement` à 1
+  assume_tx_eventually_goes_back_to_1 :
+  assume property ($fell(tx_o) |=> ##[0:$] tx_o == 1);
+
+  // vérifie que la ligne rx_i repasse `eventuellement` à 1
+  assume_rx_eventually_goes_back_to_1 :
+  assume property ($fell(rx_i) |=> ##[0:$] rx_i == 1);
+
+  //Valide qu'on n'essaie pas de lire une adresse plus grande que 3
+  assume_address_on_read_is_lower_than_4 :
+  assume property (avl_read_i |-> (avl_address_i < 4));
+
+  //Valide qu'on n'essaie pas d'écrire une adresse plus grande que 3
+  assume_address_on_write_is_lower_than_4 :
+  assume property (avl_write_i |-> avl_address_i < 4);
+
+  //Valide que la valeur qui sort du DUV n'est jamais plus grande que la
+  //valeur max
+  //Ceci présume aussi que la donnée est prête le coup de clock d'après du
+  //read -> Ceci est dit sur la donnée
+  assume_read_data_is_not_bigger_than_datasize :
+  assume property (avl_readdata_o && (avl_address_i == 2) |=> avl_readdata_o < 2 ** DATASIZE);
 
 
 endmodule
