@@ -38,9 +38,12 @@ class avalon_sequencer #(
   int testcase;
   avalon_fifo_t sequencer_to_driver_fifo;
 
+  const int DEFAULT_CLK = 20;
   const
   logic [31:0]
   DEFAULT_CLK_PER_BIT = (1_000_000_000 / 9600) / 20;  //9600 baudrate with 10 ns clock
+
+  const logic [31:0] DEFAULT_TIME_TO_SEND = (DEFAULT_CLK_PER_BIT * DEFAULT_CLK) + (2 * DEFAULT_CLK);
   task run_all_scenarios;
     test_write;
     test_read;
