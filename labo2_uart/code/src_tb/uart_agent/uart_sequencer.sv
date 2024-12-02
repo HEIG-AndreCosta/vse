@@ -46,6 +46,8 @@ class uart_sequencer #(
     test_fifo_empty;
     test_fifo_full;
     test_rx_fifo_full;
+    test_write_boundaries;
+    test_correct_clk_per_bit;
   endtask
 
   task test_write();
