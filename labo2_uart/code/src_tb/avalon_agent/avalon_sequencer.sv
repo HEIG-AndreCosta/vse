@@ -99,6 +99,7 @@ class avalon_sequencer #(
     // Data = 0
     trans = new;
     trans.transaction_type = UART_SEND;
+    trans.data = 0;
     sequencer_to_driver_fifo.put(trans);
 
     trans = new;
@@ -173,6 +174,7 @@ class avalon_sequencer #(
 
     trans = new;
     trans.transaction_type = ASSERT_CLK_PER_BIT;
+    trans.data = DEFAULT_CLK_PER_BIT;
     sequencer_to_driver_fifo.put(trans);
   endtask
 
