@@ -51,6 +51,9 @@ class uart_sequencer #(
   task test_write();
   endtask
 
+  task test_write_boundaries;
+  endtask
+
   task test_read;
     automatic uart_transaction trans = new;
     data = 20'h12345;
@@ -63,6 +66,9 @@ class uart_sequencer #(
   endtask
 
   task test_fifo_full;
+  endtask
+
+  task test_correct_clk_per_bit;
   endtask
 
   task test_rx_fifo_full;
@@ -83,6 +89,9 @@ class uart_sequencer #(
       3: test_fifo_empty;
       4: test_fifo_full;
       5: test_rx_fifo_full;
+      6: test_write_boundaries;
+      7: test_correct_clk_per_bit;
+
       default: $display("Invalid test case %d", testcase);
     endcase
     $display("%t [UART Sequencer] End", $time);
