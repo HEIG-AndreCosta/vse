@@ -79,7 +79,7 @@ class avalon_sequencer #(
 
   task test_write_boundaries;
     automatic avalon_transaction trans;
-    set_clk_per_bit(DEFAULT_CLK_PER);
+    set_clk_per_bit(DEFAULT_CLK_PER_BIT);
     trans = new;
     trans.transaction_type = ASSERT_TX_FIFO_EMPTY;
     sequencer_to_driver_fifo.put(trans);
@@ -155,12 +155,12 @@ class avalon_sequencer #(
     set_clk_per_bit(DEFAULT_CLK_PER_BIT);
     trans = new;
     trans.transaction_type = ASSERT_RX_FIFO_FULL;
-    trans.clk_to_wait_before_read = DEFAULT_CLK_PER_BIT * 20 * (FIFOSIZE + 2);
+    trans.clk_to_wait_before_transaction = DEFAULT_CLK_PER_BIT * 20 * (FIFOSIZE + 2);
     sequencer_to_driver_fifo.put(trans);
     for (int i = 0; i < FIFOSIZE; ++i) begin
       trans = new;
       trans.transaction_type = UART_READ;
-      trans.clk_to_wait_before_read = 0;
+      trans.clk_to_wait_before_transaction = 0;
       sequencer_to_driver_fifo.put(trans);
     end
   endtask
