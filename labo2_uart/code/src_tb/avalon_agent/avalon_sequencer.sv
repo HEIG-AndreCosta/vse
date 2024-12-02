@@ -86,7 +86,7 @@ class avalon_sequencer #(
     trans.transaction_type = ASSERT_TX_FIFO_EMPTY;
     sequencer_to_driver_fifo.put(trans);
 
-    // full of 1;
+    // Data = 0xfffff
     trans = new;
     trans.transaction_type = UART_SEND;
     trans.data = -1;
@@ -96,7 +96,7 @@ class avalon_sequencer #(
     trans.transaction_type = ASSERT_TX_FIFO_NOT_EMPTY;
     sequencer_to_driver_fifo.put(trans);
 
-    // full of 0 define by transaction new function
+    // Data = 0
     trans = new;
     trans.transaction_type = UART_SEND;
     sequencer_to_driver_fifo.put(trans);
