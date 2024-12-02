@@ -43,7 +43,7 @@ class avalon_sequencer #(
   logic [31:0]
   DEFAULT_CLK_PER_BIT = (1_000_000_000 / 9600) / 20;  //9600 baudrate with 10 ns clock
 
-  const logic [31:0] DEFAULT_TIME_TO_SEND = (DEFAULT_CLK_PER_BIT * DEFAULT_CLK) + (2 * DEFAULT_CLK);
+  const logic [31:0] DEFAULT_TIME_TO_SEND = (DEFAULT_CLK_PER_BIT * DEFAULT_CLK) * 2;
   task run_all_scenarios;
     test_write;
     test_read;
