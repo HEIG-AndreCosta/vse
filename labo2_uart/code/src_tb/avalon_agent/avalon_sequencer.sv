@@ -77,6 +77,33 @@ class avalon_sequencer #(
     sequencer_to_driver_fifo.put(trans);
   endtask
 
+  task test_write_boundaries;
+    automatic avalon_transaction trans;
+    set_clk_per_bit(DEFAULT_CLK_PER);
+    trans = new;
+    trans.transaction_type = ASSERT_TX_FIFO_EMPTY;
+    sequencer_to_driver_fifo.put(trans);
+
+    // full of 1;
+    trans = new;
+    trans.transaction_type = UART_SEND;
+    trans.data = -1;
+    sequencer_to_driver_fifo.put(trans);
+
+    trans = new;
+    trans.transaction_type = ASSERT_TX_FIFO_NOT_EMPTY;
+    sequencer_to_driver_fifo.put(trans);
+
+    // full of 0 define by transaction new function
+    trans = new;
+    trans.transaction_type = UART_SEND;
+    sequencer_to_driver_fifo.put(trans);
+
+    trans = new;
+    trans.transaction_type = ASSERT_TX_FIFO_NOT_EMPTY;
+    sequencer_to_driver_fifo.put(trans);
+  endtask
+
   task test_read;
     automatic avalon_transaction trans;
     set_clk_per_bit(DEFAULT_CLK_PER_BIT);
@@ -138,6 +165,15 @@ class avalon_sequencer #(
     end
   endtask
 
+  task test_correct_clk_per_bit;
+    automatic avalon_transaction trans;
+    set_clk_per_bit(DEFAULT_CLK_PER_BIT);
+
+    trans = new;
+    trans.transaction_type = ASSERT_CLK_PER_BIT;
+    sequencer_to_driver_fifo.put(trans);
+  endtask
+
 
   task run;
     $display("%t [AVL Sequencer] Testcase %d", $time, testcase);
@@ -148,6 +184,8 @@ class avalon_sequencer #(
       3: test_fifo_empty;
       4: test_fifo_full;
       5: test_rx_fifo_full;
+      6: test_write_boundaries;
+      7: test_correct_clk_per_bit;
       default: $display("Invalid test case %d", testcase);
     endcase
     $display("%t [AVL Sequencer] End", $time);
