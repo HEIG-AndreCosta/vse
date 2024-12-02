@@ -87,6 +87,10 @@ class avalon_driver #(
     do_read(0);
   endtask
 
+  task read_clk_per_bit_register();
+    do_read(3);
+  endtask
+
   task send_tx_data(logic [31:0] data);
     do_write(1, data);
   endtask
@@ -153,6 +157,10 @@ class avalon_driver #(
         read_status_register;
         status = vif.readdata_o;
         assert (!(status & 32'h8));
+      end
+      ASSERT_CLK_PER_BIT: begin
+        read_clk_per_bit_register;
+        assert (transaction.data == vif.readdata_o);
       end
       SET_CLK_PER_BIT: begin
         set_clk_per_bit(transaction.data);
