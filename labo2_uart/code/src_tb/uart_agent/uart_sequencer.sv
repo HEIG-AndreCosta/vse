@@ -58,9 +58,8 @@ class uart_sequencer #(
 
   task test_read;
     automatic uart_transaction trans = new;
-    data = 20'h12345;
-    trans.transaction_type = RX;
-    trans.data = data;
+    trans.transaction_type = UART_TX_DUV_RX;
+    trans.data = 20'h12345;
     sequencer_to_driver_fifo.put(trans);
   endtask
 
@@ -76,9 +75,8 @@ class uart_sequencer #(
   task test_rx_fifo_full;
     for (int i = 0; i < FIFOSIZE; ++i) begin
       automatic uart_transaction trans = new;
-      data = i;
-      trans.transaction_type = RX;
-      trans.data = data;
+      trans.transaction_type = UART_TX_DUV_RX;
+      trans.data = i;
       sequencer_to_driver_fifo.put(trans);
     end
   endtask

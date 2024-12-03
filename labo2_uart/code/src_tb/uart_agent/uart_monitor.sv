@@ -55,7 +55,7 @@ class uart_monitor #(
       objections_pkg::objection::get_inst().raise();
       $display("%t [UART Monitor] Detected Start Condition", $time);
       transaction = new;
-      transaction.transaction_type = TX;
+      transaction.transaction_type = UART_RX_DUV_TX;
       #(ns_per_bit + (ns_per_bit / 2));
       for (int i = DATASIZE; i > 0; i--) begin
         transaction.data[i-1] = vif.tx_o;

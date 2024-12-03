@@ -71,7 +71,8 @@ class avl_uart_scoreboard_rx #(
       objections_pkg::objection::get_inst().raise();
       waiting_avalon_trans = 0;
 
-      assert (uart_trans.transaction_type == RX);
+      assert (uart_trans.transaction_type == UART_TX_DUV_RX ||
+        uart_trans.transaction_type == UART_TX_DUV_RX_MODIFY_BAUDRATE);
       assert (avalon_trans.transaction_type == UART_READ);
 
       for (int i = 0; i < DATASIZE; ++i) begin

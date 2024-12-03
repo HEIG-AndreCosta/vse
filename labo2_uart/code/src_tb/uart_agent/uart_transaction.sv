@@ -31,8 +31,10 @@ Ver   Date        Person     Comments
 `define UART_TRANSACTION_SV
 
 typedef enum {
-  TX,
-  RX
+  UART_RX_DUV_TX,
+  UART_TX_DUV_RX,
+  UART_TX_DUV_RX_MODIFY_BAUDRATE,
+  UART_WAIT
 } uart_transaction_type_t;
 
 class uart_transaction #(
@@ -42,6 +44,11 @@ class uart_transaction #(
 
   uart_transaction_type_t transaction_type;
   logic [DATASIZE-1:0] data;
+
+  //By default the driver will use the correct baudrate
+  // but in case the transaction is of type XXX_MODIFY_BAUDRATE
+  // the driver will used the defined baudrate
+  logic [DATASIZE-1:0] baudrate;
 
 endclass : uart_transaction
 

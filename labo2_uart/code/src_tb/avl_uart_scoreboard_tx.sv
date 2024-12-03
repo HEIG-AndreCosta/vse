@@ -63,7 +63,7 @@ class avl_uart_scoreboard_tx #(
       uart_to_scoreboard_tx_fifo.get(uart_trans);
       objections_pkg::objection::get_inst().raise();
       waiting_uart_trans = 0;
-      assert (uart_trans.transaction_type == TX);
+      assert (uart_trans.transaction_type == UART_RX_DUV_TX);
       assert (avalon_trans.transaction_type == UART_SEND);
 
       for (int i = 0; i < DATASIZE; ++i) begin
