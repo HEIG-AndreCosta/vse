@@ -47,6 +47,7 @@ class uart_driver #(
   virtual uart_itf vif;
 
   task run;
+    int test_ns_per_bit;
     automatic uart_transaction transaction;
     $display("%t [UART Driver] Start", $time);
     $display("%t [UART Driver] ns_per_bit %d", $time, ns_per_bit);
@@ -58,17 +59,28 @@ class uart_driver #(
     while (1) begin
       sequencer_to_driver_fifo.get(transaction);
       objections_pkg::objection::get_inst().raise();
-      #ns_per_bit;
+      if (transaction.transaction_type == UART_WAIT) begin
+        #transaction.data;
+        objections_pkg::objection::get_inst().drop();
+        continue;
+      end else if (transaction.transaction_type == UART_TX_DUV_RX_MODIFY_BAUDRATE) begin
+        test_ns_per_bit = 1_000_000_000 / transaction.baudrate;
+        $display("%t [UART Driver] Sending with new baudrate. Baudrate: %d, ns_per_bit: %d", $time,
+                 transaction.baudrate, test_ns_per_bit);
+      end else begin
+        test_ns_per_bit = ns_per_bit;
+      end
+      #test_ns_per_bit;
       // Start Bit
       vif.rx_i = 0;
-      #ns_per_bit;
+      #test_ns_per_bit;
       for (int i = DATASIZE; i > 0; i--) begin
         vif.rx_i = transaction.data[i-1];
-        #ns_per_bit;
+        #test_ns_per_bit;
       end
       // Stop Bit
       vif.rx_i = 1;
-      $display("%t [UART Driver] Sent data %d", $time, transaction.data);
+      $display("%t [UART Driver] Sent data %x", $time, transaction.data);
       uart_to_scoreboard_rx_fifo.put(transaction);
       objections_pkg::objection::get_inst().drop();
     end
