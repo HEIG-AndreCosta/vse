@@ -49,9 +49,9 @@ class avl_uart_env#(int DATASIZE=20, int FIFOSIZE=10);
     uart_fifo_t uart_to_scoreboard_tx_fifo;
 
     task build;
-        avalon_to_scoreboard_rx_fifo = new(10);
-        avalon_to_scoreboard_tx_fifo = new(10);
-        uart_to_scoreboard_rx_fifo = new(10);
+        avalon_to_scoreboard_rx_fifo = new(300);
+        avalon_to_scoreboard_tx_fifo = new(300);
+        uart_to_scoreboard_rx_fifo = new(300);
         uart_to_scoreboard_tx_fifo = new(10);
 
         local_agent = new;
