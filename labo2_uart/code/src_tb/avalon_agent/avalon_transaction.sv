@@ -50,11 +50,24 @@ class avalon_transaction #(
 );
 
   avalon_transaction_type_t transaction_type;
-  logic [31:0] data;
+  rand logic [31:0] data;
   logic [31:0] clk_to_wait_before_transaction;
+
+  function automatic int max_value();
+    return (2 ** DATASIZE) - 1;
+  endfunction
+
+  covergroup cov_group;
+    cov_data: coverpoint data[DATASIZE-1:0] {
+      bins petit = {[0 : max_value() / 4]};
+      bins grand = {[max_value() - (max_value() / 4) : max_value()]};
+      bins all_values[DATASIZE] = {[max_value() / 4 + 1 : max_value() - (max_value() / 4) - 1]};
+    }
+  endgroup
 
   function new;
     clk_to_wait_before_transaction = 0;
+    cov_group = new;
   endfunction
 
 endclass : avalon_transaction

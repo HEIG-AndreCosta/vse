@@ -43,12 +43,28 @@ class uart_transaction #(
 );
 
   uart_transaction_type_t transaction_type;
-  logic [DATASIZE-1:0] data;
+  rand logic [DATASIZE-1:0] data;
 
   //By default the driver will use the correct baudrate
   // but in case the transaction is of type XXX_MODIFY_BAUDRATE
-  // the driver will used the defined baudrate
+  // the driver will used the baudrate defined here
   logic [DATASIZE-1:0] baudrate;
+
+  function automatic int max_value();
+    return (2 ** DATASIZE) - 1;
+  endfunction
+
+  covergroup cov_group;
+    cov_data: coverpoint data {
+      bins petit = {[0 : max_value() / 4]};
+      bins grand = {[max_value() - (max_value() / 4) : max_value()]};
+      bins all_values[DATASIZE] = {[max_value() / 4 + 1 : max_value() - (max_value() / 4) - 1]};
+    }
+  endgroup
+
+  function new;
+    cov_group = new;
+  endfunction
 
 endclass : uart_transaction
 
