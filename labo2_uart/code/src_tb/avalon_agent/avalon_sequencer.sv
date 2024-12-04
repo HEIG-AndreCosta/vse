@@ -40,7 +40,7 @@ class avalon_sequencer #(
 
   const int DEFAULT_CLK = 20;
   const logic [31:0] DEFAULT_CLK_PER_BIT = (1_000_000_000 / 9600) / DEFAULT_CLK;  //9600 baudrate
-  const logic [31:0] DEFAULT_TIME_TO_SEND = (DEFAULT_CLK_PER_BIT * DEFAULT_CLK) * 2;
+  const logic [31:0] DEFAULT_TIME_TO_SEND = (DEFAULT_CLK_PER_BIT * DATASIZE) * 2;
   task run_all_scenarios;
     test_write;
     test_read;
@@ -50,6 +50,8 @@ class avalon_sequencer #(
     test_boundaries;
     test_correct_clk_per_bit;
     test_random;
+    test_stress;
+    test_stress_rx;
   endtask
 
   // Utility function that sets the nb of clk per bit on the duv side by
@@ -231,6 +233,47 @@ class avalon_sequencer #(
     sequencer_to_driver_fifo.put(read_trans);
   endtask
 
+  // Stress Test
+  // This test fills up the tx buffer and then sends FIFOSIZE * 10
+  // transactions at the rate 1 transaction / TIME_TO_SEND
+  task test_stress;
+    automatic avalon_transaction trans;
+    set_clk_per_bit(DEFAULT_CLK_PER_BIT);
+    trans = new;
+    trans.transaction_type = UART_SEND;
+    trans.data = 0;
+    trans.clk_to_wait_before_transaction = DEFAULT_TIME_TO_SEND * FIFOSIZE;
+    sequencer_to_driver_fifo.put(trans);
+    for (int i = 0; i < FIFOSIZE; ++i) begin
+      trans = new;
+      trans.transaction_type = UART_SEND;
+      trans.clk_to_wait_before_transaction = 0;
+      trans.data = i;
+      sequencer_to_driver_fifo.put(trans);
+    end
+
+    trans = new;
+    trans.transaction_type = ASSERT_TX_FIFO_FULL;
+    sequencer_to_driver_fifo.put(trans);
+
+    for (int i = 0; i < FIFOSIZE * 10; ++i) begin
+      trans = new;
+      trans.transaction_type = UART_SEND;
+      trans.data = i;
+      trans.clk_to_wait_before_transaction = DEFAULT_TIME_TO_SEND;
+      sequencer_to_driver_fifo.put(trans);
+    end
+
+  endtask
+
+  task test_stress_rx;
+    automatic avalon_transaction trans;
+    set_clk_per_bit(DEFAULT_CLK_PER_BIT);
+    trans = new;
+    trans.transaction_type = UART_READ_UNTIL_EMPTY;
+    trans.clk_to_wait_before_transaction = DEFAULT_TIME_TO_SEND;
+    sequencer_to_driver_fifo.put(trans);
+  endtask
 
   // Utility task that send multiple read transaction to the driver
   task read_with_delay_between(int nb_reads, logic [31:0] delay);
@@ -271,12 +314,13 @@ class avalon_sequencer #(
       6: test_boundaries;
       7: test_correct_clk_per_bit;
       8: test_random;
-
+      9: test_stress;
+      10: test_stress_rx;
       // Baudrate tests are not run automatically since they are expected to
       // generate errors. They exist to be run manually and checked by
       // a human.
-      9: test_baudrate_too_high;
-      10: test_baudrate_too_low;
+      11: test_baudrate_too_high;
+      12: test_baudrate_too_low;
       default: $display("Invalid test case %d", testcase);
     endcase
     $display("%t [AVL Sequencer] End", $time);

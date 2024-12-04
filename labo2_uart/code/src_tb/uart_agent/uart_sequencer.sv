@@ -49,6 +49,8 @@ class uart_sequencer #(
     test_boundaries;
     test_correct_clk_per_bit;
     test_random;
+    test_stress;
+    test_stress_rx;
   endtask
 
   /// Test duv write
@@ -148,9 +150,26 @@ class uart_sequencer #(
       trans.transaction_type = UART_TX_DUV_RX;
       trans.data = coverage_trans.data;
       sequencer_to_driver_fifo.put(trans);
+      //trans = new;
+      //trans.transaction_type = UART_WAIT;
+      //trans.data = 500_000_000;
+      //sequencer_to_driver_fifo.put(trans);
+    end
+  endtask
+
+  // Stress test
+  // This stress tests the duv tx part
+  task test_stress;
+  endtask
+
+  // Stress test
+  // This stress tests the duv rx part
+  task test_stress_rx;
+    automatic uart_transaction trans;
+    for (int i = 0; i < FIFOSIZE * 10; ++i) begin
       trans = new;
-      trans.transaction_type = UART_WAIT;
-      trans.data = 500_000_000;
+      trans.transaction_type = UART_TX_DUV_RX;
+      trans.data = i;
       sequencer_to_driver_fifo.put(trans);
     end
   endtask
@@ -183,21 +202,22 @@ class uart_sequencer #(
   task run;
     $display("%t [UART Sequencer] Testcase %d", $time, testcase);
     case (testcase)
-      0:  run_all_scenarios;
-      1:  test_write;
-      2:  test_read;
-      3:  test_fifo_empty;
-      4:  test_fifo_full;
-      5:  test_rx_fifo_full;
-      6:  test_boundaries;
-      7:  test_correct_clk_per_bit;
-      8:  test_random;
+      0: run_all_scenarios;
+      1: test_write;
+      2: test_read;
+      3: test_fifo_empty;
+      4: test_fifo_full;
+      5: test_rx_fifo_full;
+      6: test_boundaries;
+      7: test_correct_clk_per_bit;
+      8: test_random;
+      9: test_stress;
+      10: test_stress_rx;
       // Baudrate tests are not run automatically since they are expected to
       // generate errors. They exist to be run manually and checked by
       // a human.
-      9:  test_baudrate_too_high;
-      10: test_baudrate_too_low;
-
+      11: test_baudrate_too_high;
+      12: test_baudrate_too_low;
       default: $display("Invalid test case %d", testcase);
     endcase
     $display("%t [UART Sequencer] End", $time);
