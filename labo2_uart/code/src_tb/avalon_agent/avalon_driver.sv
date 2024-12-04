@@ -55,7 +55,7 @@ class avalon_driver #(
 
   task wait_nb_clks(int nb_clks);
     automatic int i;
-    $display("%t [AVL Driver] Waiting %d", $time, nb_clks);
+    //$display("%t [AVL Driver] Waiting %d", $time, nb_clks);
     for (i = 0; i < nb_clks; ++i) begin
       @(posedge vif.clk_i);
     end
@@ -69,11 +69,11 @@ class avalon_driver #(
       @(posedge vif.clk_i);
       vif.read_i = 0;
     end while (!vif.readdatavalid_o);
-    $display("%t [AVL Driver] Do Read %d %x", $time, address, vif.readdata_o);
+    //$display("%t [AVL Driver] Do Read %d %x", $time, address, vif.readdata_o);
   endtask
   task do_write(logic [13:0] address, logic [31:0] data);
     wait_ready;
-    $display("%t [AVL Driver] Do Write %d %x", $time, address, data);
+    //$display("%t [AVL Driver] Do Write %d %x", $time, address, data);
     vif.address_i = address;
     vif.write_i = 1;
     vif.read_i = 0;
@@ -111,7 +111,7 @@ class avalon_driver #(
 
   task do_transaction(avalon_transaction transaction);
     automatic logic [31:0] status;
-    $display("%t [AVL Driver] Do Transaction %d", $time, transaction.transaction_type);
+    //$display("%t [AVL Driver] Do Transaction %d", $time, transaction.transaction_type);
     wait_nb_clks(transaction.clk_to_wait_before_transaction);
     case (transaction.transaction_type)
       UART_SEND: begin

@@ -80,7 +80,7 @@ class uart_driver #(
       end
       // Stop Bit
       vif.rx_i = 1;
-      $display("%t [UART Driver] Sent data %x", $time, transaction.data);
+      //$display("%t [UART Driver] Sent data %x", $time, transaction.data);
       uart_to_scoreboard_rx_fifo.put(transaction);
       objections_pkg::objection::get_inst().drop();
     end
