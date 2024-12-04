@@ -51,6 +51,8 @@ class avalon_sequencer #(
     test_correct_clk_per_bit;
   endtask
 
+  // Utility function that sets the nb of clk per bit on the duv side by
+  // sending the corresponding avl transaction to the driver
   task set_clk_per_bit(logic [31:0] clk_per_bit);
     automatic avalon_transaction trans = new;
     trans.transaction_type = SET_CLK_PER_BIT;
@@ -58,6 +60,10 @@ class avalon_sequencer #(
     sequencer_to_driver_fifo.put(trans);
   endtask
 
+  // Test write
+  // Tests the fact that we can send a payload and it its correctly received
+  // on the other side
+  // It also asserts the TX_FIFO empty flag on the status register
   task test_write();
     automatic avalon_transaction trans;
 
@@ -76,6 +82,10 @@ class avalon_sequencer #(
     sequencer_to_driver_fifo.put(trans);
   endtask
 
+  // Test write boundaries
+  // Tests the fact that we can send a payload full of zeros or full of ones
+  // and they're correctly received on the other side
+  // It also asserts the TX_FIFO empty flag on the status register
   task test_boundaries;
     automatic avalon_transaction trans;
     set_clk_per_bit(DEFAULT_CLK_PER_BIT);
@@ -107,6 +117,9 @@ class avalon_sequencer #(
     //read_with_delay_between(2, DEFAULT_TIME_TO_SEND);
   endtask
 
+  // Test read
+  // Tests the fact that we can received a payload from the uart
+  // It also asserts the RX_FIFO empty flag on the status register
   task test_read;
     automatic avalon_transaction trans;
     set_clk_per_bit(DEFAULT_CLK_PER_BIT);
@@ -129,6 +142,8 @@ class avalon_sequencer #(
     sequencer_to_driver_fifo.put(trans);
   endtask
 
+  // Test fifo empty
+  // Check that the status register shows both fifos as empty at the start
   task test_fifo_empty;
     automatic avalon_transaction trans = new;
     set_clk_per_bit(DEFAULT_CLK_PER_BIT);
@@ -139,6 +154,9 @@ class avalon_sequencer #(
     sequencer_to_driver_fifo.put(trans);
   endtask
 
+  // Test fifo full
+  // Check that the status register indicates the tx fifo is full if we send
+  // enough data
   task test_fifo_full;
     automatic avalon_transaction trans;
     set_clk_per_bit(DEFAULT_CLK_PER_BIT);
@@ -153,6 +171,9 @@ class avalon_sequencer #(
     sequencer_to_driver_fifo.put(trans);
   endtask
 
+  // Test rx fifo full
+  // Check that the status register indicates the rx fifo is full if we
+  // receive enough data
   task test_rx_fifo_full;
     automatic avalon_transaction trans;
     set_clk_per_bit(DEFAULT_CLK_PER_BIT);
@@ -164,6 +185,10 @@ class avalon_sequencer #(
     read_with_delay_between(FIFOSIZE, 0);
   endtask
 
+  // Tests that we read the same value in the clk per bit register we put
+  // before
+  // Check that the status register indicates the rx fifo is full if we
+  // receive enough data
   task test_correct_clk_per_bit;
     automatic avalon_transaction trans;
     set_clk_per_bit(DEFAULT_CLK_PER_BIT);
@@ -174,6 +199,7 @@ class avalon_sequencer #(
     sequencer_to_driver_fifo.put(trans);
   endtask
 
+  // Utility task that send multiple read transaction to the driver
   task read_with_delay_between(int nb_reads, logic [31:0] delay);
     automatic avalon_transaction trans;
     for (int i = 0; i < nb_reads; ++i) begin
