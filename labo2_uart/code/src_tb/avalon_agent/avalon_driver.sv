@@ -124,6 +124,26 @@ class avalon_driver #(
         transaction.data = vif.readdata_o;
         avalon_to_scoreboard_rx_fifo.put(transaction);
       end
+      UART_READ_UNTIL_EMPTY: begin
+        while (1) begin
+          read_status_register;
+          if ((vif.readdata_o & 32'h4) == 0) begin
+            break;
+          end
+
+          read_rx_data;
+          transaction.data = vif.readdata_o;
+          avalon_to_scoreboard_rx_fifo.put(transaction);
+
+          read_status_register;
+          //Still have data to read, keep going
+          if (vif.readdata_o & 32'h4) begin
+            continue;
+          end
+          //no data, wait a bit to see if we have something else we're done
+          wait_nb_clks(transaction.clk_to_wait_before_transaction);
+        end
+      end
       ASSERT_TX_FIFO_EMPTY: begin
         read_status_register;
         status = vif.readdata_o;

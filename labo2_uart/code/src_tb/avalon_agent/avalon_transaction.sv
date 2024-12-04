@@ -40,7 +40,8 @@ typedef enum {
   ASSERT_RX_FIFO_NOT_EMPTY,
   ASSERT_TX_FIFO_FULL,
   ASSERT_TX_FIFO_NOT_EMPTY,
-  ASSERT_CLK_PER_BIT
+  ASSERT_CLK_PER_BIT,
+  UART_READ_UNTIL_EMPTY
 } avalon_transaction_type_t;
 
 class avalon_transaction #(
