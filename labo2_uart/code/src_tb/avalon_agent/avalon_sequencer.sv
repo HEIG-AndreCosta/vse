@@ -114,7 +114,7 @@ class avalon_sequencer #(
     sequencer_to_driver_fifo.put(trans);
 
     // On the other end, uart also sent us data
-    //read_with_delay_between(2, DEFAULT_TIME_TO_SEND);
+    read_with_delay_between(2, DEFAULT_TIME_TO_SEND);
   endtask
 
   // Test read
@@ -209,6 +209,7 @@ class avalon_sequencer #(
       sequencer_to_driver_fifo.put(trans);
     end
   endtask
+
   // Test what happens if the baudrate is too high
   // This test should not be run automatically but it may be useful to know
   // what happens if the other device isn't set with the correct baudrate

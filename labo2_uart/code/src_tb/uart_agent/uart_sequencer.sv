@@ -54,16 +54,16 @@ class uart_sequencer #(
   endtask
 
   task test_boundaries;
-    //    automatic uart_transaction trans;
-    //trans = new;
-    //trans.transaction_type = UART_TX_DUV_RX;
-    //trans.data = 0;
-    //sequencer_to_driver_fifo.put(trans);
+    automatic uart_transaction trans;
+    trans = new;
+    trans.transaction_type = UART_TX_DUV_RX;
+    trans.data = 0;
+    sequencer_to_driver_fifo.put(trans);
 
-    //trans = new;
-    //trans.transaction_type = UART_TX_DUV_RX;
-    //trans.data = -1;
-    //sequencer_to_driver_fifo.put(trans);
+    trans = new;
+    trans.transaction_type = UART_TX_DUV_RX;
+    trans.data = -1;
+    sequencer_to_driver_fifo.put(trans);
   endtask
 
   task test_read;
