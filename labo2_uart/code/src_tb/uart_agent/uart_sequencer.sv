@@ -83,8 +83,9 @@ class uart_sequencer #(
   endtask
 
   task test_rx_fifo_full;
+    automatic uart_transaction trans;
     for (int i = 0; i < FIFOSIZE; ++i) begin
-      automatic uart_transaction trans = new;
+      trans = new;
       trans.transaction_type = UART_TX_DUV_RX;
       trans.data = i;
       sequencer_to_driver_fifo.put(trans);
@@ -138,14 +139,14 @@ class uart_sequencer #(
   task run;
     $display("%t [UART Sequencer] Testcase %d", $time, testcase);
     case (testcase)
-      0: run_all_scenarios;
-      1: test_write;
-      2: test_read;
-      3: test_fifo_empty;
-      4: test_fifo_full;
-      5: test_rx_fifo_full;
-      6: test_boundaries;
-      7: test_correct_clk_per_bit;
+      0:  run_all_scenarios;
+      1:  test_write;
+      2:  test_read;
+      3:  test_fifo_empty;
+      4:  test_fifo_full;
+      5:  test_rx_fifo_full;
+      6:  test_boundaries;
+      7:  test_correct_clk_per_bit;
       // Baudrate tests are not run automatically since they are expected to
       // generate errors. They exist to be run manually and checked by
       // a human.
