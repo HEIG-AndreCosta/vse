@@ -72,7 +72,6 @@ class uart_driver #(
       end
       //$display("%t [UART Driver] Send data %x", $time, transaction.data);
       // Start Bit
-      #test_ns_per_bit;
       vif.rx_i = 0;
       #test_ns_per_bit;
       for (int i = DATASIZE; i > 0; i--) begin
@@ -81,6 +80,7 @@ class uart_driver #(
       end
       // Stop Bit
       vif.rx_i = 1;
+      #test_ns_per_bit;
       uart_to_scoreboard_rx_fifo.put(transaction);
       objections_pkg::objection::get_inst().drop();
     end
