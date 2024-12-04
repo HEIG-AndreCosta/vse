@@ -48,11 +48,17 @@ class uart_sequencer #(
     test_rx_fifo_full;
     test_boundaries;
     test_correct_clk_per_bit;
+    test_random;
   endtask
 
+  /// Test duv write
   task test_write();
+    //Nothing to do here
   endtask
 
+  // Test Boundaries
+  // This tests sending and receiving payloads full of zeros
+  // and full of ones
   task test_boundaries;
     automatic uart_transaction trans;
     trans = new;
@@ -66,6 +72,8 @@ class uart_sequencer #(
     sequencer_to_driver_fifo.put(trans);
   endtask
 
+  // Test DUV Read
+  // This tests receiving a payload
   task test_read;
     automatic uart_transaction trans = new;
     trans.transaction_type = UART_TX_DUV_RX;
@@ -73,17 +81,27 @@ class uart_sequencer #(
     sequencer_to_driver_fifo.put(trans);
   endtask
 
+  // Test DUV fifo empty
   task test_fifo_empty;
+    //Don't do anything else the rx fifo won't be empty
   endtask
 
+  // Test DUV TX fifo empty
   task test_fifo_full;
+    // Nothing to do here
   endtask
 
+  // Test DUV write/read clk per bit register
   task test_correct_clk_per_bit;
+    // Nothing to do here
   endtask
 
+  // Test DUV rx fifo full
+  // This tests that the fifo can correctly set its
+  // rx fifo full flag to true
   task test_rx_fifo_full;
     automatic uart_transaction trans;
+    // Send FIFOSIZE payloads
     for (int i = 0; i < FIFOSIZE; ++i) begin
       trans = new;
       trans.transaction_type = UART_TX_DUV_RX;
@@ -92,6 +110,8 @@ class uart_sequencer #(
     end
   endtask
 
+  // Utility function to send FIFOSIZE payloads with a certain baudrate
+  // at a 1 payload / second rate
   task test_bad_baudrate(logic [31:0] baudrate);
     automatic uart_transaction trans;
     // This loop simulates a device that would send a message every second
