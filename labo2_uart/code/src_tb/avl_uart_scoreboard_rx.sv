@@ -73,8 +73,7 @@ class avl_uart_scoreboard_rx #(
 
       assert (uart_trans.transaction_type == UART_TX_DUV_RX ||
         uart_trans.transaction_type == UART_TX_DUV_RX_MODIFY_BAUDRATE);
-      assert (avalon_trans.transaction_type == UART_READ ||
-        avalon_trans.transaction_type == UART_READ_UNTIL_EMPTY);
+      assert (avalon_trans.transaction_type == UART_READ);
 
       for (int i = 0; i < DATASIZE; ++i) begin
         result[i] = avalon_trans.data[i];
