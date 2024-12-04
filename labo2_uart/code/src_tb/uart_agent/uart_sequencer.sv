@@ -111,6 +111,30 @@ class uart_sequencer #(
 
   endtask
 
+  // Test random
+  // Tests receiving and sending random payloads
+  // It's also a good stress test as the duv is constantly sending and
+  // receiving data
+  // This test is driven by coverage
+  task test_random;
+    automatic uart_transaction coverage_trans = new;
+    while (coverage_trans.cov_group.get_inst_coverage() < 100) begin
+      automatic uart_transaction trans = new;
+
+      assert (coverage_trans.randomize())
+      else $fatal("No solutions for trans.randomize");
+      coverage_trans.cov_group.sample();
+
+      trans.transaction_type = UART_TX_DUV_RX;
+      trans.data = coverage_trans.data;
+      sequencer_to_driver_fifo.put(trans);
+      trans = new;
+      trans.transaction_type = UART_WAIT;
+      trans.data = 500_000_000;
+      sequencer_to_driver_fifo.put(trans);
+    end
+  endtask
+
   // Test what happens if the baudrate is too high
   // For reference, we use 9600 baudrate for testing
   // This test should not be run automatically but it may be useful to know
@@ -147,11 +171,12 @@ class uart_sequencer #(
       5:  test_rx_fifo_full;
       6:  test_boundaries;
       7:  test_correct_clk_per_bit;
+      8:  test_random;
       // Baudrate tests are not run automatically since they are expected to
       // generate errors. They exist to be run manually and checked by
       // a human.
-      8: test_baudrate_too_high;
-      9: test_baudrate_too_low;
+      9:  test_baudrate_too_high;
+      10: test_baudrate_too_low;
 
       default: $display("Invalid test case %d", testcase);
     endcase

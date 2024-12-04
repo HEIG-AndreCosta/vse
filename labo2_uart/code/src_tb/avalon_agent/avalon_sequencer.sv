@@ -49,6 +49,7 @@ class avalon_sequencer #(
     test_rx_fifo_full;
     test_boundaries;
     test_correct_clk_per_bit;
+    test_random;
   endtask
 
   // Utility function that sets the nb of clk per bit on the duv side by
@@ -199,6 +200,38 @@ class avalon_sequencer #(
     sequencer_to_driver_fifo.put(trans);
   endtask
 
+  // Test random
+  // Tests receiving and sending random payloads
+  // It's also a good stress test as the duv is constantly sending and
+  // receiving data
+  // This test is driven by coverage
+  task test_random;
+    automatic avalon_transaction read_trans;
+    automatic avalon_transaction coverage_trans = new;
+    set_clk_per_bit(DEFAULT_CLK_PER_BIT);
+    while (coverage_trans.cov_group.get_inst_coverage() < 100) begin
+      automatic avalon_transaction trans = new;
+      assert (coverage_trans.randomize())
+      else $fatal("No solutions for trans.randomize");
+      coverage_trans.cov_group.sample();
+
+      trans.transaction_type = UART_SEND;
+      trans.data = coverage_trans.data;
+      trans.clk_to_wait_before_transaction = DEFAULT_TIME_TO_SEND;
+      sequencer_to_driver_fifo.put(trans);
+
+      read_trans = new;
+      read_trans.transaction_type = UART_READ_UNTIL_EMPTY;
+      read_trans.clk_to_wait_before_transaction = 0;
+      sequencer_to_driver_fifo.put(read_trans);
+    end
+    read_trans = new;
+    read_trans.transaction_type = UART_READ_UNTIL_EMPTY;
+    read_trans.clk_to_wait_before_transaction = DEFAULT_TIME_TO_SEND;
+    sequencer_to_driver_fifo.put(read_trans);
+  endtask
+
+
   // Utility task that send multiple read transaction to the driver
   task read_with_delay_between(int nb_reads, logic [31:0] delay);
     automatic avalon_transaction trans;
@@ -237,12 +270,13 @@ class avalon_sequencer #(
       5: test_rx_fifo_full;
       6: test_boundaries;
       7: test_correct_clk_per_bit;
+      8: test_random;
 
       // Baudrate tests are not run automatically since they are expected to
       // generate errors. They exist to be run manually and checked by
       // a human.
-      8: test_baudrate_too_high;
-      9: test_baudrate_too_low;
+      9: test_baudrate_too_high;
+      10: test_baudrate_too_low;
       default: $display("Invalid test case %d", testcase);
     endcase
     $display("%t [AVL Sequencer] End", $time);
