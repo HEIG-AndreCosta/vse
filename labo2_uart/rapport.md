@@ -88,17 +88,17 @@ typedef enum {
 } avalon_transaction_type_t;
 ```
 
-`UART_SEND` indique au driver d'envoyer une donnée au DUV - Ecriture dans le registre 1
-`UART_READ` indique au driver de lire une donnée du DUV - Lecture du registre 2
-`SET_CLK_PER_BIT` indique au driver de changer le baudrate - Ecriture dans le registre 3
-`ASSERT_TX_FIFO_EMPTY` indique au driver de vérifier que la FIFO TX est vide - Lecture du registre 0 et vérification des bits 0 et 3
-`ASSERT_RX_FIFO_FULL` indique au driver de vérifier que la FIFO RX est pleine - Lecture du registre 0 et vérification des bits 1 et 2
-`ASSERT_RX_FIFO_EMPTY` indique au driver de vérifier que la FIFO RX est vide - Lecture du registre 0 et vérification des bits 1 et 2
-`ASSERT_RX_FIFO_NOT_EMPTY` indique au driver de vérifier que la FIFO RX n'est pas vide - Lecture du registre 0 et vérification du bit 2
-`ASSERT_TX_FIFO_FULL` indique au driver de vérifier que la FIFO TX est pleine - Lecture du registre 0 et vérification des bits 0 et 3
-`ASSERT_TX_FIFO_NOT_EMPTY` indique au driver de vérifier que la FIFO TX n'est pas vide - Lecture du registre 0 et vérification du bit 3
-`ASSERT_CLK_PER_BIT` indique au driver de vérifier que le baudrate est correct - Lecture du registre 3
-`UART_READ_UNTIL_EMPTY` indique au driver de lire toutes les données de la FIFO RX - Lecture du registre 2 jusqu'à ce que la FIFO RX soit vide
+- `UART_SEND` indique au driver d'envoyer une donnée au DUV - Ecriture dans le registre 1
+- `UART_READ` indique au driver de lire une donnée du DUV - Lecture du registre 2
+- `SET_CLK_PER_BIT` indique au driver de changer le baudrate - Ecriture dans le registre 3
+- `ASSERT_TX_FIFO_EMPTY` indique au driver de vérifier que la FIFO TX est vide - Lecture du registre 0 et vérification des bits 0 et 3
+- `ASSERT_RX_FIFO_FULL` indique au driver de vérifier que la FIFO RX est pleine - Lecture du registre 0 et vérification des bits 1 et 2
+- `ASSERT_RX_FIFO_EMPTY` indique au driver de vérifier que la FIFO RX est vide - Lecture du registre 0 et vérification des bits 1 et 2
+- `ASSERT_RX_FIFO_NOT_EMPTY` indique au driver de vérifier que la FIFO RX n'est pas vide - Lecture du registre 0 et vérification du bit 2
+- `ASSERT_TX_FIFO_FULL` indique au driver de vérifier que la FIFO TX est pleine - Lecture du registre 0 et vérification des bits 0 et 3
+- `ASSERT_TX_FIFO_NOT_EMPTY` indique au driver de vérifier que la FIFO TX n'est pas vide - Lecture du registre 0 et vérification du bit 3
+- `ASSERT_CLK_PER_BIT` indique au driver de vérifier que le baudrate est correct - Lecture du registre 3
+- `UART_READ_UNTIL_EMPTY` indique au driver de lire toutes les données de la FIFO RX - Lecture du registre 2 jusqu'à ce que la FIFO RX soit vide
 
 De plus, pour certaines commandes, on veut faire le driver patienter, pour cela, une `avalon_transaction` contient les champs suivants:
 
