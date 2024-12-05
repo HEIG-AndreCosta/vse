@@ -136,7 +136,15 @@ class avalon_driver #(
           trans = new;
           trans.transaction_type = UART_READ;
           trans.data = vif.readdata_o;
+
+          // Don't block the simulation in case the scoreboard 
+          // can't keep receive anymore data
+          // This can happen if for instance, we read data
+          // that wasn't actually sent to the DUV 
+          // and fill out the scoreboard fifo
+          objections_pkg::objection::get_inst().drop();
           avalon_to_scoreboard_rx_fifo.put(trans);
+          objections_pkg::objection::get_inst().raise();
 
           read_status_register;
           //Still have data to read, keep going
