@@ -33,13 +33,9 @@ Salle de labo : **A07**
 
 Date : **13.12.2024**
 
-
-
 <!--pagebreak-->
 
 ## <center>Table des matières {ignore=true}
-
-
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
@@ -61,29 +57,26 @@ Date : **13.12.2024**
   - [4.6 Difficultés rencontrées et solutions](#46-difficultés-rencontrées-et-solutions)
     - [4.6.1. Arrêt prématuré de la simulation](#461-arrêt-prématuré-de-la-simulation)
     - [4.6.2. Quantité de données à lire inconnue du côté Avalon](#462-quantité-de-données-à-lire-inconnue-du-côté-avalon)
-    - [4.6.2. Le problème de 1h du matin de André le BG trop fort](#462-le-problème-de-1h-du-matin-de-andré-le-bg-trop-fort)
+    - [4.6.2. Timeout pour certains tests](#462-timeout-pour-certains-tests)
 - [5. Tests](#5-tests)
   - [5.1 Scénarios de test](#51-scénarios-de-test)
     - [5.1.1. - Test 1 d'écriture](#511---test-1-décriture)
     - [5.1.2. - Test 2 de lecture](#512---test-2-de-lecture)
     - [5.1.3. - Test 3 à 5 du registre de status](#513---test-3-à-5-du-registre-de-status)
     - [5.1.4 - Test 6 des valeurs limites Boundaries](#514---test-6-des-valeurs-limites-boundaries)
-    - [5.1.5 Test 7 de la configuration du nombre de cycles par bit](#515-test-7-de-la-configuration-du-nombre-de-cycles-par-bit)
+    - [5.1.5 - Test 7 de la configuration du nombre de cycles par bit](#515---test-7-de-la-configuration-du-nombre-de-cycles-par-bit)
     - [5.1.6 Test 8 avec des valeurs aléatoires](#516-test-8-avec-des-valeurs-aléatoires)
     - [5.1.7 Test 9 et 10, stress tests](#517-test-9-et-10-stress-tests)
     - [5.1.8 Test 11 et 12 Tests Baudrate](#518-test-11-et-12-tests-baudrate)
   - [5.2. Couvertures des valeurs](#52-couvertures-des-valeurs)
   - [5.3. Assertions](#53-assertions)
-  - [5.4. Test supplémentaire possible](#54-test-supplémentaire-possible)
+  - [5.4. Tests supplémentaires possible](#54-tests-supplémentaires-possible)
 - [6. Analyse des résultats](#6-analyse-des-résultats)
 - [7. Conclusion](#7-conclusion)
 
 <!-- /code_chunk_output -->
 
-
-
 <!-- pagebreak -->
-
 
 ## 1. Introduction
 
@@ -95,7 +88,7 @@ Nous n'avons pas connaissance du contenu du `DUV` et nous devons nous assurer qu
 
 ## 3. Architecture
 
-L'architecture `UVM` est structurée de la manière suivante:
+L'architecture `UVM` simplifiée est structurée de la manière suivante:
 
 ![alt text](image.png)
 
@@ -109,13 +102,13 @@ Afin de bien comprendre l'architecture, nous allons détailler les responsabilit
 
 - **SEQUENCER**: le séquenceur récupérera le `testcase` à jouer et générera des séquences de transactions à réaliser. Ces séquences seront ensuite transmises au `driver` via un `FIFO`.
 
-- **DRIVER**:  le driver est responsable d'envoyer les transactions au `DUV` via l'interface `vif` et d'envoyer une copie de la transaction jouée au `scorboardtx`. Dans le cadre de ce laboratoire, le driver est également responsable de jouer le rôle de `monitor` et de transmettre les transactions reçues au `scorboardrx`, cela de manière à simplifier l'architecture.
+- **DRIVER**: le driver est responsable d'envoyer les transactions au `DUV` via l'interface `vif` et d'envoyer une copie de la transaction jouée au `scorboardtx`. Dans le cadre de ce laboratoire, le driver est également responsable de jouer le rôle de `monitor` et de transmettre les transactions reçues au `scorboardrx`, cela de manière à simplifier l'architecture.
 
 #### 3.3.2 UART Agent
 
 - **SEQUENCER**: comme le séquenceur de l'agent `Avalon`, le séquenceur récupérera le `testcase` à jouer et générera des séquences de transactions à réaliser. Ces séquences seront ensuite transmises au `driver` via un `FIFO`.
 
-- **DRIVER**: le driver est responsable d'envoyer les transactions au `DUV` via l'interface `vif` et d'envoyer une copie de la transaction jouée au `scorboardtx`. 
+- **DRIVER**: le driver est responsable d'envoyer les transactions au `DUV` via l'interface `vif` et d'envoyer une copie de la transaction jouée au `scorboardtx`.
 
 - **MONITOR**: le monitor est responsable de récupérer les transactions reçues par le `DUV` et de les transmettre au `scorboardrx`.
 
@@ -130,7 +123,7 @@ Afin de bien comprendre l'architecture, nous allons détailler les responsabilit
 ## 4. Implémentation
 
 Afin de pouvoir implémenter les différents systèmes, nous avons admis un `baudrate` unique de `9600 [baud]`, ainsi qu'une taille de données `DATASIZE` de `20 [bit]`.
-De plus, pour pouvoir valider et comprendre le fonctionnement du `DUV` nous avons décidé d'implémenter en premier le `driver` du côté de l'agent `Avalon`. Une donnée a été passée au duv et nous avons remarqué que la sortie `tx_o` du `vif` du côté `UART` était correctement mise à jour. Nous avons ensuite implémenté le `driver` du côté de l'agent `UART` et nous avons pu constater que la donnée était correctement reçue du côté `Avalon`. Dès lors nous sommes capables de communiquer entre les deux agents. Nous avons donc pu implémenter la partie vérification avec l'architecture `UVM`.   
+De plus, pour pouvoir valider et comprendre le fonctionnement du `DUV` nous avons décidé d'implémenter en premier le `driver` du côté de l'agent `Avalon`. Une donnée a été passée au duv et nous avons remarqué que la sortie `tx_o` du `vif` du côté `UART` était correctement mise à jour. Nous avons ensuite implémenté le `driver` du côté de l'agent `UART` et nous avons pu constater que la donnée était correctement reçue du côté `Avalon`. Dès lors nous sommes capables de communiquer entre les deux agents. Nous avons donc pu implémenter la partie vérification avec l'architecture `UVM`.
 
 ### 4.1 Données traitées pas le driver de l'agent Avalon
 
@@ -160,19 +153,19 @@ typedef enum {
 } avalon_transaction_type_t;
 ```
 
-Ces types seront utilisés pour définir la commande du `driver` de l'agent `Avalon`. En voici la description: 
+Ces types seront utilisés pour définir la commande du `driver` de l'agent `Avalon`. En voici la description:
 
 - `UART_SEND`, indique au driver de l'agent `Avalon` de transmettre une donnée au `DUV` en écrivant dans le registre ``1` `.
 - `UART_READ`, indique au driver de l'agent `Avalon` de lire une donnée du `DUV` en lisant le registre ``2` `.
 - `SET_CLK_PER_BIT`, indique au driver de l'agent `Avalon` de configurer le `DUV` en écrivant dans le registre ``3` `.
-- `ASSERT_TX_FIFO_EMPTY` indique au driver de vérifier que le buffer `tx` est vide - Lecture du registre `0`  et vérification des bits `0`  et `3` 
-- `ASSERT_RX_FIFO_FULL` indique au driver de vérifier que le buffer `rx` est plein - Lecture du registre `0`  et vérification des bits `1`  et `2` 
-- `ASSERT_RX_FIFO_EMPTY` indique au driver de vérifier que le buffer `rx` est vide - Lecture du registre `0`  et vérification des bits `1`  et `2` 
-- `ASSERT_RX_FIFO_NOT_EMPTY` indique au driver de vérifier que le buffer `rx` n'est pas vide - Lecture du registre `0`  et vérification du bit `2` 
-- `ASSERT_TX_FIFO_FULL` indique au driver de vérifier que le buffer `tx` est plein - Lecture du registre `0`  et vérification des bits `0`  et `3` 
-- `ASSERT_TX_FIFO_NOT_EMPTY` indique au driver de vérifier que le buffer `tx` n'est pas vide - Lecture du registre `0`  et vérification du bit `3` 
-- `ASSERT_CLK_PER_BIT` indique au driver de vérifier que le baudrate est correct - Lecture du registre `3` 
-- `UART_READ_UNTIL_EMPTY` indique au driver de lire toutes les données du buffer `rx` - Lecture du registre `2`  jusqu'à ce que le buffer `rx` soit vide
+- `ASSERT_TX_FIFO_EMPTY` indique au driver de vérifier que le buffer `tx` est vide - Lecture du registre `0` et vérification des bits `0` et `3`
+- `ASSERT_RX_FIFO_FULL` indique au driver de vérifier que le buffer `rx` est plein - Lecture du registre `0` et vérification des bits `1` et `2`
+- `ASSERT_RX_FIFO_EMPTY` indique au driver de vérifier que le buffer `rx` est vide - Lecture du registre `0` et vérification des bits `1` et `2`
+- `ASSERT_RX_FIFO_NOT_EMPTY` indique au driver de vérifier que le buffer `rx` n'est pas vide - Lecture du registre `0` et vérification du bit `2`
+- `ASSERT_TX_FIFO_FULL` indique au driver de vérifier que le buffer `tx` est plein - Lecture du registre `0` et vérification des bits `0` et `3`
+- `ASSERT_TX_FIFO_NOT_EMPTY` indique au driver de vérifier que le buffer `tx` n'est pas vide - Lecture du registre `0` et vérification du bit `3`
+- `ASSERT_CLK_PER_BIT` indique au driver de vérifier que le baudrate est correct - Lecture du registre `3`
+- `UART_READ_UNTIL_EMPTY` indique au driver de lire toutes les données du buffer `rx` - Lecture du registre `2` jusqu'à ce que le buffer `rx` soit vide
 
 <!-- pagebreak -->
 
@@ -182,19 +175,19 @@ Le `driver` de l'agent `Avalon` est relativement complexe. En effet, il doit êt
 
 | Address | Size |  Direction   | Description                 |
 | ------- | :--: | :----------: | :-------------------------- |
-| `0x0`     |  x   |     Read     | Status register             |
-| `0x1`     |  20  |    Write     | Send register               |
-| `0x2`     |  20  |     Read     | Receive register            |
-| `0x3`     |  32  | Read / Write | Configuration : cycle / bit |
+| `0x0`   |  x   |     Read     | Status register             |
+| `0x1`   |  20  |    Write     | Send register               |
+| `0x2`   |  20  |     Read     | Receive register            |
+| `0x3`   |  32  | Read / Write | Configuration : cycle / bit |
 
 Les valeurs obtenues lors de la lecture du registre de status à l'adresse `0x0` sont les suivantes:
 
 | Bit | Description                             |
 | :-: | :-------------------------------------- |
-|  `0`  | Send buffer full                        |
-|  `1`  | Receive buffer full                     |
-|  `2`  | number of élément inside receive buffer |
-|  `3`  | Send buffer empty                       |
+| `0` | Send buffer full                        |
+| `1` | Receive buffer full                     |
+| `2` | number of élément inside receive buffer |
+| `3` | Send buffer empty                       |
 
 Le `driver` de l'agent `Avalon` recevra les transactions du séquenceur et en fonction de la commande afféctée, il jouera la transaction correspondante grâce à sa tâche:
 
@@ -202,7 +195,7 @@ Le `driver` de l'agent `Avalon` recevra les transactions du séquenceur et en fo
   task do_transaction(avalon_transaction transaction);
 ```
 
-Cette `task` contient un `Switch case` relatif à la propriété `transaction_type` du paramètre `transaction`. En fonction de la valeur de cette propriété, le `driver` jouera la transaction correspondante.
+Cette `task` contient un `switch case` relatif à la propriété `transaction_type` du paramètre `transaction`. En fonction de la valeur de cette propriété, le `driver` jouera la transaction correspondante.
 
 Afin de pouvoir exécuter tous les types de transaction, le driver implémente les `task` suivantes:
 
@@ -211,7 +204,7 @@ Afin de pouvoir exécuter tous les types de transaction, le driver implémente l
     task do_write(logic [13:0] address, logic [31:0] data);
 ```
 
-Si une commande de lecture ou d'écriture est reçue, le driver transmettra la transaction au `DUV` via l'interface `vif` et enverra une copie de la transaction au `scoreboardtx` ou au `scoreboardrx`. 
+Si une commande de lecture ou d'écriture est reçue, le driver transmettra la transaction au `DUV` via l'interface `vif` et enverra une copie de la transaction au `scoreboardtx` ou au `scoreboardrx`.
 
 Dans le cas où une commande de vérification est reçue, le driver lira le registre correspondant et vérifiera que les valeurs sont correctes. Si une erreur est détectée, une assertion sera levée. Aucune copie de la transaction ne sera envoyée au `scoreboardtx` ou au `scoreboardrx`.
 
@@ -219,7 +212,7 @@ Pour terminer, si le driver reçoit une commande de configuration, il configurer
 
 ### 4.3 Driver UART
 
-Le `driver` de l'agent `UART` est relativement simple. Il doit envoyer des données au `DUV` via le `vif` sur l'entrée `rx_i`. Le baudrate définit est identique à celui de l'agent `Avalon`, à savoir `9600 [baud]`. 
+Le `driver` de l'agent `UART` est relativement simple. Il doit envoyer des données au `DUV` via le `vif` sur l'entrée `rx_i`. Le baudrate définit est identique à celui de l'agent `Avalon`, à savoir `9600 [baud]`.
 
 Pour pouvoir effectuer cette action, le `driver` de l'agent `UART` implémente la `task` suivante:
 
@@ -231,11 +224,11 @@ Cette task attend simplement une transaction, vérifie si le baudrate n'a pas é
 
 Ce temps nommé `ns_per_bit` est calculé de la manière suivante:
 
-$$ ns\_per\_bit = \frac{1'000'000'000}{baudrate} $$
+$$ ns_per_bit = \frac{1'000'000'000}{baudrate} $$
 
 pour un baudrate de `9600 [baud]`, nous obtenons donc:
 
-$$ ns\_per\_bit = \frac{1'000'000'000}{9600} = 104166.\overline{6} [ns] $$
+$$ ns_per_bit = \frac{1'000'000'000}{9600} = 104166.\overline{6} [ns] $$
 
 Bien entendu, la transaction jouée par le `driver` de l'agent `UART` est également envoyée au `scoreboardrx` pour vérification.
 
@@ -247,36 +240,37 @@ Le `monitor` de l'agent `UART` est responsable de récupérer les transactions r
 
 En fonction de la précision du temps d'attente entre la lecture de chaque `bits` nous ne pouvons pas lire de manière complètement synchronisée avec l'écriture du `driver` de l'agent `Avalon`. Afin de garantir que la lecture du bit désirée est correcte, nous avons décidé de décaler le début de la lecture de:
 
-$$ offset\_start = \frac{ns\_per\_bit}{2} $$
+$$ offset_start = \frac{ns_per_bit}{2} $$
 
 pour un baudrate de `9600 [baud]`, nous obtenons donc:
 
-$$ offset\_start = \frac{104166.\overline{6}}{2} = 52083.\overline{3} [ns] $$
+$$ offset_start = \frac{104166.\overline{6}}{2} = 52083.\overline{3} [ns] $$
 
 Cela permet de lire le bit au milieu de la période d'écriture du `bit` par le `driver` de l'agent `Avalon`.
 
 ### 4.5 Scoreboards
 
-Étant donné que nous sommes en mesure de récupère les données transmises et reçues par le `DUV` via les différents composants de notre architecture, nous pouvons implémenter les `scoreboards`.
+Étant donné que nous sommes en mesure de récupérer les données transmises et reçues par le `DUV` via les différents composants de notre architecture, nous pouvons implémenter les `scoreboards`.
 
 L'implémentation des scorboards est relativement simple et fonctionne, pour les deux `scoreboards`, de la manière suivante:
 
-- Récupération de la transaction envoyée par l'un  des `driver`
+- Récupération de la transaction envoyée par l'un des `driver`
 - Récupération de la transaction reçue par l'autre `driver` pour l'agent `Avalon` ou le `monitor` pour l'agent `UART`
 - Vérification de la commande de la transaction et levée d'une assertion en cas de commande incorrecte.
 - Comparaison des données envoyées et reçues, comptabilisation des erreurs et informations de l'utilisateur.
 
 ### 4.6 Difficultés rencontrées et solutions
 
-Lors du développement de ce laboratoire, nous avons rencontré quelques difficultés. Afin de les résoudre, nous avons mis en place les solutions suivantes: 
+Lors du développement de ce laboratoire, nous avons rencontré quelques difficultés. Afin de les résoudre, nous avons mis en place les solutions suivantes:
 
 #### 4.6.1. Arrêt prématuré de la simulation
 
 Lors de nos premiers tests de transmission, nous avons subi des arrêts de simulation prématurés, en effet, nous avions que la moitié du premier bit envoyé. Après avoir investigué, nous avons constaté que le `driver` nous n'implémentions pas le principe d'`objection` permettant d'informer l'environnement que nous sommes en train d'effectuer un travail et que le test bench doit attendre que cette objection soit désactivée.
 
-Pour cela nous avons ajouté aux composants qui effectuent des tâches qui dépasserait la durée du `drain_time` de `210'000 [ns]` , une `objection` de type `raise`avant de débuter la tache. Une fois terminé, nous utilisons l'objection de type `drop` qui laissera le test bench s'arrêter si plus aucun travail n'est à faire.
+Pour cela chaque composant lève (`raise`) une `objection` avant de débuter la tâche et l'annule (`drop`) une fois terminé. Ceci permettra au test bench de s'arrêter si aucun composant ne relève plus d'objections après `210'000 [ns]`.
 
 Voici les éléments qui ont nécessité l'ajout d'une `objection`:
+
 - **Scoreboard TX et RX**: Lors du traitement des deux transactions reçues
 - **Driver Avalon**: lors de l'exécution d'une transaction (lecture, écriture, etc.)
 - **Driver UART**: lors de l'envoi d'une donnée
@@ -284,19 +278,41 @@ Voici les éléments qui ont nécessité l'ajout d'une `objection`:
 
 #### 4.6.2. Quantité de données à lire inconnue du côté Avalon
 
-Selon le scénario de test, par exemple, lors de tests de couvertures, nous pouvons être dans une situation où nous ne savons pas combien de données seront envoyées du côté UART. Le driver `Avalon` ne sait pas combien de données il doit lire.
+Selon le scénario de test, par exemple, lors de tests de couvertures, nous pouvons être dans une situation où nous ne savons pas combien de données seront envoyées du côté UART. Ceci est nottament vrai pour les tests de randomisation qui sont gèrés par la couverture. En effet, nous ne pouvons pas prédire en avance combien de transactions doivent être générées pour atteindre la couverture demandée.
 
-Nous avons décidé de rajouter une commande `UART_READ_UNTIL_EMPTY` qui permet de lire toutes les données de la FIFO RX. Cette commande est envoyée par le séquenceur `Avalon` et permet de lire toutes les données reçues sans savoir combien il y en a.
+Ceci est donc la raison pour laquelle nous avons décidé de rajouter une commande `UART_READ_UNTIL_EMPTY` qui permet de lire toutes les données de la FIFO RX. Cette commande est envoyée par le séquenceur `Avalon` et permet de lire toutes les données reçues sans savoir combien il y en a.
 
-#### 4.6.2. Le problème de 1h du matin de André le BG trop fort
+Cet ajout nous mène à un troisième problème.
 
-//TODO expliquer le problème et la solution stp
+#### 4.6.2. Timeout pour certains tests
+
+Si le système marche correctement, cette implémentation ne pose aucun soucis. Cependant, comme nous avons pu constater, si le DUV gère mal l'état de la fifo de réception en indiquant faussement qu'elle n'est pas vide lorsque que le sequenceur `Avalon` envoie la commande `UART_READ_UNTIL_EMPTY`, le driver `Avalon` va lire des données qui n'existent pas vraiment remplissant ainsi la fifo Driver Avalon -> Scoreboard RX. Ceci pose problème car le scoreboard consomme seulement une donnée `Avalon` pour chaque donnée `UART` reçue et comme ces données n'ont pas été envoyées par le driver `UART`, le système restera bloqué.
+
+Ceci est résolu si l'on `drop` l'objection avant d'ajouter des données à la fifo. Ceci permet au test bench de finir si le driver `Avalon` bloque en ajoutant des données à la fifo vu que l'objection n'est plus levée.
+
+```verilog
+UART_READ_UNTIL_EMPTY: begin
+  automatic avalon_transaction trans;
+  while (1) begin
+    ...
+    // Don't block the simulation in case the scoreboard
+    // can't keep receive anymore data
+    // This can happen if for instance, we read data
+    // that wasn't actually sent to the DUV
+    // and fill out the scoreboard fifo
+    objections_pkg::objection::get_inst().drop();
+    avalon_to_scoreboard_rx_fifo.put(trans);
+    objections_pkg::objection::get_inst().raise();
+    ...
+  end
+end
+```
 
 ## 5. Tests
 
 Nous avons maintenant un système complet qui permet de vérifier la communication entre les deux agents. Nous allons donc pouvoir réaliser des tests.
 
-Ces tests seront réalisés selon le un numéro de testcase transmis en argument lors de l'exécution du testbench. 
+Ces tests seront réalisés selon le un numéro de testcase transmis en argument lors de l'exécution du testbench.
 
 Dans les séquenceurs, ce numéro de testcase est utilisé pour définir les transactions à jouer.
 Il y a une forte correspondance entre le séquenceur de l'agent `Avalon` et le séquenceur de l'agent `UART`. En effet, les deux séquenceurs doivent jouer les mêmes scénarios, mais du point de vue de l'agent qu'ils contrôlent.
@@ -309,7 +325,7 @@ De ce fait, un read côté `Avalon` est une écriture côté `UART` et vice vers
 #### 5.1.1. - Test 1 d'écriture
 
 Le premier test consiste à vérifier que la donnée que nous écrivons du côté de l'agent `Avalon` est bien reçue du côté de l'agent `UART`.
-De plus, nous vérifions que le registre de status de manière à nous assurer que le fifo d'envoi n'est pas vide. 
+De plus, nous vérifions que le registre de status est bien mis à jour.
 
 #### 5.1.2. - Test 2 de lecture
 
@@ -328,16 +344,16 @@ Les tests 3 à 5 sont des tests qui permettent de vérifier que les flags de sta
 
 #### 5.1.4 - Test 6 des valeurs limites Boundaries
 
-Ce sixième test vérifie ce qu'il se passe avec les données aux limites, c'est-à-dire, l'envoie de 0 et de 2^DATASIZE - 1.
+Ce sixième test vérifie ce qu'il se passe avec les données aux limites, c'est-à-dire, l'envoie de `0` et de `2^DATASIZE - 1`.
 Ceci est fait en parallèle des deux côtés, UART et Avalon.
 
-#### 5.1.5 Test 7 de la configuration du nombre de cycles par bit
+#### 5.1.5 - Test 7 de la configuration du nombre de cycles par bit
 
-Le septième test vérifie que la configuration que nous écrivons dans le registre `3` est bien prise en compte.
+Le septième test vérifie que la configuration que nous écrivons dans le registre `3` est bien prise en compte et que la valeur écrite est la valeur lue.
 
 #### 5.1.6 Test 8 avec des valeurs aléatoires
 
-Le huitième test consiste à envoyer des valeurs aléatoires jusqu'à ce qu'une certaine quantité de valeur aient été couvertes.
+Le huitième test consiste à envoyer des payloads aléatoires. Ce test est géré par la couverture et permet de trouver des potentiels erreurs avec des valeurs que nous aurions pas forcément pensé à tester.
 
 #### 5.1.7 Test 9 et 10, stress tests
 
@@ -353,7 +369,7 @@ La durée du test s'étend sur l'envoi de `FIFOSIZE * 10` données.
 
 Ces tests ne sont pas des test automatiques, et le `testcase 0` ne les lancera pas. Ce sont des tests qui produisent des erreurs.
 
-En effet, ces tests vont, du côté Uart, envoyer des données avec un baudrate incorrect, qui va s'incrémenter/décrémenter gentiment.
+En effet, ces tests vont, du côté UART, envoyer des données avec un baudrate incorrect, qui va s'incrémenter/décrémenter gentiment.
 Ceci permet de voir à quel moment le DUV n'arrive plus à lire les données correctement.
 
 Ici nous pouvons voir que le DUV arrive à bien travailler avec un baudrate entre ~9300 et ~9900 pour un baudrate défini à 9600.
@@ -368,11 +384,10 @@ Voici l'output des tests:
 
 ![alt text](image-1.png)
 
-
 ### 5.2. Couvertures des valeurs
 
 Pour le `testcase 8` nous avons ajouté une couverture des valeurs pour les données envoyées et reçues.
-Afin de rester pertinant et ne pas impacter trop fortement la charge de calcul, nous avons décidé d'ajouter dans la class `avalon_transaction` le covergroup suivant:
+Afin de rester pertinent et ne pas impacter trop fortement la charge de calcul, nous avons décidé d'ajouter dans la class `avalon_transaction` le covergroup suivant:
 
 ```verilog
 covergroup cov_group;
@@ -451,17 +466,16 @@ Sur les protocole UART et Avalon:
   assume property ($fell(rx_i) |=> ##[0:$] rx_i == 1);
 ```
 
-### 5.4. Test supplémentaire possible
+### 5.4. Tests supplémentaires possible
 
-Il aurait été idéal de pousser ces vérifications plus loin, en vérifiant par exemple que la ligne `tx` passe à `1` au bout de `DATASIZE * clk_per_bit`. 
-Étant donné que le nombre de `clk_per_bit` n'est pas fixe, il nous est difficile de savoir quand une lecture va commencer. 
-
+Il aurait été idéal de pousser ces vérifications plus loin, en vérifiant par exemple que la ligne `tx` passe à `1` au bout de `DATASIZE * clk_per_bit`.
+Étant donné que le nombre de `clk_per_bit` n'est pas fixe, il nous est difficile de savoir quand une lecture va commencer.
 
 ## 6. Analyse des résultats
 
 Nous avons maintenant un système complet qui permet de vérifier la communication entre les deux agents et ainsi lancer des scénarios couvrant la major partie du fonctionnement du `DUV`.
 
-Le lancement de tous les scénarios , hormis les tests 11 et 12, nous donne de bons résultats. 
+Le lancement de tous les scénarios , hormis les tests 11 et 12, nous donne de bons résultats.
 
 Afin de nous assurer de la bonne implémentation des tests ainsi que la pertinence des scénarios, nous avons exécuté le tout avec des valeurs `ERRNO` entre `10` et `16` qui génère incohérences dans les données envoyées et reçues.
 
@@ -469,7 +483,7 @@ Cest test ont été insérés dans `Questa Verification Run Manager`. En voici l
 
 ![alt text](image-3.png)
 
-La durée des tests confirme la pertinence de notre coverage en atteignant les `100%` au bout de `~ 2 [min]`. 
+La durée des tests confirme la pertinence de notre coverage en atteignant les `100%` au bout de `~ 2 [min]`.
 
 ## 7. Conclusion
 
