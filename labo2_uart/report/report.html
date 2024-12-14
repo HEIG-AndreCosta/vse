@@ -1,0 +1,622 @@
+<!DOCTYPE html><html><head>
+      <title>report</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      
+        <script type="text/javascript">
+          window.MathJax = ({"tex":{"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]]},"options":{},"loader":{}});
+        </script>
+        <script type="text/javascript" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" charset="UTF-8"></script>
+        
+      
+      
+      
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#000;background:0 0;text-shadow:0 1px #fff;font-family:Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.5;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}code[class*=language-] ::-moz-selection,code[class*=language-]::-moz-selection,pre[class*=language-] ::-moz-selection,pre[class*=language-]::-moz-selection{text-shadow:none;background:#b3d4fc}code[class*=language-] ::selection,code[class*=language-]::selection,pre[class*=language-] ::selection,pre[class*=language-]::selection{text-shadow:none;background:#b3d4fc}@media print{code[class*=language-],pre[class*=language-]{text-shadow:none}}pre[class*=language-]{padding:1em;margin:.5em 0;overflow:auto}:not(pre)>code[class*=language-],pre[class*=language-]{background:#f5f2f0}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal}.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#708090}.token.punctuation{color:#999}.namespace{opacity:.7}.token.boolean,.token.constant,.token.deleted,.token.number,.token.property,.token.symbol,.token.tag{color:#905}.token.attr-name,.token.builtin,.token.char,.token.inserted,.token.selector,.token.string{color:#690}.language-css .token.string,.style .token.string,.token.entity,.token.operator,.token.url{color:#a67f59;background:hsla(0,0%,100%,.5)}.token.atrule,.token.attr-value,.token.keyword{color:#07a}.token.function{color:#dd4a68}.token.important,.token.regex,.token.variable{color:#e90}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.token.entity{cursor:help}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#555;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#030303}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#7e7e7e}html body strong{color:#030303}html body del{color:#7e7e7e}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#7e7e7e;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#030303}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#030303;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#030303;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#030303;page-break-after:avoid}html body blockquote{color:#7e7e7e}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script></head><body for="html-export">
+    
+    
+      <div class="crossnote markdown-preview  ">
+      
+<img src="logo.png" style="height:80px;">
+<h1 id="center-laboratoire-n02"><center> Laboratoire n°02 </center></h1>
+<h1 id="center-uart"><center> UART </center></h1>
+<h2 id="centerdépartement--tic"><center>Département : TIC </center></h2>
+<h2 id="centerunité-denseignement-vse"><center>unité d’enseignement VSE </center></h2>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<p>Auteur: <strong>Andrè Costa &amp; Alexandre Iorio</strong></p>
+<p>Professeur: <strong>Yann Thoma</strong></p>
+<p>Assistant : <strong>-</strong></p>
+<p>Salle de labo : <strong>A07</strong></p>
+<p>Date : <strong>13.12.2024</strong></p>
+<h2 id="centertable-des-matières"><center>Table des matières </center></h2>
+<div class="code-chunk" data-id="code-chunk-id-0" data-cmd="toc"><div class="input-div"><div class="code-chunk-btn-group"><div class="run-btn btn btn-xs btn-primary"><span>▶︎</span></div><div class="run-all-btn btn btn-xs btn-primary">all</div></div><div class="status">running...</div></div><div class="output-div"></div></div><ul>
+<li><a href="#1-introduction">1. Introduction</a></li>
+<li><a href="#2-analyse-du-probl%C3%A8me">2. Analyse du Problème</a></li>
+<li><a href="#3-architecture">3. Architecture</a>
+<ul>
+<li><a href="#33-responsabilit%C3%A9s-des-composants">3.3 Responsabilités des composants</a>
+<ul>
+<li><a href="#331-avalon-agent">3.3.1 Avalon Agent</a></li>
+<li><a href="#332-uart-agent">3.3.2 UART Agent</a></li>
+<li><a href="#333-scoreboards">3.3.3 Scoreboards</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#4-impl%C3%A9mentation">4. Implémentation</a>
+<ul>
+<li><a href="#41-donn%C3%A9es-trait%C3%A9es-pas-le-driver-de-lagent-avalon">4.1 Données traitées pas le driver de l'agent Avalon</a></li>
+<li><a href="#42-driver-avalon">4.2 Driver Avalon</a></li>
+<li><a href="#43-driver-uart">4.3 Driver UART</a></li>
+<li><a href="#44-monitor-uart">4.4 Monitor UART</a></li>
+<li><a href="#45-scoreboards">4.5 Scoreboards</a></li>
+<li><a href="#46-difficult%C3%A9s-rencontr%C3%A9es-et-solutions">4.6 Difficultés rencontrées et solutions</a>
+<ul>
+<li><a href="#461-arr%C3%AAt-pr%C3%A9matur%C3%A9-de-la-simulation">4.6.1. Arrêt prématuré de la simulation</a></li>
+<li><a href="#462-quantit%C3%A9-de-donn%C3%A9es-%C3%A0-lire-inconnue-du-c%C3%B4t%C3%A9-avalon">4.6.2. Quantité de données à lire inconnue du côté Avalon</a></li>
+<li><a href="#462-le-probl%C3%A8me-de-1h-du-matin-de-andr%C3%A9-le-bg-trop-fort">4.6.2. Le problème de 1h du matin de André le BG trop fort</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#5-tests">5. Tests</a>
+<ul>
+<li><a href="#51-sc%C3%A9narios-de-test">5.1 Scénarios de test</a>
+<ul>
+<li><a href="#511---test-1-d%C3%A9criture">5.1.1. - Test 1 d'écriture</a></li>
+<li><a href="#512---test-2-de-lecture">5.1.2. - Test 2 de lecture</a></li>
+<li><a href="#513---test-3-%C3%A0-5-du-registre-de-status">5.1.3. - Test 3 à 5 du registre de status</a></li>
+<li><a href="#514---test-6-des-valeurs-limites-boundaries">5.1.4 - Test 6 des valeurs limites Boundaries</a></li>
+<li><a href="#515-test-7-de-la-configuration-du-nombre-de-cycles-par-bit">5.1.5 Test 7 de la configuration du nombre de cycles par bit</a></li>
+<li><a href="#516-test-8-avec-des-valeurs-al%C3%A9atoires">5.1.6 Test 8 avec des valeurs aléatoires</a></li>
+<li><a href="#517-test-9-et-10-stress-tests">5.1.7 Test 9 et 10, stress tests</a></li>
+<li><a href="#518-test-11-et-12-tests-baudrate">5.1.8 Test 11 et 12 Tests Baudrate</a></li>
+</ul>
+</li>
+<li><a href="#52-couvertures-des-valeurs">5.2. Couvertures des valeurs</a></li>
+<li><a href="#53-assertions">5.3. Assertions</a></li>
+<li><a href="#54-test-suppl%C3%A9mentaire-possible">5.4. Test supplémentaire possible</a></li>
+</ul>
+</li>
+<li><a href="#6-analyse-des-r%C3%A9sultats">6. Analyse des résultats</a></li>
+<li><a href="#7-conclusion">7. Conclusion</a></li>
+</ul>
+<div class="pagebreak"> </div>
+<h2 id="1-introduction">1. Introduction </h2>
+<p>Ce laboratoire a pour objectif de réaliser le développement et la mise en place d'un banc de test pour un composant UART, avec une hiérarchie <code>UVM</code>. Nous verrons dans ce rapport les différentes étapes de développement, les choix d'architecture, les difficultés rencontrées et les résultats obtenus.</p>
+<h2 id="2-analyse-du-problème">2. Analyse du Problème </h2>
+<p>Nous n'avons pas connaissance du contenu du <code>DUV</code> et nous devons nous assurer que les données envoyées et reçues sont correctes. De manière générale, nous savons que le design à vérifier ne comporte pas d'erreur. Nous avons donc à disposition un paramètre <code>ERRNO</code> qui nous permettra de simuler des erreurs.</p>
+<h2 id="3-architecture">3. Architecture </h2>
+<p>L'architecture <code>UVM</code> est structurée de la manière suivante:</p>
+<p><img src="image.png" alt="alt text"></p>
+<div class="pagebreak"> </div>
+<h3 id="33-responsabilités-des-composants">3.3 Responsabilités des composants </h3>
+<p>Afin de bien comprendre l'architecture, nous allons détailler les responsabilités de chaque composant.</p>
+<h4 id="331-avalon-agent">3.3.1 Avalon Agent </h4>
+<ul>
+<li>
+<p><strong>SEQUENCER</strong>: le séquenceur récupérera le <code>testcase</code> à jouer et générera des séquences de transactions à réaliser. Ces séquences seront ensuite transmises au <code>driver</code> via un <code>FIFO</code>.</p>
+</li>
+<li>
+<p><strong>DRIVER</strong>:  le driver est responsable d'envoyer les transactions au <code>DUV</code> via l'interface <code>vif</code> et d'envoyer une copie de la transaction jouée au <code>scorboardtx</code>. Dans le cadre de ce laboratoire, le driver est également responsable de jouer le rôle de <code>monitor</code> et de transmettre les transactions reçues au <code>scorboardrx</code>, cela de manière à simplifier l'architecture.</p>
+</li>
+</ul>
+<h4 id="332-uart-agent">3.3.2 UART Agent </h4>
+<ul>
+<li>
+<p><strong>SEQUENCER</strong>: comme le séquenceur de l'agent <code>Avalon</code>, le séquenceur récupérera le <code>testcase</code> à jouer et générera des séquences de transactions à réaliser. Ces séquences seront ensuite transmises au <code>driver</code> via un <code>FIFO</code>.</p>
+</li>
+<li>
+<p><strong>DRIVER</strong>: le driver est responsable d'envoyer les transactions au <code>DUV</code> via l'interface <code>vif</code> et d'envoyer une copie de la transaction jouée au <code>scorboardtx</code>.</p>
+</li>
+<li>
+<p><strong>MONITOR</strong>: le monitor est responsable de récupérer les transactions reçues par le <code>DUV</code> et de les transmettre au <code>scorboardrx</code>.</p>
+</li>
+</ul>
+<h4 id="333-scoreboards">3.3.3 Scoreboards </h4>
+<ul>
+<li>
+<p><strong>SCOREBOARDTX</strong>: le scoreboardtx est responsable de vérifier que les transactions envoyées par le <code>driver</code> de l'agent <code>Avalon</code> sont similaires à celle reçue du <code>monitor</code> de l'agent <code>UART</code>. Il compare les transactions et informe l'utilisateur en cas d'erreur.</p>
+</li>
+<li>
+<p><strong>SCOREBOARDRX</strong>: le scoreboardrx est responsable de vérifier que les transactions envoyées par le <code>driver</code> de l'agent <code>UART</code> sont similaires à celle reçue par le <code>driver</code> de l'agent <code>Avalon</code>. Il compare les transactions et informe l'utilisateur en cas d'erreur.</p>
+</li>
+</ul>
+<div class="pagebreak"> </div>
+<h2 id="4-implémentation">4. Implémentation </h2>
+<p>Afin de pouvoir implémenter les différents systèmes, nous avons admis un <code>baudrate</code> unique de <code>9600 [baud]</code>, ainsi qu'une taille de données <code>DATASIZE</code> de <code>20 [bit]</code>.
+De plus, pour pouvoir valider et comprendre le fonctionnement du <code>DUV</code> nous avons décidé d'implémenter en premier le <code>driver</code> du côté de l'agent <code>Avalon</code>. Une donnée a été passée au duv et nous avons remarqué que la sortie <code>tx_o</code> du <code>vif</code> du côté <code>UART</code> était correctement mise à jour. Nous avons ensuite implémenté le <code>driver</code> du côté de l'agent <code>UART</code> et nous avons pu constater que la donnée était correctement reçue du côté <code>Avalon</code>. Dès lors nous sommes capables de communiquer entre les deux agents. Nous avons donc pu implémenter la partie vérification avec l'architecture <code>UVM</code>.</p>
+<h3 id="41-données-traitées-pas-le-driver-de-lagent-avalon">4.1 Données traitées pas le driver de l'agent Avalon </h3>
+<p>Pour permettre au <code>driver</code> de l'agent <code>Avalon</code> de transmettre des données au <code>DUV</code>, une <code>class</code> <code>avalon_transaction</code> a été définie. Cette <code>class</code> contient les propriétés suivantes:</p>
+<pre data-role="codeBlock" data-info="systemverilog" class="language-systemverilog systemverilog"><code>  avalon_transaction_type_t transaction_type;
+  rand logic [31:0] data;
+  logic [31:0] clk_to_wait_before_transaction;
+</code></pre><p>Ces trois propriétés permettent de définir la donnée à manipuler, un temps d'attente avant de jouer la transaction ainsi que le type de transaction à jouer.</p>
+<pre data-role="codeBlock" data-info="systemverilog" class="language-systemverilog systemverilog"><code>typedef enum {
+  UART_SEND,
+  UART_READ,
+  SET_CLK_PER_BIT,
+  ASSERT_TX_FIFO_EMPTY,
+  ASSERT_RX_FIFO_FULL,
+  ASSERT_RX_FIFO_EMPTY,
+  ASSERT_RX_FIFO_NOT_EMPTY,
+  ASSERT_TX_FIFO_FULL,
+  ASSERT_TX_FIFO_NOT_EMPTY,
+  ASSERT_CLK_PER_BIT,
+  UART_READ_UNTIL_EMPTY
+} avalon_transaction_type_t;
+</code></pre><p>Ces types seront utilisés pour définir la commande du <code>driver</code> de l'agent <code>Avalon</code>. En voici la description:</p>
+<ul>
+<li><code>UART_SEND</code>, indique au driver de l'agent <code>Avalon</code> de transmettre une donnée au <code>DUV</code> en écrivant dans le registre ``1<code> </code>.</li>
+<li><code>UART_READ</code>, indique au driver de l'agent <code>Avalon</code> de lire une donnée du <code>DUV</code> en lisant le registre ``2<code> </code>.</li>
+<li><code>SET_CLK_PER_BIT</code>, indique au driver de l'agent <code>Avalon</code> de configurer le <code>DUV</code> en écrivant dans le registre ``3<code> </code>.</li>
+<li><code>ASSERT_TX_FIFO_EMPTY</code> indique au driver de vérifier que le buffer <code>tx</code> est vide - Lecture du registre <code>0</code>  et vérification des bits <code>0</code>  et <code>3</code></li>
+<li><code>ASSERT_RX_FIFO_FULL</code> indique au driver de vérifier que le buffer <code>rx</code> est plein - Lecture du registre <code>0</code>  et vérification des bits <code>1</code>  et <code>2</code></li>
+<li><code>ASSERT_RX_FIFO_EMPTY</code> indique au driver de vérifier que le buffer <code>rx</code> est vide - Lecture du registre <code>0</code>  et vérification des bits <code>1</code>  et <code>2</code></li>
+<li><code>ASSERT_RX_FIFO_NOT_EMPTY</code> indique au driver de vérifier que le buffer <code>rx</code> n'est pas vide - Lecture du registre <code>0</code>  et vérification du bit <code>2</code></li>
+<li><code>ASSERT_TX_FIFO_FULL</code> indique au driver de vérifier que le buffer <code>tx</code> est plein - Lecture du registre <code>0</code>  et vérification des bits <code>0</code>  et <code>3</code></li>
+<li><code>ASSERT_TX_FIFO_NOT_EMPTY</code> indique au driver de vérifier que le buffer <code>tx</code> n'est pas vide - Lecture du registre <code>0</code>  et vérification du bit <code>3</code></li>
+<li><code>ASSERT_CLK_PER_BIT</code> indique au driver de vérifier que le baudrate est correct - Lecture du registre <code>3</code></li>
+<li><code>UART_READ_UNTIL_EMPTY</code> indique au driver de lire toutes les données du buffer <code>rx</code> - Lecture du registre <code>2</code>  jusqu'à ce que le buffer <code>rx</code> soit vide</li>
+</ul>
+<div class="pagebreak"> </div>
+<h3 id="42-driver-avalon">4.2 Driver Avalon </h3>
+<p>Le <code>driver</code> de l'agent <code>Avalon</code> est relativement complexe. En effet, il doit être capable d'interagir avec les différents registres du <code>DUV</code>. Ces registres sont nécessaires pour configurer le <code>DUV</code>, pour transmettre et récupérer des données ainsi que pour connaitre l'état de la fifo de réception et d'envoi.</p>
+<table>
+<thead>
+<tr>
+<th>Address</th>
+<th style="text-align:center">Size</th>
+<th style="text-align:center">Direction</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0x0</code></td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">Read</td>
+<td style="text-align:left">Status register</td>
+</tr>
+<tr>
+<td><code>0x1</code></td>
+<td style="text-align:center">20</td>
+<td style="text-align:center">Write</td>
+<td style="text-align:left">Send register</td>
+</tr>
+<tr>
+<td><code>0x2</code></td>
+<td style="text-align:center">20</td>
+<td style="text-align:center">Read</td>
+<td style="text-align:left">Receive register</td>
+</tr>
+<tr>
+<td><code>0x3</code></td>
+<td style="text-align:center">32</td>
+<td style="text-align:center">Read / Write</td>
+<td style="text-align:left">Configuration : cycle / bit</td>
+</tr>
+</tbody>
+</table>
+<p>Les valeurs obtenues lors de la lecture du registre de status à l'adresse <code>0x0</code> sont les suivantes:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Bit</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>0</code></td>
+<td style="text-align:left">Send buffer full</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>1</code></td>
+<td style="text-align:left">Receive buffer full</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>2</code></td>
+<td style="text-align:left">number of élément inside receive buffer</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>3</code></td>
+<td style="text-align:left">Send buffer empty</td>
+</tr>
+</tbody>
+</table>
+<p>Le <code>driver</code> de l'agent <code>Avalon</code> recevra les transactions du séquenceur et en fonction de la commande afféctée, il jouera la transaction correspondante grâce à sa tâche:</p>
+<pre data-role="codeBlock" data-info="systemverilog" class="language-systemverilog systemverilog"><code>  task do_transaction(avalon_transaction transaction);
+</code></pre><p>Cette <code>task</code> contient un <code>Switch case</code> relatif à la propriété <code>transaction_type</code> du paramètre <code>transaction</code>. En fonction de la valeur de cette propriété, le <code>driver</code> jouera la transaction correspondante.</p>
+<p>Afin de pouvoir exécuter tous les types de transaction, le driver implémente les <code>task</code> suivantes:</p>
+<pre data-role="codeBlock" data-info="systemverilog" class="language-systemverilog systemverilog"><code>    task do_read(logic [13:0] address);
+    task do_write(logic [13:0] address, logic [31:0] data);
+</code></pre><p>Si une commande de lecture ou d'écriture est reçue, le driver transmettra la transaction au <code>DUV</code> via l'interface <code>vif</code> et enverra une copie de la transaction au <code>scoreboardtx</code> ou au <code>scoreboardrx</code>.</p>
+<p>Dans le cas où une commande de vérification est reçue, le driver lira le registre correspondant et vérifiera que les valeurs sont correctes. Si une erreur est détectée, une assertion sera levée. Aucune copie de la transaction ne sera envoyée au <code>scoreboardtx</code> ou au <code>scoreboardrx</code>.</p>
+<p>Pour terminer, si le driver reçoit une commande de configuration, il configurera le <code>DUV</code> en écrivant dans le registre correspondant. Aucune copie de la transaction ne sera envoyée au <code>scoreboardtx</code> ou au <code>scoreboardrx</code>.</p>
+<h3 id="43-driver-uart">4.3 Driver UART </h3>
+<p>Le <code>driver</code> de l'agent <code>UART</code> est relativement simple. Il doit envoyer des données au <code>DUV</code> via le <code>vif</code> sur l'entrée <code>rx_i</code>. Le baudrate définit est identique à celui de l'agent <code>Avalon</code>, à savoir <code>9600 [baud]</code>.</p>
+<p>Pour pouvoir effectuer cette action, le <code>driver</code> de l'agent <code>UART</code> implémente la <code>task</code> suivante:</p>
+<pre data-role="codeBlock" data-info="verilog" class="language-verilog verilog"><code><span class="token keyword keyword-task">task</span> run<span class="token punctuation">;</span>
+</code></pre><p>Cette task attend simplement une transaction, vérifie si le baudrate n'a pas été changé et écrira la donnée <code>bit</code> par <code>bit</code> en attendant le temps nécessaire entre chaque <code>bit</code>.</p>
+<p>Ce temps nommé <code>ns_per_bit</code> est calculé de la manière suivante:</p>
+<p></p><div class="mathjax-exps">$$ns\_per\_bit = \frac{1'000'000'000}{baudrate}$$</div><p></p>
+<p>pour un baudrate de <code>9600 [baud]</code>, nous obtenons donc:</p>
+<p></p><div class="mathjax-exps">$$ns\_per\_bit = \frac{1'000'000'000}{9600} = 104166.\overline{6} [ns]$$</div><p></p>
+<p>Bien entendu, la transaction jouée par le <code>driver</code> de l'agent <code>UART</code> est également envoyée au <code>scoreboardrx</code> pour vérification.</p>
+<div class="pagebreak"> </div>
+<h3 id="44-monitor-uart">4.4 Monitor UART </h3>
+<p>Le <code>monitor</code> de l'agent <code>UART</code> est responsable de récupérer les transactions reçues par le <code>DUV</code> et de les transmettre au <code>scorboardrx</code>. Pour ce faire, le <code>monitor</code> fonctionne comme le <code>driver</code> de <code>UART</code> mais en lisant les données reçues par le <code>DUV</code> sur la sortie <code>tx_o</code> du <code>vif</code>.</p>
+<p>En fonction de la précision du temps d'attente entre la lecture de chaque <code>bits</code> nous ne pouvons pas lire de manière complètement synchronisée avec l'écriture du <code>driver</code> de l'agent <code>Avalon</code>. Afin de garantir que la lecture du bit désirée est correcte, nous avons décidé de décaler le début de la lecture de:</p>
+<p></p><div class="mathjax-exps">$$offset\_start = \frac{ns\_per\_bit}{2}$$</div><p></p>
+<p>pour un baudrate de <code>9600 [baud]</code>, nous obtenons donc:</p>
+<p></p><div class="mathjax-exps">$$offset\_start = \frac{104166.\overline{6}}{2} = 52083.\overline{3} [ns]$$</div><p></p>
+<p>Cela permet de lire le bit au milieu de la période d'écriture du <code>bit</code> par le <code>driver</code> de l'agent <code>Avalon</code>.</p>
+<h3 id="45-scoreboards">4.5 Scoreboards </h3>
+<p>Étant donné que nous sommes en mesure de récupère les données transmises et reçues par le <code>DUV</code> via les différents composants de notre architecture, nous pouvons implémenter les <code>scoreboards</code>.</p>
+<p>L'implémentation des scorboards est relativement simple et fonctionne, pour les deux <code>scoreboards</code>, de la manière suivante:</p>
+<ul>
+<li>Récupération de la transaction envoyée par l'un  des <code>driver</code></li>
+<li>Récupération de la transaction reçue par l'autre <code>driver</code> pour l'agent <code>Avalon</code> ou le <code>monitor</code> pour l'agent <code>UART</code></li>
+<li>Vérification de la commande de la transaction et levée d'une assertion en cas de commande incorrecte.</li>
+<li>Comparaison des données envoyées et reçues, comptabilisation des erreurs et informations de l'utilisateur.</li>
+</ul>
+<h3 id="46-difficultés-rencontrées-et-solutions">4.6 Difficultés rencontrées et solutions </h3>
+<p>Lors du développement de ce laboratoire, nous avons rencontré quelques difficultés. Afin de les résoudre, nous avons mis en place les solutions suivantes:</p>
+<h4 id="461-arrêt-prématuré-de-la-simulation">4.6.1. Arrêt prématuré de la simulation </h4>
+<p>Lors de nos premiers tests de transmission, nous avons subi des arrêts de simulation prématurés, en effet, nous avions que la moitié du premier bit envoyé. Après avoir investigué, nous avons constaté que le <code>driver</code> nous n'implémentions pas le principe d'<code>objection</code> permettant d'informer l'environnement que nous sommes en train d'effectuer un travail et que le test bench doit attendre que cette objection soit désactivée.</p>
+<p>Pour cela nous avons ajouté aux composants qui effectuent des tâches qui dépasserait la durée du <code>drain_time</code> de <code>210'000 [ns]</code> , une <code>objection</code> de type <code>raise</code>avant de débuter la tache. Une fois terminé, nous utilisons l'objection de type <code>drop</code> qui laissera le test bench s'arrêter si plus aucun travail n'est à faire.</p>
+<p>Voici les éléments qui ont nécessité l'ajout d'une <code>objection</code>:</p>
+<ul>
+<li><strong>Scoreboard TX et RX</strong>: Lors du traitement des deux transactions reçues</li>
+<li><strong>Driver Avalon</strong>: lors de l'exécution d'une transaction (lecture, écriture, etc.)</li>
+<li><strong>Driver UART</strong>: lors de l'envoi d'une donnée</li>
+<li><strong>Moniteur UART</strong>: Lors de la détection du bit de start jusqu'à la fin de la lecture des données</li>
+</ul>
+<h4 id="462-quantité-de-données-à-lire-inconnue-du-côté-avalon">4.6.2. Quantité de données à lire inconnue du côté Avalon </h4>
+<p>Selon le scénario de test, par exemple, lors de tests de couvertures, nous pouvons être dans une situation où nous ne savons pas combien de données seront envoyées du côté UART. Le driver <code>Avalon</code> ne sait pas combien de données il doit lire.</p>
+<p>Nous avons décidé de rajouter une commande <code>UART_READ_UNTIL_EMPTY</code> qui permet de lire toutes les données de la FIFO RX. Cette commande est envoyée par le séquenceur <code>Avalon</code> et permet de lire toutes les données reçues sans savoir combien il y en a.</p>
+<h4 id="462-le-problème-de-1h-du-matin-de-andré-le-bg-trop-fort">4.6.2. Le problème de 1h du matin de André le BG trop fort </h4>
+<p>//TODO expliquer le problème et la solution stp</p>
+<h2 id="5-tests">5. Tests </h2>
+<p>Nous avons maintenant un système complet qui permet de vérifier la communication entre les deux agents. Nous allons donc pouvoir réaliser des tests.</p>
+<p>Ces tests seront réalisés selon le un numéro de testcase transmis en argument lors de l'exécution du testbench.</p>
+<p>Dans les séquenceurs, ce numéro de testcase est utilisé pour définir les transactions à jouer.
+Il y a une forte correspondance entre le séquenceur de l'agent <code>Avalon</code> et le séquenceur de l'agent <code>UART</code>. En effet, les deux séquenceurs doivent jouer les mêmes scénarios, mais du point de vue de l'agent qu'ils contrôlent.</p>
+<h3 id="51-scénarios-de-test">5.1 Scénarios de test </h3>
+<p>Afin de garder la même convention tout au long du développement, nous avons décidé que <code>write</code> et <code>read</code> sont toujours du point de vue de l'agent <code>Avalon</code>.
+De ce fait, un read côté <code>Avalon</code> est une écriture côté <code>UART</code> et vice versa.</p>
+<h4 id="511---test-1-décriture">5.1.1. - Test 1 d'écriture </h4>
+<p>Le premier test consiste à vérifier que la donnée que nous écrivons du côté de l'agent <code>Avalon</code> est bien reçue du côté de l'agent <code>UART</code>.
+De plus, nous vérifions que le registre de status de manière à nous assurer que le fifo d'envoi n'est pas vide.</p>
+<h4 id="512---test-2-de-lecture">5.1.2. - Test 2 de lecture </h4>
+<p>Ce deuxième test consiste à vérifier que la donnée que nous écrivons du côté UART est bien reçue du côté Avalon.</p>
+<p>Ici, il devient évident l'utilité d'avoir une façon d'indiquer à notre driver de patienter avant de lire la donnée, en effet, sans cela, le driver <code>Avalon</code> essayerait de lire la donnée avant que le driver <code>UART</code> n'ait eu le temps de l'envoyer.
+De plus, nous vérifions que le registre de status de manière à nous assurer que le fifo de réception n'est pas vide.</p>
+<h4 id="513---test-3-à-5-du-registre-de-status">5.1.3. - Test 3 à 5 du registre de status </h4>
+<p>Les tests 3 à 5 sont des tests qui permettent de vérifier que les flags de status pour les FIFOs sont correctement mis à jour.</p>
+<ul>
+<li><strong>Test 3</strong> - vérifie que la fifo <code>tx</code> est bien détectée comme vide.</li>
+<li><strong>Test 4</strong> - envoie <code>FIFOSIZE + 1</code> données pour vérifier que la fifo <code>tx</code> est bien détectée comme pleine.</li>
+<li><strong>Test 5</strong> - du côté UART, on envoie <code>FIFOSIZE</code> données - du côté Avalon, on attend que la fifo <code>rx</code> soit pleine et on lit toutes les données</li>
+</ul>
+<h4 id="514---test-6-des-valeurs-limites-boundaries">5.1.4 - Test 6 des valeurs limites Boundaries </h4>
+<p>Ce sixième test vérifie ce qu'il se passe avec les données aux limites, c'est-à-dire, l'envoie de 0 et de 2^DATASIZE - 1.
+Ceci est fait en parallèle des deux côtés, UART et Avalon.</p>
+<h4 id="515-test-7-de-la-configuration-du-nombre-de-cycles-par-bit">5.1.5 Test 7 de la configuration du nombre de cycles par bit </h4>
+<p>Le septième test vérifie que la configuration que nous écrivons dans le registre <code>3</code> est bien prise en compte.</p>
+<h4 id="516-test-8-avec-des-valeurs-aléatoires">5.1.6 Test 8 avec des valeurs aléatoires </h4>
+<p>Le huitième test consiste à envoyer des valeurs aléatoires jusqu'à ce qu'une certaine quantité de valeur aient été couvertes.</p>
+<h4 id="517-test-9-et-10-stress-tests">5.1.7 Test 9 et 10, stress tests </h4>
+<p>Ces tests sont les derniers tests automatiques que nous avons implémentés.</p>
+<p>Pour finisaliser les tests automatiques, nous avons ajouté deux tests de stress, un test RX et un test TX.</p>
+<p>Pour le test <code>tx</code> et <code>rx</code>, nous transmettons des données et nous nous assurons de la maintenir les fifo relatives à <code>tx</code> ou <code>rx</code> pleines pendant toute la durée du test.</p>
+<p>La durée du test s'étend sur l'envoi de <code>FIFOSIZE * 10</code> données.</p>
+<h4 id="518-test-11-et-12-tests-baudrate">5.1.8 Test 11 et 12 Tests Baudrate </h4>
+<p>Ces tests ne sont pas des test automatiques, et le <code>testcase 0</code> ne les lancera pas. Ce sont des tests qui produisent des erreurs.</p>
+<p>En effet, ces tests vont, du côté Uart, envoyer des données avec un baudrate incorrect, qui va s'incrémenter/décrémenter gentiment.
+Ceci permet de voir à quel moment le DUV n'arrive plus à lire les données correctement.</p>
+<p>Ici nous pouvons voir que le DUV arrive à bien travailler avec un baudrate entre ~9300 et ~9900 pour un baudrate défini à 9600.</p>
+<p>Voici l'output des tests:</p>
+<p><strong>Test 11 - Baudrate trop haut</strong></p>
+<p><img src="image-1.png" alt="alt text"></p>
+<p><strong>Test 12 - Baudrate trop bas</strong></p>
+<p><img src="image-1.png" alt="alt text"></p>
+<h3 id="52-couvertures-des-valeurs">5.2. Couvertures des valeurs </h3>
+<p>Pour le <code>testcase 8</code> nous avons ajouté une couverture des valeurs pour les données envoyées et reçues.
+Afin de rester pertinant et ne pas impacter trop fortement la charge de calcul, nous avons décidé d'ajouter dans la class <code>avalon_transaction</code> le covergroup suivant:</p>
+<pre data-role="codeBlock" data-info="verilog" class="language-verilog verilog"><code><span class="token keyword keyword-covergroup">covergroup</span> cov_group<span class="token punctuation">;</span>
+    cov_data<span class="token punctuation">:</span> <span class="token keyword keyword-coverpoint">coverpoint</span> data<span class="token punctuation">[</span>DATASIZE<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">{</span>
+      <span class="token keyword keyword-bins">bins</span> petit <span class="token operator">=</span> <span class="token operator">{</span><span class="token punctuation">[</span><span class="token number">0</span> <span class="token punctuation">:</span> <span class="token function">max_value</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token operator">}</span><span class="token punctuation">;</span>
+      <span class="token keyword keyword-bins">bins</span> grand <span class="token operator">=</span> <span class="token operator">{</span><span class="token punctuation">[</span><span class="token function">max_value</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token punctuation">(</span><span class="token function">max_value</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">4</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token function">max_value</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token operator">}</span><span class="token punctuation">;</span>
+      <span class="token keyword keyword-bins">bins</span> all_values<span class="token punctuation">[</span>DATASIZE<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token operator">{</span><span class="token punctuation">[</span><span class="token function">max_value</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">4</span> <span class="token operator">+</span> <span class="token number">1</span> <span class="token punctuation">:</span> <span class="token function">max_value</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token punctuation">(</span><span class="token function">max_value</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">4</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">}</span><span class="token punctuation">;</span>
+    <span class="token operator">}</span>
+  <span class="token keyword keyword-endgroup">endgroup</span>
+</code></pre><p>Ce covergroup nous semble raisonnable, car il permet de vérifier que les valeurs limites sont bien couvertes ainsi que les valeurs intermédiaires.</p>
+<h3 id="53-assertions">5.3. Assertions </h3>
+<p>En plus de la simulation, nous avons remarqué la possibilité d'y ajouter des assertions qui aident à la vérification du système.</p>
+<p>Typiquement, le fait que <code>byte_enable_i</code> n'est pas utilisé, ou, que, lors d'une lecture, la donnée est valide le coup de clock suivant nous avons pu retranscrire ces assertions de la manière suivante:</p>
+<pre data-role="codeBlock" data-info="systemverilog" class="language-systemverilog systemverilog"><code>  // En lecture, la donnée est prête un cycle après que avl_read_i est à ’1’.
+  // En lecture, avl_readdatavalid_o s’active lorsque la donnée est disponible.
+  assume_readdatavalid_after_read :
+  assume property (avl_read_i |=&gt; avl_readdatavalid_o);
+
+  //Le signal byteenable n’est pas utilisé.
+  assume_byteenable_is_not_used :
+  assume property (avl_byteenable_i == 8'hf);
+</code></pre><p>En plus, quelques vérifications sur le range des adresses:</p>
+<pre data-role="codeBlock" data-info="systemverilog" class="language-systemverilog systemverilog"><code>    //Valide qu'on n'essaie pas de lire une adresse plus grande que 3
+    assume_address_on_read_is_lower_than_4 :
+    assume property (avl_read_i |-&gt; (avl_address_i &lt; 4));
+
+    //Valide qu'on n'essaie pas d'écrire une adresse plus grande que 3
+    assume_address_on_write_is_lower_than_4 :
+    assume property (avl_write_i |-&gt; avl_address_i &lt; 4);
+</code></pre><p>Sur la cohérence des bits de status:</p>
+<pre data-role="codeBlock" data-info="systemverilog" class="language-systemverilog systemverilog"><code>  // Vérifie que le status du buffer tx est cohérent
+  // i.e le status vide et le status plein ne sont pas les deux à 1
+  assume_status_register_tx_fifo_status_coherence :
+  assume property (avl_read_i &amp;&amp; (avl_address_i == 0)
+    |=&gt; (avl_readdata_o[3] == 0 || (avl_readdata_o[3] != avl_readdata_o[0])));
+
+
+  // Vérifie que le status du buffer rx est cohérent
+  // i.e si le buffer est plein, il faut aussi que le registre indique un
+  // élément disponible
+  assume_status_register_rx_fifo_status_coherence :
+  assume property (avl_read_i &amp;&amp; (avl_address_i == 0) ##1 avl_readdata_o[1] |-&gt; avl_readdata_o[2]);
+</code></pre><p>Sur les protocole UART et Avalon:</p>
+<pre data-role="codeBlock" data-info="systemverilog" class="language-systemverilog systemverilog"><code>  //En écriture, avl_waitrequest_o permet de faire patienter le master
+  // selon le fonctionnement normal du bus avalon.
+  assume_wait_request_is_respected :
+  assume property (avl_waitrequest_o &amp;&amp; avl_write_i |=&gt; avl_write_i &amp;&amp; (avl_writedata_i == $past(
+      avl_writedata_i
+  )));
+
+  // vérifie que la ligne tx_o repasse `eventuellement` à 1
+  assume_tx_eventually_goes_back_to_1 :
+  assume property ($fell(tx_o) |=&gt; ##[0:$] tx_o == 1);
+
+  // vérifie que la ligne rx_i repasse `eventuellement` à 1
+  assume_rx_eventually_goes_back_to_1 :
+  assume property ($fell(rx_i) |=&gt; ##[0:$] rx_i == 1);
+</code></pre><h3 id="54-test-supplémentaire-possible">5.4. Test supplémentaire possible </h3>
+<p>Il aurait été idéal de pousser ces vérifications plus loin, en vérifiant par exemple que la ligne <code>tx</code> passe à <code>1</code> au bout de <code>DATASIZE * clk_per_bit</code>.
+Étant donné que le nombre de <code>clk_per_bit</code> n'est pas fixe, il nous est difficile de savoir quand une lecture va commencer.</p>
+<h2 id="6-analyse-des-résultats">6. Analyse des résultats </h2>
+<p>Nous avons maintenant un système complet qui permet de vérifier la communication entre les deux agents et ainsi lancer des scénarios couvrant la major partie du fonctionnement du <code>DUV</code>.</p>
+<p>Le lancement de tous les scénarios , hormis les tests 11 et 12, nous donne de bons résultats.</p>
+<p>Afin de nous assurer de la bonne implémentation des tests ainsi que la pertinence des scénarios, nous avons exécuté le tout avec des valeurs <code>ERRNO</code> entre <code>10</code> et <code>16</code> qui génère incohérences dans les données envoyées et reçues.</p>
+<p>Cest test ont été insérés dans <code>Questa Verification Run Manager</code>. En voici la sortie:</p>
+<p><img src="image-3.png" alt="alt text"></p>
+<p>La durée des tests confirme la pertinence de notre coverage en atteignant les <code>100%</code> au bout de <code>~ 2 [min]</code>.</p>
+<h2 id="7-conclusion">7. Conclusion </h2>
+<p>Ce laboratoire nous a permis de concevoir et de mettre en œuvre un banc de test en SystemVerilog pour vérifier un périphérique UART. En intégrant des drivers, moniteurs, scoreboards, assertions et objections, nous avons créé un environnement de test robuste couvrant divers scénarios, incluant les cas limites, stress tests, et configurations aléatoires.</p>
+<p>Les tests ont confirmé le bon fonctionnement du périphérique dans des conditions normales et identifié les limites lors de l'utilisation de baudrates non conformes. Les assertions ont renforcé la vérification en garantissant le respect des protocoles UART et Avalon.</p>
+<p>Ce projet a démontré l'importance d'une approche méthodique en vérification, en mettant en avant la précision nécessaire pour synchroniser les composants et gérer efficacement les transactions. Ce fut une excellente opportunité d’approfondir nos compétences en vérification tout en validant un système complexe.</p>
+
+      </div>
+      <div class="md-sidebar-toc">
+<div class="md-toc">
+<div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:18px">
+          <a href="#1-introduction" class="md-toc-link">
+            <ol>
+<li>Introduction</li>
+</ol>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:18px">
+          <a href="#2-analyse-du-problème" class="md-toc-link">
+            <ol start="2">
+<li>Analyse du Problème</li>
+</ol>
+
+          </a></div><details style="padding:0;;padding-left:0px;" open="">
+        <summary class="md-toc-link-wrapper">
+          <a href="#3-architecture" class="md-toc-link"><ol start="3">
+<li>Architecture</li>
+</ol>
+</a>
+          </summary>
+        <div>
+          <details style="padding:0;;padding-left:24px;" open="">
+        <summary class="md-toc-link-wrapper">
+          <a href="#33-responsabilités-des-composants" class="md-toc-link"><p>3.3 Responsabilités des composants</p>
+</a>
+          </summary>
+        <div>
+          <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#331-avalon-agent" class="md-toc-link">
+            <p>3.3.1 Avalon Agent</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#332-uart-agent" class="md-toc-link">
+            <p>3.3.2 UART Agent</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#333-scoreboards" class="md-toc-link">
+            <p>3.3.3 Scoreboards</p>
+
+          </a></div>
+        </div>
+      </details>
+    
+        </div>
+      </details>
+    <details style="padding:0;;padding-left:0px;" open="">
+        <summary class="md-toc-link-wrapper">
+          <a href="#4-implémentation" class="md-toc-link"><ol start="4">
+<li>Implémentation</li>
+</ol>
+</a>
+          </summary>
+        <div>
+          <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#41-données-traitées-pas-le-driver-de-lagent-avalon" class="md-toc-link">
+            <p>4.1 Données traitées pas le driver de l'agent Avalon</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#42-driver-avalon" class="md-toc-link">
+            <p>4.2 Driver Avalon</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#43-driver-uart" class="md-toc-link">
+            <p>4.3 Driver UART</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#44-monitor-uart" class="md-toc-link">
+            <p>4.4 Monitor UART</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#45-scoreboards" class="md-toc-link">
+            <p>4.5 Scoreboards</p>
+
+          </a></div><details style="padding:0;;padding-left:24px;" open="">
+        <summary class="md-toc-link-wrapper">
+          <a href="#46-difficultés-rencontrées-et-solutions" class="md-toc-link"><p>4.6 Difficultés rencontrées et solutions</p>
+</a>
+          </summary>
+        <div>
+          <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#461-arrêt-prématuré-de-la-simulation" class="md-toc-link">
+            <p>4.6.1. Arrêt prématuré de la simulation</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#462-quantité-de-données-à-lire-inconnue-du-côté-avalon" class="md-toc-link">
+            <p>4.6.2. Quantité de données à lire inconnue du côté Avalon</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#462-le-problème-de-1h-du-matin-de-andré-le-bg-trop-fort" class="md-toc-link">
+            <p>4.6.2. Le problème de 1h du matin de André le BG trop fort</p>
+
+          </a></div>
+        </div>
+      </details>
+    
+        </div>
+      </details>
+    <details style="padding:0;;padding-left:0px;" open="">
+        <summary class="md-toc-link-wrapper">
+          <a href="#5-tests" class="md-toc-link"><ol start="5">
+<li>Tests</li>
+</ol>
+</a>
+          </summary>
+        <div>
+          <details style="padding:0;;padding-left:24px;" open="">
+        <summary class="md-toc-link-wrapper">
+          <a href="#51-scénarios-de-test" class="md-toc-link"><p>5.1 Scénarios de test</p>
+</a>
+          </summary>
+        <div>
+          <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#511---test-1-décriture" class="md-toc-link">
+            <p>5.1.1. - Test 1 d'écriture</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#512---test-2-de-lecture" class="md-toc-link">
+            <p>5.1.2. - Test 2 de lecture</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#513---test-3-à-5-du-registre-de-status" class="md-toc-link">
+            <p>5.1.3. - Test 3 à 5 du registre de status</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#514---test-6-des-valeurs-limites-boundaries" class="md-toc-link">
+            <p>5.1.4 - Test 6 des valeurs limites Boundaries</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#515-test-7-de-la-configuration-du-nombre-de-cycles-par-bit" class="md-toc-link">
+            <p>5.1.5 Test 7 de la configuration du nombre de cycles par bit</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#516-test-8-avec-des-valeurs-aléatoires" class="md-toc-link">
+            <p>5.1.6 Test 8 avec des valeurs aléatoires</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#517-test-9-et-10-stress-tests" class="md-toc-link">
+            <p>5.1.7 Test 9 et 10, stress tests</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#518-test-11-et-12-tests-baudrate" class="md-toc-link">
+            <p>5.1.8 Test 11 et 12 Tests Baudrate</p>
+
+          </a></div>
+        </div>
+      </details>
+    <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#52-couvertures-des-valeurs" class="md-toc-link">
+            <p>5.2. Couvertures des valeurs</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#53-assertions" class="md-toc-link">
+            <p>5.3. Assertions</p>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:42px">
+          <a href="#54-test-supplémentaire-possible" class="md-toc-link">
+            <p>5.4. Test supplémentaire possible</p>
+
+          </a></div>
+        </div>
+      </details>
+    <div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:18px">
+          <a href="#6-analyse-des-résultats" class="md-toc-link">
+            <ol start="6">
+<li>Analyse des résultats</li>
+</ol>
+
+          </a></div><div class="md-toc-link-wrapper" style="padding:0;;display:list-item;list-style:square;margin-left:18px">
+          <a href="#7-conclusion" class="md-toc-link">
+            <ol start="7">
+<li>Conclusion</li>
+</ol>
+
+          </a></div>
+</div>
+</div>
+      <a id="sidebar-toc-btn">≡</a>
+    
+    
+    
+    
+    
+    
+<script>
+
+var sidebarTOCBtn = document.getElementById('sidebar-toc-btn')
+sidebarTOCBtn.addEventListener('click', function(event) {
+  event.stopPropagation()
+  if (document.body.hasAttribute('html-show-sidebar-toc')) {
+    document.body.removeAttribute('html-show-sidebar-toc')
+  } else {
+    document.body.setAttribute('html-show-sidebar-toc', true)
+  }
+})
+</script>
+      
+  
+    </body></html>
