@@ -57,7 +57,7 @@ Date : **13.12.2024**
   - [4.6 Difficultés rencontrées et solutions](#46-difficultés-rencontrées-et-solutions)
     - [4.6.1. Arrêt prématuré de la simulation](#461-arrêt-prématuré-de-la-simulation)
     - [4.6.2. Quantité de données à lire inconnue du côté Avalon](#462-quantité-de-données-à-lire-inconnue-du-côté-avalon)
-    - [4.6.2. Timeout pour certains tests](#462-timeout-pour-certains-tests)
+    - [4.6.3. Timeout pour certains tests](#463-timeout-pour-certains-tests)
 - [5. Tests](#5-tests)
   - [5.1 Scénarios de test](#51-scénarios-de-test)
     - [5.1.1. - Test 1 d'écriture](#511---test-1-décriture)
@@ -224,11 +224,11 @@ Cette task attend simplement une transaction, vérifie si le baudrate n'a pas é
 
 Ce temps nommé `ns_per_bit` est calculé de la manière suivante:
 
-$$ ns_per_bit = \frac{1'000'000'000}{baudrate} $$
+$$ ns\_per\_bit = \frac{1'000'000'000}{baudrate} $$
 
 pour un baudrate de `9600 [baud]`, nous obtenons donc:
 
-$$ ns_per_bit = \frac{1'000'000'000}{9600} = 104166.\overline{6} [ns] $$
+$$ ns\_per\_bit = \frac{1'000'000'000}{9600} = 104166.\overline{6} [ns] $$
 
 Bien entendu, la transaction jouée par le `driver` de l'agent `UART` est également envoyée au `scoreboardrx` pour vérification.
 
@@ -240,11 +240,11 @@ Le `monitor` de l'agent `UART` est responsable de récupérer les transactions r
 
 En fonction de la précision du temps d'attente entre la lecture de chaque `bits` nous ne pouvons pas lire de manière complètement synchronisée avec l'écriture du `driver` de l'agent `Avalon`. Afin de garantir que la lecture du bit désirée est correcte, nous avons décidé de décaler le début de la lecture de:
 
-$$ offset_start = \frac{ns_per_bit}{2} $$
+$$ offset\_start = \frac{ns_per_bit}{2} $$
 
 pour un baudrate de `9600 [baud]`, nous obtenons donc:
 
-$$ offset_start = \frac{104166.\overline{6}}{2} = 52083.\overline{3} [ns] $$
+$$ offset\_start = \frac{104166.\overline{6}}{2} = 52083.\overline{3} [ns] $$
 
 Cela permet de lire le bit au milieu de la période d'écriture du `bit` par le `driver` de l'agent `Avalon`.
 
@@ -284,7 +284,7 @@ Ceci est donc la raison pour laquelle nous avons décidé de rajouter une comman
 
 Cet ajout nous mène à un troisième problème.
 
-#### 4.6.2. Timeout pour certains tests
+#### 4.6.3. Timeout pour certains tests
 
 Si le système marche correctement, cette implémentation ne pose aucun soucis. Cependant, comme nous avons pu constater, si le DUV gère mal l'état de la fifo de réception en indiquant faussement qu'elle n'est pas vide lorsque que le sequenceur `Avalon` envoie la commande `UART_READ_UNTIL_EMPTY`, le driver `Avalon` va lire des données qui n'existent pas vraiment remplissant ainsi la fifo Driver Avalon -> Scoreboard RX. Ceci pose problème car le scoreboard consomme seulement une donnée `Avalon` pour chaque donnée `UART` reçue et comme ces données n'ont pas été envoyées par le driver `UART`, le système restera bloqué.
 
@@ -374,15 +374,21 @@ Ceci permet de voir à quel moment le DUV n'arrive plus à lire les données cor
 
 Ici nous pouvons voir que le DUV arrive à bien travailler avec un baudrate entre ~9300 et ~9900 pour un baudrate défini à 9600.
 
+<!-- pagebreak -->
+
 Voici l'output des tests:
 
 **Test 11 - Baudrate trop haut**
 
 ![alt text](image-1.png)
 
+<!-- pagebreak -->
+
 **Test 12 - Baudrate trop bas**
 
 ![alt text](image-1.png)
+
+<!-- pagebreak -->
 
 ### 5.2. Couvertures des valeurs
 
@@ -439,7 +445,6 @@ Sur la cohérence des bits de status:
   assume property (avl_read_i && (avl_address_i == 0)
     |=> (avl_readdata_o[3] == 0 || (avl_readdata_o[3] != avl_readdata_o[0])));
 
-
   // Vérifie que le status du buffer rx est cohérent
   // i.e si le buffer est plein, il faut aussi que le registre indique un
   // élément disponible
@@ -450,21 +455,19 @@ Sur la cohérence des bits de status:
 Sur les protocole UART et Avalon:
 
 ```systemverilog
-  //En écriture, avl_waitrequest_o permet de faire patienter le master
+  // En écriture, avl_waitrequest_o permet de faire patienter le master
   // selon le fonctionnement normal du bus avalon.
   assume_wait_request_is_respected :
   assume property (avl_waitrequest_o && avl_write_i |=> avl_write_i && (avl_writedata_i == $past(
-      avl_writedata_i
-  )));
-
+      avl_writedata_i)));
   // vérifie que la ligne tx_o repasse `eventuellement` à 1
   assume_tx_eventually_goes_back_to_1 :
   assume property ($fell(tx_o) |=> ##[0:$] tx_o == 1);
-
   // vérifie que la ligne rx_i repasse `eventuellement` à 1
   assume_rx_eventually_goes_back_to_1 :
   assume property ($fell(rx_i) |=> ##[0:$] rx_i == 1);
 ```
+<!-- pagebreak -->
 
 ### 5.4. Tests supplémentaires possible
 
@@ -484,6 +487,8 @@ Cest test ont été insérés dans `Questa Verification Run Manager`. En voici l
 ![alt text](image-3.png)
 
 La durée des tests confirme la pertinence de notre coverage en atteignant les `100%` au bout de `~ 2 [min]`.
+
+<!-- pagebreak -->
 
 ## 7. Conclusion
 
