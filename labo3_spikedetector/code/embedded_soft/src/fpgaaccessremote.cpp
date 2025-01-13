@@ -1,17 +1,15 @@
 #include "fpgaaccessremote.hpp"
 
-#include <iosfwd>
-
+#include <cstdint>
 #include <iostream>
+#include <cstring>
 #include <sstream>
-#include <stdio.h>
-#include <string.h> //strlen
-#include <stdlib.h> //strlen
+#include <cstdlib>
 #include <sys/socket.h>
 #include <arpa/inet.h> //inet_addr
-#include <unistd.h> //write
+#include <unistd.h>
 
-void *FPGAAccess::server()
+void *FpgaAccessRemote::server()
 {
 	int socket_desc, client_sock, c;
 	struct sockaddr_in server, client;
@@ -65,20 +63,16 @@ void *FPGAAccess::server()
 /*
  * This will handle connection for each client
  * */
-void *FPGAAccess::connectionHandler(void *socket_desc)
+void *FpgaAccessRemote::connectionHandler(void *socket_desc)
 {
 	//Get the socket descriptor
 	return nullptr;
 }
 
-FPGAAccess::FPGAAccess()
-{
-}
-
-FPGAAccess::~FPGAAccess()
+FpgaAccessRemote::~FpgaAccessRemote()
 {
 	if (sock != 0) {
-		sendMessage("end_test\n");
+		this->do_send("end_test\n");
 		// Sleep to be sure that data are correctly send
 		sleep(5);
 		shutdown(sock, SHUT_RDWR);
@@ -91,27 +85,27 @@ FPGAAccess::~FPGAAccess()
 		receiverThread.join();
 }
 
-FPGAAccess &FPGAAccess::getInstance()
+FpgaAccessRemote &FpgaAccessRemote::getInstance()
 {
-	static FPGAAccess access;
+	static FpgaAccessRemote access;
 	return access;
 }
 
-void FPGAAccess::init()
+void FpgaAccessRemote::setup()
 {
-	fpgaServerThread = std::thread(&FPGAAccess::server, this);
-	receiverThread = std::thread(&FPGAAccess::receiver, this);
+	fpgaServerThread = std::thread(&FpgaAccessRemote::server, this);
+	receiverThread = std::thread(&FpgaAccessRemote::receiver, this);
 	waitConnection();
 }
 
-void FPGAAccess::waitConnection()
+void FpgaAccessRemote::waitConnection()
 {
 	std::unique_lock<std::mutex> lk(receiveMutex);
 
 	receivedCondVar.wait(lk, [this] { return sock != 0; });
 }
 
-void FPGAAccess::receiver()
+void FpgaAccessRemote::receiver()
 {
 	char clientMessage[2000];
 	char messageCommand[2000];
@@ -143,7 +137,7 @@ void FPGAAccess::receiver()
 	}
 }
 
-std::string FPGAAccess::getData()
+std::string FpgaAccessRemote::getData()
 {
 	std::string message;
 	std::unique_lock<std::mutex> lk(receiveMutex);
@@ -156,90 +150,49 @@ std::string FPGAAccess::getData()
 	return message;
 }
 
-void FPGAAccess::sendMessage(const std::string &message)
+void FpgaAccessRemote::do_send(const std::string &buffer)
 {
-	write(sock, message.data(), strlen(message.data()));
+	write(sock, buffer.data(), buffer.size());
 }
-
-void FPGAAccess::sendMessage(const char *message)
-{
-	write(sock, message, strlen(message));
-}
-
-void FPGAAccess::startAcquisition()
-{
-	sendMessage("wr 1 1\n");
-}
-
-void FPGAAccess::stopAcquisition()
-{
-	sendMessage("wr 1 0\n");
-}
-
-void FPGAAccess::setInterruptHandler(irq_handler_t handler)
-{
-	this->handler = handler;
-}
-
-uint16_t FPGAAccess::getStatus()
+std::string FpgaAccessRemote::do_receive()
 {
 	std::string message;
+	std::unique_lock<std::mutex> lk(receiveMutex);
+
+	receivedCondVar.wait(lk, [this] { return !receivedFifo.empty(); });
+
+	message = receivedFifo.front();
+	receivedFifo.pop();
+
+	return message;
+}
+
+void FpgaAccessRemote::write_register(uint16_t reg, uint16_t value)
+{
+	std::stringstream stream;
+	stream << "wr " << reg << " " << value << std::endl;
+	this->do_send(stream.str());
+}
+
+uint16_t FpgaAccessRemote::read_register(uint16_t reg)
+{
+	{
+		std::stringstream stream;
+		stream << "rd " << reg << std::endl;
+		this->do_send(stream.str());
+	}
+
 	std::string command;
 	uint16_t value;
 
-	sendMessage("rd 0\n");
-
-	message = getData();
-
+	const std::string message = this->do_receive();
 	std::stringstream stream(message);
 	stream >> command >> value;
 
 	return value;
 }
 
-uint16_t FPGAAccess::getWindowsAddress()
+void FpgaAccessRemote::set_callback(irq_handler_t handler)
 {
-	// TODO
-
-	std::string message;
-	std::string command;
-	uint16_t value;
-
-	sendMessage("rd 2\n");
-
-	message = getData();
-
-	std::stringstream stream(message);
-	stream >> command >> value;
-
-	return WINDOW_START_ADDRESS + (value * WINDOW_FULL_SIZE);
-}
-
-void FPGAAccess::readWindow(SpikeWindow *data)
-{
-	// TODO
-
-	uint16_t addr = getWindowsAddress();
-
-	// Retrieve the full window
-	for (int i = 0; i < WINDOW_SIZE; i++) {
-		std::stringstream sendStream;
-		std::string message;
-		std::string command;
-		uint16_t unsignedData;
-
-		sendStream << "rd " << (addr + i) << std::endl;
-
-		sendMessage(sendStream.str());
-
-		message = getData();
-
-		// Actual received string is the binary data interpreted as an unsigned int,
-		// so it's needed to pass through a temp unsigned to get the correct value.
-		std::stringstream stream(message);
-		stream >> command >> unsignedData;
-		(*data)[i] = unsignedData;
-	}
-
-	sendMessage("wr 1 2\n");
+	this->handler = handler;
 }

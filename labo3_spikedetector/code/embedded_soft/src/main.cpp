@@ -1,6 +1,8 @@
 #include "fpgaaccessremote.hpp"
 
 #include <iostream>
+#include "spike_detector.hpp"
+#include <memory>
 #include <unistd.h>
 #include <mutex>
 #include <queue>
@@ -17,7 +19,7 @@ std::queue<std::string> irqFifo;
 
 std::queue<std::shared_ptr<SpikeWindow> > spikeRefFifo;
 
-void handler(std::string &message)
+void handler(const std::string &message)
 {
 	std::cout << "Received new IRQ: " << message << std::endl;
 	irqFifo.push(message);
@@ -134,26 +136,28 @@ int main(int /*_argc*/, char ** /*_argv*/)
 {
 	getReferenceSpikes();
 
-	FPGAAccess &fpgaAccess = FPGAAccess::getInstance();
+	std::unique_ptr<FpgaAccess> access =
+		std::make_unique(FpgaAccessRemote::getInstance());
+
+	SpikeDetector detector{ access, handler };
+
 	std::unique_lock<std::mutex> lk(irqMutex);
 
-	fpgaAccess.init();
-	fpgaAccess.setInterruptHandler(handler);
+	std::cout << "Current status: " << detector.get_status() << std::endl;
 
-	std::cout << "Current status: " << fpgaAccess.getStatus() << std::endl;
 	std::cout << "Starting acquisition" << std::endl;
-	fpgaAccess.startAcquisition();
-	std::cout << "Current status: " << fpgaAccess.getStatus() << std::endl;
+	detector.start_acquisition();
+	std::cout << "Current status: " << detector.get_status() << std::endl;
 
 	while (irqCondVar.wait_for(lk, std::chrono::seconds(600),
 				   [] { return !irqFifo.empty(); })) {
 		SpikeWindow window;
 
 		std::cout << "New window at address: "
-			  << fpgaAccess.getWindowsAddress() << std::endl;
+			  << detector.get_window_address() << std::endl;
 		std::cout << "Reading window" << std::endl;
 
-		fpgaAccess.readWindow(&window);
+		detector.read_window_blocking(window);
 		irqFifo.pop();
 
 		if (compareWindow(&window)) {
@@ -164,8 +168,8 @@ int main(int /*_argc*/, char ** /*_argv*/)
 	}
 
 	std::cout << "Stoping acquisition" << std::endl;
-	fpgaAccess.stopAcquisition();
-	std::cout << "Current status: " << fpgaAccess.getStatus() << std::endl;
+	detector.stop_acquisition();
+	std::cout << "Current status: " << detector.get_status() << std::endl;
 
 	return EXIT_SUCCESS;
 }

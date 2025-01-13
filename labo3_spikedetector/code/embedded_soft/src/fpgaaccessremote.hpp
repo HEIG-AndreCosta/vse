@@ -1,48 +1,26 @@
 #ifndef FPGAACCESSREMOTE_H
 #define FPGAACCESSREMOTE_H
 
+#include "fpgaaccess.hpp"
 #include <cstdint>
 #include <queue>
 #include <condition_variable>
 #include <mutex>
 #include <thread>
-#include <array>
 
-#define WINDOW_START_ADDRESS 0x1000
-#define WINDOW_SIZE	     150
-#define WINDOW_FULL_SIZE     256
-
-typedef std::array<int16_t, WINDOW_SIZE> SpikeWindow;
-
-/**
- * Type for the IRQ handler function.
- * That handler should NOT block as it will by directly called
- * by the receiving thread. And so, if blocked, no new message
- * will be received, which can lead to deadlocks.
- */
-typedef void (*irq_handler_t)(std::string &);
-
-class FPGAAccess {
+class FpgaAccessRemote : public FpgaAccess {
     public:
-	static FPGAAccess &getInstance();
+	static FpgaAccessRemote &getInstance();
 
-	FPGAAccess();
-	~FPGAAccess();
-
-	void startAcquisition();
-
-	void stopAcquisition();
-
-	void setInterruptHandler(irq_handler_t handler);
-
-	uint16_t getStatus();
-
-	uint16_t getWindowsAddress();
-	void readWindow(SpikeWindow *data);
-
-	void init();
+	void setup();
+	void write_register(uint16_t reg, uint16_t value);
+	uint16_t read_register(uint16_t reg);
+	void set_callback(irq_handler_t);
 
     private:
+	FpgaAccessRemote();
+	~FpgaAccessRemote();
+
 	void *connectionHandler(void *socket_desc);
 
 	void waitConnection();
@@ -51,9 +29,10 @@ class FPGAAccess {
 
 	void receiver();
 
+	void do_send(const std::string &buffer);
+	std::string do_receive();
+
 	std::string getData();
-	void sendMessage(const std::string &message);
-	void sendMessage(const char *message);
 
 	int sock = 0;
 
