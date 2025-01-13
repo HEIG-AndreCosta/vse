@@ -9,8 +9,8 @@
 #include <array>
 
 #define WINDOW_START_ADDRESS 0x1000
-#define WINDOW_SIZE 150
-#define WINDOW_FULL_SIZE 256
+#define WINDOW_SIZE	     150
+#define WINDOW_FULL_SIZE     256
 
 typedef std::array<int16_t, WINDOW_SIZE> SpikeWindow;
 
@@ -22,53 +22,49 @@ typedef std::array<int16_t, WINDOW_SIZE> SpikeWindow;
  */
 typedef void (*irq_handler_t)(std::string &);
 
-class FPGAAccess
-{
-public:
-    static FPGAAccess& getInstance();
+class FPGAAccess {
+    public:
+	static FPGAAccess &getInstance();
 
-    FPGAAccess();
-    ~FPGAAccess();
+	FPGAAccess();
+	~FPGAAccess();
 
-    void startAcquisition();
+	void startAcquisition();
 
-    void stopAcquisition();
+	void stopAcquisition();
 
-    void setInterruptHandler(irq_handler_t handler);
+	void setInterruptHandler(irq_handler_t handler);
 
-    uint16_t getStatus();
+	uint16_t getStatus();
 
-    uint16_t getWindowsAddress();
-    void readWindow(SpikeWindow *data);
+	uint16_t getWindowsAddress();
+	void readWindow(SpikeWindow *data);
 
-    void init();
+	void init();
 
+    private:
+	void *connectionHandler(void *socket_desc);
 
+	void waitConnection();
 
-private:
+	void *server();
 
-    void *connectionHandler(void *socket_desc);
+	void receiver();
 
-    void waitConnection();
+	std::string getData();
+	void sendMessage(const std::string &message);
+	void sendMessage(const char *message);
 
-    void *server();
+	int sock = 0;
 
-    void receiver();
+	std::thread fpgaServerThread;
+	std::thread receiverThread;
+	std::queue<std::string> receivedFifo;
 
-    std::string getData();
-    void sendMessage(const std::string &message);
-    void sendMessage(const char *message);
+	std::condition_variable receivedCondVar;
+	std::mutex receiveMutex;
 
-    int sock = 0;
-
-    std::thread fpgaServerThread;
-    std::thread receiverThread;
-    std::queue<std::string> receivedFifo;
-
-    std::condition_variable receivedCondVar;
-    std::mutex receiveMutex;
-
-    irq_handler_t handler;
+	irq_handler_t handler;
 };
 
 #endif // FPGAACCESSREMOTE_H
