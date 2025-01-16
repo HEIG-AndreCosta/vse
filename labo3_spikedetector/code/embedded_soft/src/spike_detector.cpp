@@ -37,6 +37,9 @@ void SpikeDetector::stop_acquisition()
 
 void SpikeDetector::set_on_new_data_callback(on_message_cb cb)
 {
+	if (!cb) {
+		throw std::invalid_argument("Callback cannot be null");
+	}
 	access->set_callback(cb);
 }
 
