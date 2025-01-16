@@ -19,7 +19,7 @@ std::queue<std::string> irqFifo;
 
 std::queue<std::shared_ptr<SpikeWindow> > spikeRefFifo;
 
-void handler(const std::string &message)
+static void handler(const std::string &message)
 {
 	std::cout << "Received new IRQ: " << message << std::endl;
 	irqFifo.push(message);
