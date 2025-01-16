@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.15)
 project(AppTests)
 
@@ -9,7 +8,8 @@ find_package(GTest REQUIRED)
 
 include_directories("../src")
 
-file(GLOB APP_SOURCES "../src/*.cpp")
+file(GLOB APP_SOURCES "../src/spike_detector.cpp"
+                      "../src/fpgaaccessremote.cpp")
 
 file(GLOB TEST_MOCK_SOURCES "./mock/*.cpp")
 
