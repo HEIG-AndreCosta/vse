@@ -161,9 +161,17 @@ TEST(TestSpikeDetector, TestReadWindow)
 		ASSERT_EQ(window[i], i);
 	}
 
-	ASSERT_EQ(access->access.size(), 2 + WINDOW_SIZE);
+	ASSERT_EQ(access->access.size(), 3 + WINDOW_SIZE);
+	//Check that we read the status register
 	ASSERT_EQ(access->access[0].reg, 0);
-	ASSERT_EQ(access->access[1].reg, 2);
 	ASSERT_TRUE(access->access[0].is_read);
+
+	// And the window offset register
+	ASSERT_EQ(access->access[1].reg, 2);
 	ASSERT_TRUE(access->access[1].is_read);
+
+	// Assert that we acked the window read at the end
+	ASSERT_EQ(access->access.back().reg, 2);
+	ASSERT_EQ(access->access.back().value, 4);
+	ASSERT_FALSE(access->access.back().is_read);
 }
