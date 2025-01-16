@@ -68,7 +68,6 @@ void *FpgaAccessRemote::connectionHandler(void *socket_desc)
 	//Get the socket descriptor
 	return nullptr;
 }
-
 FpgaAccessRemote::~FpgaAccessRemote()
 {
 	if (sock != 0) {

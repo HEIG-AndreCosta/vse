@@ -10,7 +10,7 @@
 
 class FpgaAccessRemote : public FpgaAccess {
     public:
-	FpgaAccessRemote();
+	FpgaAccessRemote() = default;
 	~FpgaAccessRemote();
 
 	void setup();
