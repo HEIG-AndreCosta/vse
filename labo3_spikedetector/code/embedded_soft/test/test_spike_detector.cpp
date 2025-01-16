@@ -2,6 +2,7 @@
 #include "spike_detector.hpp"
 #include <cstdint>
 #include <gtest/gtest.h>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -19,6 +20,17 @@ TEST(TestSpikeDetector, SetupGetsCalledAndHandlerGetsSet)
 	ASSERT_TRUE(access->setup_called);
 	ASSERT_EQ(handler, access->handler);
 }
+
+TEST(TestSpikeDetector, TestThrowsErrorOnNullArgs)
+{
+	std::vector<Register> v;
+	auto access = std::make_shared<MockFpgaAccess>(v);
+	ASSERT_THROW(
+		{ SpikeDetector(nullptr, handler); }, std::invalid_argument);
+	ASSERT_THROW(
+		{ SpikeDetector(access, nullptr); }, std::invalid_argument);
+}
+
 TEST(TestSpikeDetector, StartStopAcquisition)
 {
 	std::vector<Register> v;
