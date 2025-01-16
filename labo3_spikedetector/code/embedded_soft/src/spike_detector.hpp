@@ -30,6 +30,5 @@ class SpikeDetector {
     private:
 	void read_window_internal(SpikeWindow &data);
 	void ack_window_read();
-	on_message_cb message_handler;
 	std::unique_ptr<FpgaAccess> access;
 };
