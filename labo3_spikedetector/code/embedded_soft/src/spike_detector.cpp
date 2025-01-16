@@ -16,6 +16,15 @@ bool SpikeDetector::is_data_ready()
 	return get_status() & 1;
 }
 
+void SpikeDetector::start_acquisition()
+{
+	access->write_register(1, 1);
+}
+void SpikeDetector::stop_acquisition()
+{
+	access->write_register(1, 0);
+}
+
 void SpikeDetector::set_on_new_data_callback(on_message_cb cb)
 {
 	access->set_callback(cb);
