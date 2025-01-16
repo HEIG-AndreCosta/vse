@@ -10,6 +10,8 @@
 
 class FpgaAccessRemote : public FpgaAccess {
     public:
+	FpgaAccessRemote();
+	~FpgaAccessRemote();
 
 	void setup();
 	void write_register(uint16_t reg, uint16_t value);
@@ -17,9 +19,6 @@ class FpgaAccessRemote : public FpgaAccess {
 	void set_callback(irq_handler_t);
 
     private:
-	FpgaAccessRemote();
-	~FpgaAccessRemote();
-
 	void *connectionHandler(void *socket_desc);
 
 	void waitConnection();
