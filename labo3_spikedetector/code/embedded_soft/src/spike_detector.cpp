@@ -86,8 +86,7 @@ bool SpikeDetector::is_acquisition_in_progress()
 
 uint16_t SpikeDetector::get_status()
 {
-	const uint16_t value = access->read_register(0);
-	return value;
+	return access->read_register(0);
 }
 
 uint16_t SpikeDetector::get_window_address()
