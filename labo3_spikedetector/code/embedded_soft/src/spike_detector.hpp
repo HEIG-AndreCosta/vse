@@ -12,8 +12,8 @@ typedef std::array<int16_t, WINDOW_SIZE> SpikeWindow;
 typedef void (*on_message_cb)(const std::string &);
 class SpikeDetector {
     public:
-	SpikeDetector(std::unique_ptr<FpgaAccess> access, on_message_cb cb);
-	~SpikeDetector();
+	SpikeDetector(std::shared_ptr<FpgaAccess> access, on_message_cb cb);
+	~SpikeDetector() = default;
 
 	void start_acquisition();
 	void stop_acquisition();
@@ -28,7 +28,7 @@ class SpikeDetector {
 	void set_on_new_data_callback(on_message_cb);
 
     private:
+	std::shared_ptr<FpgaAccess> access;
 	void read_window_internal(SpikeWindow &data);
 	void ack_window_read();
-	std::unique_ptr<FpgaAccess> access;
 };

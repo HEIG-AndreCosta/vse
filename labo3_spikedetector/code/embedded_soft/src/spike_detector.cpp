@@ -2,13 +2,23 @@
 #include "fpgaaccessremote.hpp"
 #include <cstdint>
 #include <memory>
+#include <stdexcept>
 
-SpikeDetector::SpikeDetector(std::unique_ptr<FpgaAccess> access,
+SpikeDetector::SpikeDetector(std::shared_ptr<FpgaAccess> access,
 			     on_message_cb cb)
-	: access(std::move(access))
+	: access(access)
 {
-	access->setup();
-	this->set_on_new_data_callback(cb);
+	if (this->access) {
+		this->access->setup();
+	} else {
+		throw std::invalid_argument("Access cannot be null");
+	}
+
+	if (cb) {
+		this->set_on_new_data_callback(cb);
+	} else {
+		throw std::invalid_argument("Callback cannot be null");
+	}
 }
 
 bool SpikeDetector::is_data_ready()

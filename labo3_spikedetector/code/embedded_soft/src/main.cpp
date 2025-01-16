@@ -136,9 +136,9 @@ int main(int /*_argc*/, char ** /*_argv*/)
 {
 	getReferenceSpikes();
 
-	auto access = std::make_unique<FpgaAccessRemote>();
+	auto access = std::make_shared<FpgaAccessRemote>();
 
-	SpikeDetector detector{ std::move(access), handler };
+	SpikeDetector detector{ access, handler };
 
 	std::unique_lock<std::mutex> lk(irqMutex);
 
