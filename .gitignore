@@ -12,3 +12,5 @@ labo2_uart/code/VRMDATA
 labo2_uart/code/transcript
 ex07_unittest/code/build
 ex09_fuzzing/code/xmlfuzzing/tmptqf
+*.cache
+*build
