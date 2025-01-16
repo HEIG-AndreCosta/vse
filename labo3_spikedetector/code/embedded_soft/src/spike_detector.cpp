@@ -52,13 +52,6 @@ bool SpikeDetector::read_window(SpikeWindow &data)
 	read_window_internal(data);
 	return true;
 }
-void SpikeDetector::read_window_blocking(SpikeWindow &data)
-{
-	while (!is_data_ready())
-		;
-
-	read_window_internal(data);
-}
 
 void SpikeDetector::read_window_internal(SpikeWindow &data)
 {

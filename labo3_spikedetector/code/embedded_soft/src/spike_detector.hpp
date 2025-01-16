@@ -24,7 +24,6 @@ class SpikeDetector {
 	uint16_t get_window_address();
 
 	bool read_window(SpikeWindow &data);
-	void read_window_blocking(SpikeWindow &data);
 	void set_on_new_data_callback(on_message_cb);
 
     private:
