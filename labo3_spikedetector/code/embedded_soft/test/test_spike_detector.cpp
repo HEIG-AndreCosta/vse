@@ -9,6 +9,9 @@
 static void handler(const std::string &message)
 {
 }
+static void new_handler(const std::string &message)
+{
+}
 
 TEST(TestSpikeDetector, SetupGetsCalledAndHandlerGetsSet)
 {
@@ -29,6 +32,29 @@ TEST(TestSpikeDetector, TestThrowsErrorOnNullArgs)
 		{ SpikeDetector(nullptr, handler); }, std::invalid_argument);
 	ASSERT_THROW(
 		{ SpikeDetector(access, nullptr); }, std::invalid_argument);
+}
+
+TEST(TestSpikeDetector, TestSetNewDataCallback)
+{
+	std::vector<Register> v;
+	auto access = std::make_shared<MockFpgaAccess>(v);
+
+	SpikeDetector sd = { access, handler };
+	ASSERT_EQ(access->handler, handler);
+
+	sd.set_on_new_data_callback(new_handler);
+	ASSERT_EQ(access->handler, new_handler);
+}
+
+TEST(TestSpikeDetector, TestThrowsErrorOnNullCallback)
+{
+	std::vector<Register> v;
+	auto access = std::make_shared<MockFpgaAccess>(v);
+	SpikeDetector sd = { access, handler };
+
+	ASSERT_THROW(
+		{ sd.set_on_new_data_callback(nullptr); },
+		std::invalid_argument);
 }
 
 TEST(TestSpikeDetector, StartStopAcquisition)
