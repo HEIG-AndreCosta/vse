@@ -73,6 +73,7 @@ void SpikeDetector::read_window_internal(SpikeWindow &data)
 
 		data[i] = register_data;
 	}
+	ack_window_read();
 }
 void SpikeDetector::ack_window_read()
 {
