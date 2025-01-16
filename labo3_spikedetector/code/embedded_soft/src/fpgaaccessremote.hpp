@@ -10,7 +10,6 @@
 
 class FpgaAccessRemote : public FpgaAccess {
     public:
-	static FpgaAccessRemote &getInstance();
 
 	void setup();
 	void write_register(uint16_t reg, uint16_t value);

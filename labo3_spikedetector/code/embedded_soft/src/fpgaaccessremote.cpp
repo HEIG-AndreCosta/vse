@@ -85,12 +85,6 @@ FpgaAccessRemote::~FpgaAccessRemote()
 		receiverThread.join();
 }
 
-FpgaAccessRemote &FpgaAccessRemote::getInstance()
-{
-	static FpgaAccessRemote access;
-	return access;
-}
-
 void FpgaAccessRemote::setup()
 {
 	fpgaServerThread = std::thread(&FpgaAccessRemote::server, this);
