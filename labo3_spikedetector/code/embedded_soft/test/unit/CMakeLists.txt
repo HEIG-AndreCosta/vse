@@ -6,10 +6,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(GTest REQUIRED)
 
-include_directories("../src")
+include_directories("../../src")
 
-file(GLOB APP_SOURCES "../src/spike_detector.cpp"
-                      "../src/fpgaaccessremote.cpp")
+file(GLOB APP_SOURCES "../../src/spike_detector.cpp"
+                      "../../src/fpgaaccessremote.cpp")
 
 file(GLOB TEST_MOCK_SOURCES "./mock/*.cpp")
 

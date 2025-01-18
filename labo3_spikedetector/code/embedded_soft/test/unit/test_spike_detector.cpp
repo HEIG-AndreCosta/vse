@@ -105,13 +105,13 @@ TEST(TestSpikeDetector, TestDataReady)
 	auto access = std::make_shared<MockFpgaAccess>(v);
 
 	SpikeDetector sd = { access, handler };
-	ASSERT_FALSE(sd.is_data_ready());
+	ASSERT_TRUE(sd.is_data_ready());
 	v[0].value = 1;
-	ASSERT_TRUE(sd.is_data_ready());
-	v[0].value = 2;
 	ASSERT_FALSE(sd.is_data_ready());
-	v[0].value = 3;
+	v[0].value = 2;
 	ASSERT_TRUE(sd.is_data_ready());
+	v[0].value = 3;
+	ASSERT_FALSE(sd.is_data_ready());
 
 	ASSERT_EQ(access->access.size(), 4);
 
@@ -142,7 +142,7 @@ TEST(TestSpikeDetector, TestStatus)
 TEST(TestSpikeDetector, TestReadWindow)
 {
 	const uint16_t WINDOW_START_ADDR = 0x1000;
-	std::vector<Register> v{ Register{ 0, 1 },
+	std::vector<Register> v{ Register{ 0, 0 },
 				 Register{ 2, WINDOW_START_ADDR } };
 
 	for (size_t i = 0; i < WINDOW_SIZE; ++i) {
@@ -171,7 +171,7 @@ TEST(TestSpikeDetector, TestReadWindow)
 	ASSERT_TRUE(access->access[1].is_read);
 
 	// Assert that we acked the window read at the end
-	ASSERT_EQ(access->access.back().reg, 2);
+	ASSERT_EQ(access->access.back().reg, 1);
 	ASSERT_EQ(access->access.back().value, 4);
 	ASSERT_FALSE(access->access.back().is_read);
 }
