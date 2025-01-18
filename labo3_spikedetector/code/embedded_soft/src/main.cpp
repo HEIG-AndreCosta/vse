@@ -30,7 +30,7 @@ static void handler(const std::string &message)
  * Compute the reference spike to be able to compare the result got from the FPGA.
  * The calculs mimiq the ones in the FPGA to have the same rounding due to optimization.
  */
-void getReferenceSpikes()
+int getReferenceSpikes()
 {
 	FILE *file;
 	int val;
@@ -46,6 +46,10 @@ void getReferenceSpikes()
 	uint64_t deviation = 0;
 
 	file = fopen("../../fpga_sim/input_values.txt", "r");
+	if (!file) {
+		std::cerr << "Couldn't open input_value file\n";
+		return -1;
+	}
 
 	while (!feof(file)) {
 		fscanf(file, "%d", &val);
@@ -106,6 +110,7 @@ void getReferenceSpikes()
 		  << std::endl;
 
 	fclose(file);
+	return 0;
 }
 
 bool compareWindow(SpikeWindow *window)
@@ -134,7 +139,10 @@ bool compareWindow(SpikeWindow *window)
 
 int main(int /*_argc*/, char ** /*_argv*/)
 {
-	getReferenceSpikes();
+	int err = getReferenceSpikes();
+	if (err < 0) {
+		return 1;
+	}
 
 	auto access = std::make_shared<FpgaAccessRemote>();
 
