@@ -166,7 +166,14 @@ int main(int argc, char **argv)
 
 		std::cout << "New window at address: "
 			  << detector.get_window_address() << std::endl;
-		std::cout << "Reading window" << std::endl;
+		std::cout << "Reading window" << '\n';
+		if (!detector.is_data_ready()) {
+			std::cout << "Current status: " << detector.get_status()
+				  << std::endl;
+			std::cout << "Data is not ready" << '\n';
+			irqFifo.pop();
+			continue;
+		}
 
 		detector.read_window(window);
 		irqFifo.pop();
