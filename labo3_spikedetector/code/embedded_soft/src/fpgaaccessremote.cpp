@@ -86,14 +86,21 @@ FpgaAccessRemote::~FpgaAccessRemote()
 		this->do_send("end_test\n");
 		// Sleep to be sure that data are correctly send
 		sleep(5);
-		shutdown(sock, SHUT_RDWR);
+		int err = shutdown(sock, SHUT_RDWR);
+		if (err < 0) {
+			std::cerr << "Shutdown error (" << err << ")\n";
+		}
+		close(sock);
 	}
 
-	if (fpgaServerThread.joinable())
-		fpgaServerThread.join();
+	if (listener_thread.joinable()) {
+		listener_thread.join();
+	}
 
-	if (receiverThread.joinable())
-		receiverThread.join();
+	if (rx_thread.joinable()) {
+		rx_thread.join();
+	}
+	std::cout << "Destructor over" << std::endl;
 }
 
 void FpgaAccessRemote::setup()
