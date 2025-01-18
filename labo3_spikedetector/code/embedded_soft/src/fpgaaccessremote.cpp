@@ -11,14 +11,18 @@
 
 void *FpgaAccessRemote::server()
 {
-	int socket_desc, client_sock, c;
+	int sockfd, client_sock, c;
+	int option = 1;
 	struct sockaddr_in server, client;
-
 	//Create socket
-	socket_desc = socket(AF_INET, SOCK_STREAM, 0);
-	if (socket_desc == -1) {
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sockfd == -1) {
 		printf("Could not create socket");
 	}
+
+	setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (char *)&option,
+		   sizeof(option));
+
 	puts("Socket created");
 
 	//Prepare the sockaddr_in structure
@@ -27,7 +31,7 @@ void *FpgaAccessRemote::server()
 	server.sin_port = htons(8888);
 
 	//Bind
-	if (bind(socket_desc, (struct sockaddr *)&server, sizeof(server)) < 0) {
+	if (bind(sockfd, (struct sockaddr *)&server, sizeof(server)) < 0) {
 		//print the error message
 		perror("bind failed. Error");
 		return NULL;
@@ -35,14 +39,14 @@ void *FpgaAccessRemote::server()
 	puts("bind done");
 
 	//Listen
-	listen(socket_desc, 3);
+	listen(sockfd, 3);
 
 	//Accept and incoming connection
 	puts("Waiting for incoming connections...");
 	c = sizeof(struct sockaddr_in);
 
-	client_sock = accept(socket_desc, (struct sockaddr *)&client,
-			     (socklen_t *)&c);
+	client_sock =
+		accept(sockfd, (struct sockaddr *)&client, (socklen_t *)&c);
 
 	if (client_sock <= 0) {
 		perror("accept failed");
