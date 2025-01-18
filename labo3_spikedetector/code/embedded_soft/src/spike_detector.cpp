@@ -32,7 +32,7 @@ void SpikeDetector::start_acquisition()
 }
 void SpikeDetector::stop_acquisition()
 {
-	access->write_register(1, 0);
+	access->write_register(1, 2);
 }
 
 void SpikeDetector::set_on_new_data_callback(on_message_cb cb)
@@ -70,7 +70,7 @@ void SpikeDetector::read_window_internal(SpikeWindow &data)
 }
 void SpikeDetector::ack_window_read()
 {
-	access->write_register(1, 2);
+	access->write_register(1, 4);
 }
 bool SpikeDetector::is_acquisition_in_progress()
 {
