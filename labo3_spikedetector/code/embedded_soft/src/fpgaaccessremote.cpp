@@ -84,8 +84,6 @@ FpgaAccessRemote::~FpgaAccessRemote()
 {
 	if (sock != 0) {
 		this->do_send("end_test\n");
-		// Sleep to be sure that data are correctly send
-		sleep(5);
 		int err = shutdown(sock, SHUT_RDWR);
 		if (err < 0) {
 			std::cerr << "Shutdown error (" << err << ")\n";
