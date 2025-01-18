@@ -23,7 +23,7 @@ SpikeDetector::SpikeDetector(std::shared_ptr<FpgaAccess> access,
 
 bool SpikeDetector::is_data_ready()
 {
-	return get_status() & 1;
+	return !(get_status() & 1);
 }
 
 void SpikeDetector::start_acquisition()
