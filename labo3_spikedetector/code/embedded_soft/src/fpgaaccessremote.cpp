@@ -112,11 +112,11 @@ void FpgaAccessRemote::setup(const SetupOptions &opts)
 	rx_thread = std::thread(&FpgaAccessRemote::receiver, this);
 
 	if (opts.wait_for_connection) {
-		waitConnection();
+		wait_connection();
 	}
 }
 
-void FpgaAccessRemote::waitConnection()
+void FpgaAccessRemote::wait_connection()
 {
 	std::unique_lock<std::mutex> lk(receiveMutex);
 
@@ -129,7 +129,7 @@ void FpgaAccessRemote::receiver()
 	char messageCommand[2000];
 	ssize_t read_size;
 
-	waitConnection();
+	wait_connection();
 
 	while ((read_size = recv(sock, clientMessage, 2000, 0)) > 0) {
 		clientMessage[read_size] = '\0';

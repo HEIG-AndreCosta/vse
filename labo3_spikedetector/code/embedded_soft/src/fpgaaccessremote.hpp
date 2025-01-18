@@ -26,7 +26,7 @@ class FpgaAccessRemote : public FpgaAccess {
     private:
 	void *connectionHandler(void *socket_desc);
 
-	void waitConnection();
+	void wait_connection();
 
 	void *start_server(uint16_t port);
 	void *accept_connection(int sockfd);
