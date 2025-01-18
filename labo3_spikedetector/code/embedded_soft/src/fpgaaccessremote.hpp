@@ -23,7 +23,8 @@ class FpgaAccessRemote : public FpgaAccess {
 
 	void waitConnection();
 
-	void *server();
+	void *start_server(uint16_t port);
+	void *accept_connection(int sockfd);
 
 	void receiver();
 
@@ -34,8 +35,8 @@ class FpgaAccessRemote : public FpgaAccess {
 
 	int sock = 0;
 
-	std::thread fpgaServerThread;
-	std::thread receiverThread;
+	std::thread listener_thread;
+	std::thread rx_thread;
 	std::queue<std::string> receivedFifo;
 
 	std::condition_variable receivedCondVar;

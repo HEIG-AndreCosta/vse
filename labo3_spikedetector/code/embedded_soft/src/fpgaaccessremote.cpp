@@ -9,11 +9,33 @@
 #include <arpa/inet.h> //inet_addr
 #include <unistd.h>
 
-void *FpgaAccessRemote::server()
+void *FpgaAccessRemote::accept_connection(int sockfd)
+{
+	struct sockaddr_in client;
+	size_t c = sizeof(client);
+
+	int client_sock =
+		accept(sockfd, (struct sockaddr *)&client, (socklen_t *)&c);
+
+	if (client_sock <= 0) {
+		perror("accept failed");
+		return NULL;
+	}
+
+	puts("Connection accepted");
+
+	sock = client_sock;
+
+	receivedCondVar.notify_all();
+
+	return NULL;
+}
+
+void *FpgaAccessRemote::start_server(uint16_t port)
 {
 	int sockfd, client_sock, c;
 	int option = 1;
-	struct sockaddr_in server, client;
+	struct sockaddr_in server;
 	//Create socket
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (sockfd == -1) {
@@ -28,7 +50,7 @@ void *FpgaAccessRemote::server()
 	//Prepare the sockaddr_in structure
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = INADDR_ANY;
-	server.sin_port = htons(8888);
+	server.sin_port = htons(port);
 
 	//Bind
 	if (bind(sockfd, (struct sockaddr *)&server, sizeof(server)) < 0) {
@@ -43,23 +65,9 @@ void *FpgaAccessRemote::server()
 
 	//Accept and incoming connection
 	puts("Waiting for incoming connections...");
-	c = sizeof(struct sockaddr_in);
 
-	client_sock =
-		accept(sockfd, (struct sockaddr *)&client, (socklen_t *)&c);
-
-	if (client_sock <= 0) {
-		perror("accept failed");
-		return NULL;
-	}
-
-	puts("Connection accepted");
-
-	sock = client_sock;
-
-	receivedCondVar.notify_all();
-
-	puts("Handler assigned");
+	listener_thread =
+		std::thread(&FpgaAccessRemote::accept_connection, this, sockfd);
 
 	return NULL;
 }
