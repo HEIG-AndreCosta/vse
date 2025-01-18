@@ -121,7 +121,7 @@ void FpgaAccessRemote::receiver()
 {
 	char clientMessage[2000];
 	char messageCommand[2000];
-	int read_size;
+	ssize_t read_size;
 
 	waitConnection();
 
