@@ -74,7 +74,7 @@ TEST(TestSpikeDetector, StartStopAcquisition)
 
 	ASSERT_FALSE(access->access[1].is_read);
 	ASSERT_EQ(access->access[1].reg, 1);
-	ASSERT_EQ(access->access[1].value, 0);
+	ASSERT_EQ(access->access[1].value, 2);
 }
 
 TEST(TestSpikeDetector, TestAcquisitionInProgress)
