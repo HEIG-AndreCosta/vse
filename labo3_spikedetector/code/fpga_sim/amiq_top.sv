@@ -39,6 +39,7 @@ module amiq_top #(
   logic [15:0] sample_i;
   logic sample_valid_i;
 
+  logic is_active;
   event start_record;
 
   default clocking cb @(posedge avl_clk_i);
@@ -62,8 +63,15 @@ module amiq_top #(
 
     // Dumb way to detect the start of acquisition to start reading the sample file.
     // To ensure data are got from the start of the file
-    if (address == 1 && data == 1) begin
-      ->start_record;
+    if (address == 1) begin
+      if (data == 1) begin
+        $display("%t Starting acquisition", $time);
+        is_active = 1;
+        ->start_record;
+      end else begin
+        $display("%t Stopping acquisition", $time);
+        is_active = 0;
+      end
     end
 
     @(posedge avl_clk_i);
@@ -213,6 +221,13 @@ module amiq_top #(
             fd
         )) begin
           ret = $fscanf(fd, "%d", val);
+          if (!is_active) begin
+            $display("%t Acquisition Stopped. Waiting...", $time);
+            // Use triggered instead of @ to avoid race conditions
+            // https://www.chipverify.com/systemverilog/systemverilog-event
+            wait (start_record.triggered);
+            $display("%t Acquisition Restarted", $time);
+          end
           @(posedge avl_clk_i);
           sample_i = val;
           sample_valid_i = 1;
