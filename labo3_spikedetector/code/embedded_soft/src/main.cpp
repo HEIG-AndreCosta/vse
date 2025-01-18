@@ -156,7 +156,7 @@ int main(int /*_argc*/, char ** /*_argv*/)
 			  << detector.get_window_address() << std::endl;
 		std::cout << "Reading window" << std::endl;
 
-		detector.read_window_blocking(window);
+		detector.read_window(window);
 		irqFifo.pop();
 
 		if (compareWindow(&window)) {
