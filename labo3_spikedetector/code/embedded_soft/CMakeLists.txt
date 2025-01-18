@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS "-Wall")
 
 add_executable(embedded_soft)
 target_sources(embedded_soft PUBLIC
-    fpgaaccessremote.cpp
-    fpgaaccessremote.hpp
-    main.cpp
+    ./src/fpgaaccessremote.cpp
+    ./src/main.cpp
+    ./src/spike_detector.cpp
 )
