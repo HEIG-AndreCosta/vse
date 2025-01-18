@@ -105,9 +105,17 @@ FpgaAccessRemote::~FpgaAccessRemote()
 
 void FpgaAccessRemote::setup()
 {
-	fpgaServerThread = std::thread(&FpgaAccessRemote::server, this);
-	receiverThread = std::thread(&FpgaAccessRemote::receiver, this);
-	waitConnection();
+	SetupOptions opts = { .wait_for_connection = true, .port = 8888 };
+	setup(opts);
+}
+void FpgaAccessRemote::setup(const SetupOptions &opts)
+{
+	start_server(opts.port);
+	rx_thread = std::thread(&FpgaAccessRemote::receiver, this);
+
+	if (opts.wait_for_connection) {
+		waitConnection();
+	}
 }
 
 void FpgaAccessRemote::waitConnection()
