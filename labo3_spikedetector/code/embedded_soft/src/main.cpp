@@ -45,7 +45,7 @@ void getReferenceSpikes()
 	uint64_t squareStdDev = 0;
 	uint64_t deviation = 0;
 
-	file = fopen("../../../fpga_sim/input_values.txt", "r");
+	file = fopen("../../fpga_sim/input_values.txt", "r");
 
 	while (!feof(file)) {
 		fscanf(file, "%d", &val);
