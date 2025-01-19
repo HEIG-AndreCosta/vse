@@ -171,7 +171,7 @@ std::string FpgaAccessRemote::getData()
 void FpgaAccessRemote::set_simulation_file(const char *path)
 {
 	std::stringstream stream;
-	stream << "set_file" << path << std::endl;
+	stream << "set_file " << path << std::endl;
 
 	do_send(stream.str());
 }
