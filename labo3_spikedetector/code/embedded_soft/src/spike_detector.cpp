@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <memory>
 #include <stdexcept>
+#include <unistd.h>
 
 SpikeDetector::SpikeDetector(std::shared_ptr<FpgaAccess> access,
 			     on_message_cb cb)
@@ -19,6 +20,10 @@ SpikeDetector::SpikeDetector(std::shared_ptr<FpgaAccess> access,
 	} else {
 		throw std::invalid_argument("Callback cannot be null");
 	}
+}
+void SpikeDetector::set_simulation_file(const char *path)
+{
+	access->set_simulation_file(path);
 }
 
 bool SpikeDetector::is_data_ready()

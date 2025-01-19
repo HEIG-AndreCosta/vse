@@ -168,6 +168,13 @@ std::string FpgaAccessRemote::getData()
 	return message;
 }
 
+void FpgaAccessRemote::set_simulation_file(const char *path)
+{
+	std::stringstream stream;
+	stream << "set_file" << path << std::endl;
+
+	do_send(stream.str());
+}
 void FpgaAccessRemote::do_send(const std::string &buffer)
 {
 	write(sock, buffer.data(), buffer.size());

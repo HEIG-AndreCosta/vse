@@ -25,6 +25,7 @@ class SpikeDetector {
 
 	bool read_window(SpikeWindow &data);
 	void set_on_new_data_callback(on_message_cb);
+	void set_simulation_file(const char *path);
 
     private:
 	std::shared_ptr<FpgaAccess> access;

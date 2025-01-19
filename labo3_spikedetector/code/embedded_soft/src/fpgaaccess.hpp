@@ -15,4 +15,5 @@ class FpgaAccess {
 	virtual void write_register(uint16_t reg, uint16_t value) = 0;
 	virtual uint16_t read_register(uint16_t reg) = 0;
 	virtual void set_callback(irq_handler_t) = 0;
+	virtual void set_simulation_file(const char *path) = 0;
 };

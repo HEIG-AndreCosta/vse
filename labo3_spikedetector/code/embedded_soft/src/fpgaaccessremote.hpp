@@ -22,6 +22,7 @@ class FpgaAccessRemote : public FpgaAccess {
 	void write_register(uint16_t reg, uint16_t value);
 	uint16_t read_register(uint16_t reg);
 	void set_callback(irq_handler_t);
+	void set_simulation_file(const char *path);
 
     private:
 	void *connectionHandler(void *socket_desc);
