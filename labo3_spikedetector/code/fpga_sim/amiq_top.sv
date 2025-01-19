@@ -216,12 +216,12 @@ module amiq_top #(
         int val;
         int ret;
 
-        @(input_file_set);
+        wait (input_file_set.triggered);
         fd = $fopen(input_file, "r");
         if (!fd) $fatal("Input file not opened successfully");
 
         // Wait until the acquisition has started
-        @(start_record);
+        wait (start_record.triggered);
 
         while (!$feof(
             fd
