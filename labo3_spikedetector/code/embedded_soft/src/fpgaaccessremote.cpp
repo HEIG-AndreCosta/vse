@@ -33,7 +33,7 @@ void *FpgaAccessRemote::accept_connection(int sockfd)
 
 void *FpgaAccessRemote::start_server(uint16_t port)
 {
-	int sockfd, client_sock, c;
+	int sockfd;
 	int option = 1;
 	struct sockaddr_in server;
 	//Create socket
