@@ -167,8 +167,6 @@ int main(int argc, char **argv)
 				   [] { return !irqFifo.empty(); })) {
 		SpikeWindow window;
 
-		detector.stop_acquisition();
-
 		std::cout << "New window at address: "
 			  << detector.get_window_address() << std::endl;
 		std::cout << "Reading window" << '\n';
@@ -188,7 +186,6 @@ int main(int argc, char **argv)
 		} else {
 			std::cout << "Window is not valid" << std::endl;
 		}
-		detector.start_acquisition();
 	}
 
 	std::cout << "Stoping acquisition" << std::endl;
