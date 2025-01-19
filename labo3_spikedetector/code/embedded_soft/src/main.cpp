@@ -143,7 +143,8 @@ int main(int argc, char **argv)
 		std::cout << "Usage " << argv[0] << " <spike_data_file>\n";
 		return 1;
 	}
-	int err = getReferenceSpikes(argv[1]);
+	const char *input_file_path = argv[1];
+	int err = getReferenceSpikes(input_file_path);
 	if (err < 0) {
 		return 1;
 	}
@@ -151,6 +152,8 @@ int main(int argc, char **argv)
 	auto access = std::make_shared<FpgaAccessRemote>();
 
 	SpikeDetector detector{ access, handler };
+
+	detector.set_simulation_file(input_file_path);
 
 	std::unique_lock<std::mutex> lk(irqMutex);
 
