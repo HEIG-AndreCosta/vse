@@ -143,7 +143,7 @@ int main(int argc, char **argv)
 		std::cout << "Usage " << argv[0] << " <spike_data_file>\n";
 		return 1;
 	}
-	const char *input_file_path = argv[1];
+	const char *input_file_path = realpath(argv[1], NULL);
 	int err = getReferenceSpikes(input_file_path);
 	if (err < 0) {
 		return 1;
