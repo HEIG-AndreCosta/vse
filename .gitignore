@@ -14,3 +14,5 @@ ex07_unittest/code/build
 ex09_fuzzing/code/xmlfuzzing/tmptqf
 *.cache
 *build
+labo3_spikedetector/code/simulation_files/zeros.txt
+labo3_spikedetector/code/simulation_files/no_spike.txt
