@@ -215,7 +215,10 @@ module amiq_top #(
         int val;
         int ret;
 
+        // Use triggered instead of @ to avoid race conditions
+        // https://www.chipverify.com/systemverilog/systemverilog-event
         wait (input_file_set.triggered);
+
         fd = $fopen(input_file, "r");
         if (!fd) $fatal("Input file not opened successfully");
 
@@ -228,8 +231,6 @@ module amiq_top #(
           ret = $fscanf(fd, "%d", val);
           if (!is_active) begin
             $display("%t Acquisition Stopped. Waiting...", $time);
-            // Use triggered instead of @ to avoid race conditions
-            // https://www.chipverify.com/systemverilog/systemverilog-event
             wait (start_record.triggered);
             $display("%t Acquisition Restarted", $time);
           end
