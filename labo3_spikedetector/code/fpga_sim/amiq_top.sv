@@ -65,11 +65,12 @@ module amiq_top #(
     // Dumb way to detect the start of acquisition to start reading the sample file.
     // To ensure data are got from the start of the file
     if (address == 1) begin
-      if (data == 1) begin
+      if (data & 1) begin
         $display("%t Starting acquisition", $time);
         is_active = 1;
         ->start_record;
-      end else begin
+      end
+      if (data & 2) begin
         $display("%t Stopping acquisition", $time);
         is_active = 0;
       end
