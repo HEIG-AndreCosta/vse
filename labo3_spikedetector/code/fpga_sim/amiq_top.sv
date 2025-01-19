@@ -38,9 +38,10 @@ module amiq_top #(
 
   logic [15:0] sample_i;
   logic sample_valid_i;
-
+  string input_file;
   logic is_active;
   event start_record;
+  event input_file_set;
 
   default clocking cb @(posedge avl_clk_i);
   endclocking
@@ -190,6 +191,9 @@ module amiq_top #(
               avalon_read(addr, result);
 
               client.send_mbox.put($sformatf("rd %0d", result));
+            end else if (command == "set_file") begin
+              ret = $sscanf(recv_msg, "set_file %s", input_file);
+              ->input_file_set;
             end else begin
               $error("%t Command unknown: %s", $time, recv_msg);
             end
@@ -211,7 +215,8 @@ module amiq_top #(
         int val;
         int ret;
 
-        fd = $fopen("../input_values.txt", "r");
+        @(input_file_set);
+        fd = $fopen(input_file, "r");
         if (!fd) $fatal("Input file not opened successfully");
 
         // Wait until the acquisition has started
