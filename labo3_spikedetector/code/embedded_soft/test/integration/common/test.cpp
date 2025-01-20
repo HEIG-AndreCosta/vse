@@ -44,8 +44,6 @@ void test_file(const char *simulation_file, uint16_t port,
 			TEST_WINDOW(detector, spikes)
 			on_window_read(detector);
 		}
-
-		irqFifo.pop();
 	}
 	detector.stop_acquisition();
 	ASSERT_FALSE(detector.is_acquisition_in_progress());
