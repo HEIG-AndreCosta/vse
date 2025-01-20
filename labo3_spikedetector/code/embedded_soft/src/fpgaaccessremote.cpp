@@ -9,6 +9,11 @@
 #include <arpa/inet.h> //inet_addr
 #include <unistd.h>
 
+FpgaAccessRemote::FpgaAccessRemote(SetupOptions opts)
+	: opts(opts)
+{
+}
+
 void *FpgaAccessRemote::accept_connection(int sockfd)
 {
 	struct sockaddr_in client;
@@ -102,11 +107,6 @@ FpgaAccessRemote::~FpgaAccessRemote()
 }
 
 void FpgaAccessRemote::setup()
-{
-	SetupOptions opts = { .wait_for_connection = true, .port = 8888 };
-	setup(opts);
-}
-void FpgaAccessRemote::setup(const SetupOptions &opts)
 {
 	start_server(opts.port);
 	rx_thread = std::thread(&FpgaAccessRemote::receiver, this);

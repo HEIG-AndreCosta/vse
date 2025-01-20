@@ -12,13 +12,13 @@ struct SetupOptions {
 	bool wait_for_connection;
 	uint16_t port;
 };
+
 class FpgaAccessRemote : public FpgaAccess {
     public:
-	FpgaAccessRemote() = default;
+	FpgaAccessRemote(SetupOptions opts);
 	~FpgaAccessRemote();
 
 	void setup();
-	void setup(const SetupOptions &opts);
 	void write_register(uint16_t reg, uint16_t value);
 	uint16_t read_register(uint16_t reg);
 	void set_callback(irq_handler_t);
@@ -40,6 +40,7 @@ class FpgaAccessRemote : public FpgaAccess {
 	std::string getData();
 
 	int sock = 0;
+	SetupOptions opts;
 
 	std::thread listener_thread;
 	std::thread rx_thread;

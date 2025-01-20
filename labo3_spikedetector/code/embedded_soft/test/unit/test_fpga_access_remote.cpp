@@ -26,7 +26,7 @@ static int connect_to_server(uint16_t port)
 TEST(TestFpgaAccessRemote, SetupStartServer)
 {
 	SetupOptions opts = { .wait_for_connection = false, .port = 1234 };
-	FpgaAccessRemote access;
+	FpgaAccessRemote access{ opts };
 
 	struct sockaddr_in addr;
 	addr.sin_family = AF_INET;
@@ -37,7 +37,7 @@ TEST(TestFpgaAccessRemote, SetupStartServer)
 	EXPECT_GT(inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr), 0);
 	EXPECT_LT(connect(sockfd, (struct sockaddr *)&addr, sizeof(addr)), 0);
 
-	access.setup(opts);
+	access.setup();
 
 	EXPECT_GE(connect(sockfd, (struct sockaddr *)&addr, sizeof(addr)), 0);
 
@@ -47,8 +47,8 @@ TEST(TestFpgaAccessRemote, SetupStartServer)
 TEST(TestFpgaAccessRemote, WriteRegister)
 {
 	SetupOptions opts = { .wait_for_connection = false, .port = 1236 };
-	FpgaAccessRemote access;
-	access.setup(opts);
+	FpgaAccessRemote access{ opts };
+	access.setup();
 	int socket = connect_to_server(opts.port);
 
 	access.write_register(1, 2);
@@ -67,8 +67,8 @@ TEST(TestFpgaAccessRemote, WriteRegister)
 TEST(TestFpgaAccessRemote, ReadRegister)
 {
 	SetupOptions opts = { .wait_for_connection = false, .port = 1237 };
-	FpgaAccessRemote access;
-	access.setup(opts);
+	FpgaAccessRemote access{ opts };
+	access.setup();
 	int socket = connect_to_server(opts.port);
 
 	const char *expected = "rd 1\n";
@@ -101,8 +101,8 @@ static void handler(const std::string &message)
 TEST(TestFpgaAccessRemote, HandlerIsCalledOnIrq)
 {
 	SetupOptions opts = { .wait_for_connection = false, .port = 1238 };
-	FpgaAccessRemote access;
-	access.setup(opts);
+	FpgaAccessRemote access{ opts };
+	access.setup();
 	int socket = connect_to_server(opts.port);
 
 	char msg[50];
@@ -133,8 +133,8 @@ TEST(TestFpgaAccessRemote, EndTestMessageIsSent)
 	SetupOptions opts = { .wait_for_connection = false, .port = 1235 };
 	int socket;
 	{
-		FpgaAccessRemote access;
-		access.setup(opts);
+		FpgaAccessRemote access{ opts };
+		access.setup();
 		socket = connect_to_server(opts.port);
 		shutdown(socket, SHUT_WR);
 		sleep(1);
