@@ -175,3 +175,16 @@ TEST(TestSpikeDetector, TestReadWindow)
 	ASSERT_EQ(access->access.back().value, 2);
 	ASSERT_FALSE(access->access.back().is_read);
 }
+
+TEST(TestSpikeDetector, SetFile)
+{
+	const char *path = "/my/awesome/path";
+
+	std::vector<Register> v;
+	auto access = std::make_shared<MockFpgaAccess>(v);
+
+	SpikeDetector sd = { access, handler };
+	sd.set_simulation_file(path);
+
+	ASSERT_STREQ(path, access->file_set);
+}
