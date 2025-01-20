@@ -1,7 +1,6 @@
-
-
 #include "common.h"
 #include <condition_variable>
+#include "spike_detector.hpp"
 #include <cstdint>
 #include <gtest/gtest.h>
 #include <iostream>
@@ -25,8 +24,8 @@ void test_file(const char *simulation_file, uint16_t port,
 	       on_window_read_t on_window_read)
 {
 	size_t spike_nb = 0;
-
-	TEST_SETUP(simulation_file, port, handler, expected_spike_nb)
+	std::queue<std::shared_ptr<SpikeWindow> > spikes;
+	TEST_SETUP(simulation_file, port, handler, expected_spike_nb, spikes);
 
 	detector.start_acquisition();
 	ASSERT_TRUE(detector.is_acquisition_in_progress());
@@ -50,10 +49,10 @@ void test_file(const char *simulation_file, uint16_t port,
 	}
 	detector.stop_acquisition();
 	ASSERT_FALSE(detector.is_acquisition_in_progress());
-	ASSERT_EQ(spike_nb, expected_spike_nb);
 
 	while (detector.is_data_ready()) {
 		TEST_WINDOW(detector, spikes);
 		on_window_read(detector);
 	}
+	ASSERT_EQ(spikes.size(), 0);
 }
