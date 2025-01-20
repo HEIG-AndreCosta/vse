@@ -1,5 +1,7 @@
 #include "fpgaaccessremote.hpp"
 
+#include <cstdint>
+#include <cstdlib>
 #include <iostream>
 #include "spike_detector.hpp"
 #include <memory>
@@ -139,17 +141,20 @@ bool compareWindow(SpikeWindow *window)
 
 int main(int argc, char **argv)
 {
-	if (argc < 2) {
-		std::cout << "Usage " << argv[0] << " <spike_data_file>\n";
+	if (argc < 3) {
+		std::cout << "Usage " << argv[0]
+			  << " <spike_data_file> <server_port>\n";
 		return 1;
 	}
 	const char *input_file_path = realpath(argv[1], NULL);
+	uint16_t port = atoi(argv[2]);
 	int err = getReferenceSpikes(input_file_path);
 	if (err < 0) {
 		return 1;
 	}
 
-	auto access = std::make_shared<FpgaAccessRemote>();
+	SetupOptions opts = { .wait_for_connection = true, .port = port };
+	auto access = std::make_shared<FpgaAccessRemote>(opts);
 
 	SpikeDetector detector{ access, handler };
 
