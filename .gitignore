@@ -16,3 +16,5 @@ ex09_fuzzing/code/xmlfuzzing/tmptqf
 *build
 labo3_spikedetector/code/simulation_files/zeros.txt
 labo3_spikedetector/code/simulation_files/no_spike.txt
+labo3_spikedetector/code/simulation_files/constant_spikes_16_windows.txt
+labo3_spikedetector/code/simulation_files/linear.txt
