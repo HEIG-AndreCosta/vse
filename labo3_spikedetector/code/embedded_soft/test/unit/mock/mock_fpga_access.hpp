@@ -32,8 +32,10 @@ class MockFpgaAccess : public FpgaAccess {
 	uint16_t read_register(uint16_t reg);
 	void set_callback(irq_handler_t);
 
+	void set_simulation_file(const char *path);
 	std::vector<Access> access;
 	const std::vector<Register> &registers;
+	const char *file_set;
 	bool setup_called;
 	irq_handler_t handler;
 

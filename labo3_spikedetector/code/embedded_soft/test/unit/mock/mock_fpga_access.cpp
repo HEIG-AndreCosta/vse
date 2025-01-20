@@ -39,3 +39,8 @@ void MockFpgaAccess::set_callback(irq_handler_t cb)
 {
 	handler = cb;
 }
+
+void MockFpgaAccess::set_simulation_file(const char *path)
+{
+	file_set = path;
+}
