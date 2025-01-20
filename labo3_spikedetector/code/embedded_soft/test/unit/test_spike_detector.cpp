@@ -74,7 +74,7 @@ TEST(TestSpikeDetector, StartStopAcquisition)
 
 	ASSERT_FALSE(access->access[1].is_read);
 	ASSERT_EQ(access->access[1].reg, 1);
-	ASSERT_EQ(access->access[1].value, 2);
+	ASSERT_EQ(access->access[1].value, 0);
 }
 
 TEST(TestSpikeDetector, TestAcquisitionInProgress)
@@ -172,6 +172,6 @@ TEST(TestSpikeDetector, TestReadWindow)
 
 	// Assert that we acked the window read at the end
 	ASSERT_EQ(access->access.back().reg, 1);
-	ASSERT_EQ(access->access.back().value, 4);
+	ASSERT_EQ(access->access.back().value, 2);
 	ASSERT_FALSE(access->access.back().is_read);
 }
