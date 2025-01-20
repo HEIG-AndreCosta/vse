@@ -23,7 +23,6 @@ void test_file(const char *simulation_file, uint16_t port,
 	       size_t expected_spike_nb, on_irq_trigger_t on_irq,
 	       on_window_read_t on_window_read)
 {
-	size_t spike_nb = 0;
 	std::queue<std::shared_ptr<SpikeWindow> > spikes;
 	TEST_SETUP(simulation_file, port, handler, expected_spike_nb, spikes);
 
@@ -42,7 +41,6 @@ void test_file(const char *simulation_file, uint16_t port,
 		if (on_irq(irqFifo, detector)) {
 			TEST_WINDOW(detector, spikes)
 			on_window_read(detector);
-			spike_nb++;
 		}
 
 		irqFifo.pop();
