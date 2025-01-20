@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <memory>
 
+#ifndef SPIKE_DETECTOR_HPP
+#define SPIKE_DETECTOR_HPP
 #define WINDOW_START_ADDRESS 0x1000
 #define WINDOW_SIZE	     150
 #define WINDOW_FULL_SIZE     256
@@ -32,3 +34,5 @@ class SpikeDetector {
 	void read_window_internal(SpikeWindow &data);
 	void ack_window_read();
 };
+
+#endif
