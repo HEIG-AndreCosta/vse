@@ -44,13 +44,13 @@ run_with_xrun() {
 
 # Compile and run with QUESTA
 run_with_questa() {
-    if [ -d work ]; then
-        rm -rf work
+    if [ -d work${SERVER_PORT} ]; then
+        rm -rf work${SERVER_PORT}
     fi
-    mkdir work
+    mkdir work${SERVER_PORT}
 
-    cd work
-    vlib work
+    cd work${SERVER_PORT}
+    vlib work${SERVER_PORT}
     vcom -2008 ${PROJ_HOME}/src_vhdl/spike_detection/log_pkg.vhd
     vcom -2008 ${PROJ_HOME}/src_vhdl/spike_detection/fifo_tdm.vhd
     vcom -2008 ${PROJ_HOME}/src_vhdl/spike_detection/simple_dual_port_ram_single_clock.vhd
