@@ -34,7 +34,9 @@ void test_file(const char *simulation_file, uint16_t port,
 	while (irqCondVar.wait_for(lk, std::chrono::seconds(600),
 				   [] { return !irqFifo.empty(); })) {
 		std::string value = irqFifo.back();
-		if (value == "irq end\n") {
+		irqFifo.pop();
+		if (strstr(value.c_str(), "end")) {
+			std::cout << "Simulation Over" << std::endl;
 			break;
 		}
 
