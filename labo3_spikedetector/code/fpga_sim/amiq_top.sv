@@ -244,6 +244,9 @@ module amiq_top #(
         end
 
         $fclose(fd);
+        // Wait one window size clks to give the DUV time to produce another IRQ if needed
+        ##150;
+        client.send_mbox.put("irq end\n");
       end
     join
   end
