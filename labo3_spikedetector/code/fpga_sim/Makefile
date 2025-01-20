@@ -23,7 +23,7 @@ run_xrun: build_xrun
 	xrun -f ${PROJ_HOME}/sim_options/sim.options
 
 run_questa: build_questa
-	cd work; vsim -64 amiq_top -do vsim_cmds.do -lib work
+	cd work; vsim -64 amiq_top -do vsim_cmds.do -lib work -GPORT=$(SERVER_PORT)
 
 run_vcs: build_vcs
 	./simv

@@ -21,7 +21,8 @@
 import amiq_sv_c_python_pkg::*;
 
 module amiq_top #(
-    int ERRNO = 0
+    int ERRNO = 0,
+    int PORT  = 8888
 );
 
   logic avl_clk_i = 0;
@@ -129,7 +130,7 @@ module amiq_top #(
 
   amiq_server_connector #(
       .hostname("127.0.0.1"),
-      .port(8888),
+      .port(PORT),
       .delim("\n")
   ) client = new();
 
