@@ -27,8 +27,6 @@ void *FpgaAccessRemote::accept_connection(int sockfd)
 		return NULL;
 	}
 
-	puts("Connection accepted");
-
 	sock = client_sock;
 
 	receivedCondVar.notify_all();
@@ -50,8 +48,6 @@ void *FpgaAccessRemote::start_server(uint16_t port)
 	setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (char *)&option,
 		   sizeof(option));
 
-	puts("Socket created");
-
 	//Prepare the sockaddr_in structure
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = INADDR_ANY;
@@ -63,13 +59,9 @@ void *FpgaAccessRemote::start_server(uint16_t port)
 		perror("bind failed. Error");
 		return NULL;
 	}
-	puts("bind done");
 
 	//Listen
 	listen(sockfd, 3);
-
-	//Accept and incoming connection
-	puts("Waiting for incoming connections...");
 
 	listener_thread =
 		std::thread(&FpgaAccessRemote::accept_connection, this, sockfd);
@@ -103,7 +95,6 @@ FpgaAccessRemote::~FpgaAccessRemote()
 	if (rx_thread.joinable()) {
 		rx_thread.join();
 	}
-	std::cout << "Destructor over" << std::endl;
 }
 
 void FpgaAccessRemote::setup()
@@ -142,7 +133,7 @@ void FpgaAccessRemote::receiver()
 				std::string clientStr(clientMessage);
 				handler(clientStr);
 			} else {
-				std::cout << "IRQ received, but no handler!"
+				std::cerr << "IRQ received, but no handler!"
 					  << std::endl;
 			}
 		} else {

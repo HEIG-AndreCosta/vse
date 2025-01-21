@@ -3,7 +3,6 @@
 #include "spike_detector.hpp"
 #include <cstdint>
 #include <gtest/gtest.h>
-#include <iostream>
 #include <cstddef>
 #include <mutex>
 #include <queue>
@@ -14,7 +13,6 @@ static std::queue<std::string> irqFifo;
 
 static void handler(const std::string &message)
 {
-	std::cout << "Received new IRQ: " << message << std::endl;
 	irqFifo.push(message);
 	irqCondVar.notify_all();
 }
@@ -36,7 +34,6 @@ void test_file(const char *simulation_file, uint16_t port,
 		std::string value = irqFifo.back();
 		irqFifo.pop();
 		if (strstr(value.c_str(), "end")) {
-			std::cout << "Simulation Over" << std::endl;
 			break;
 		}
 
