@@ -6,6 +6,7 @@ import sys
 
 SCRIPT_PATH = pathlib.Path(__file__).parent.resolve()
 FPGA_SIM_DIR = os.path.join(SCRIPT_PATH, "fpga_sim")
+SIMULATION_FILES_DIR = os.path.join(SCRIPT_PATH, "simulation_files")
 UNIT_TESTS_DIR = os.path.join(SCRIPT_PATH, "embedded_soft", "test", "unit")
 UNIT_TESTS_BUILD_DIR = os.path.join(UNIT_TESTS_DIR, "build")
 
@@ -52,6 +53,9 @@ def run_command(command, working_dir, env=None):
 
 def run_integration_tests():
     print("Now Running Integration Tests. This may take a while ...")
+
+    print("Generating Simulation Files")
+    launch_process(["python3", "generate.py"], SIMULATION_FILES_DIR)
 
     print("Running cmake")
     run_command(
