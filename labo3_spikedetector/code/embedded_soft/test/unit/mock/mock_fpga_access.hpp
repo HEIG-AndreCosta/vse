@@ -39,7 +39,6 @@ class MockFpgaAccess : public FpgaAccess {
 	bool setup_called;
 	irq_handler_t handler;
 
-    private:
 };
 
 #endif // FPGAACCESSREMOTE_H
