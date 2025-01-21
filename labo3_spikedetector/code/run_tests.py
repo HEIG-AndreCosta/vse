@@ -101,7 +101,7 @@ def run_integration_tests():
             (
                 test_program,
                 test_name,
-                launch_process(
+                launch_process_pipe(
                     [
                         test_program,
                         f"--gtest_filter={test_name}",
@@ -116,11 +116,15 @@ def run_integration_tests():
 
     ok = True
     for i, p in enumerate(ps):
-        ret = p[2].wait()
-        print(f"{p[0]} - {p[1]} - ", end=" ")
+
+        out, err = p[2].communicate()
         p[3].kill()
 
-        if ret != 0:
+        print(out.decode())
+        print(err.decode())
+        print(f"{p[0]} - {p[1]} - ", end=" ")
+
+        if p[2].returncode != 0:
             ok = False
             print("ERROR")
         else:
@@ -133,7 +137,7 @@ def run_gtests(test_programs, cwd):
     ps = [
         (
             p,
-            launch_process(
+            launch_process_pipe(
                 [p, "--gtest_color=yes"],
                 cwd,
             ),
@@ -143,7 +147,10 @@ def run_gtests(test_programs, cwd):
 
     ok = True
     for p_name, p in ps:
-        ret = p.wait()
+        stdout, stderr = p.communicate()
+        print(stdout.decode())
+        print(stderr.decode())
+        ret = p.returncode
         print(f"{p_name}", end=" ")
         if ret != 0:
             ok = False
