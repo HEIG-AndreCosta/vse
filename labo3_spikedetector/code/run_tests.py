@@ -39,7 +39,7 @@ def launch_vsim(server_port):
     env = os.environ.copy()
     env["SERVER_PORT"] = str(server_port)
     env["PROJ_HOME"] = FPGA_SIM_DIR
-    launch_process_pipe(command, FPGA_SIM_DIR, env)
+    return launch_process_pipe(command, FPGA_SIM_DIR, env)
 
 
 def run_command(command, working_dir, env=None):
@@ -114,6 +114,7 @@ def run_integration_tests():
     for i, p in enumerate(ps):
         ret = p[2].wait()
         print(f"{p[0]} - {p[1]} - ", end=" ")
+        p[3].kill()
 
         if ret != 0:
             ok = False
