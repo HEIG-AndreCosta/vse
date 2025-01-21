@@ -648,7 +648,7 @@ Notons qu'il est possible de lancer plusieurs simulations en même temps en expo
 
 Un script est fourni pour lancer tous les tests en parallèle. Ceci va ouvrir plusieurs fois `questasim` donc a ne pas utiliser si votre ordinateur risque de chauffer votre pièce.
 
-Il a été testé sous Fedora 41 et dans la VM Reds mais il est fourni sans garanties.
+Il a été testé sous Fedora 41 et dans la VM Reds mais il est fourni sans garanties. Nottament, vérifiez que votre système est connecté sur le VPN pour avoir lancer `questasim`.
 
 Dans le répertoire `code` lancer
 
