@@ -39,13 +39,6 @@ static uint16_t port_from_env()
 {
 	return static_cast<uint16_t>(std::stoi(getenv("SERVER_PORT")));
 }
-TEST(Integration, RandomSpikes)
-{
-	std::cout << "Port " << port_from_env() << std::endl;
-	test_file("../../../../simulation_files/input_values.txt",
-		  port_from_env(), 52, on_irq_read_window,
-		  on_window_read_do_nothing);
-}
 
 TEST(Integration, LinearNoSpikes)
 {
@@ -75,4 +68,12 @@ TEST(Integration, AccumulateAndReadAtTheEnd)
 	test_file("../../../../simulation_files/constant_spikes_16_windows.txt",
 		  port_from_env(), 16, on_irq_stop_acquisition,
 		  on_window_read_restart_acquisition);
+}
+
+TEST(Integration, RandomSpikes)
+{
+	std::cout << "Port " << port_from_env() << std::endl;
+	test_file("../../../../simulation_files/input_values.txt",
+		  port_from_env(), 52, on_irq_read_window,
+		  on_window_read_do_nothing);
 }
