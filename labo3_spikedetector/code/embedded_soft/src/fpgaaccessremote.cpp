@@ -34,7 +34,7 @@ void *FpgaAccessRemote::accept_connection(int sockfd)
 	return NULL;
 }
 
-void *FpgaAccessRemote::start_server(uint16_t port)
+void FpgaAccessRemote::start_server(uint16_t port)
 {
 	int sockfd;
 	int option = 1;
@@ -57,7 +57,7 @@ void *FpgaAccessRemote::start_server(uint16_t port)
 	if (bind(sockfd, (struct sockaddr *)&server, sizeof(server)) < 0) {
 		//print the error message
 		perror("bind failed. Error");
-		return NULL;
+		return;
 	}
 
 	//Listen
@@ -66,7 +66,6 @@ void *FpgaAccessRemote::start_server(uint16_t port)
 	listener_thread =
 		std::thread(&FpgaAccessRemote::accept_connection, this, sockfd);
 
-	return NULL;
 }
 
 /*
