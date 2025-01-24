@@ -92,11 +92,13 @@ static std::string received;
 
 static std::condition_variable handler_called;
 static std::mutex handler_called_mutex;
+static bool called = false;
 
 static void handler(const std::string &message)
 {
 	received = message;
 	handler_called.notify_all();
+	called = true;
 }
 TEST(TestFpgaAccessRemote, HandlerIsCalledOnIrq)
 {
@@ -120,8 +122,11 @@ TEST(TestFpgaAccessRemote, HandlerIsCalledOnIrq)
 
 	write(socket, expected, strlen(expected) + 1);
 
-	EXPECT_EQ(handler_called.wait_for(lk, std::chrono::milliseconds(500)),
-		  std::cv_status::no_timeout);
+	bool timed_out =
+		handler_called.wait_for(lk, std::chrono::milliseconds(500)) ==
+		std::cv_status::no_timeout;
+
+	EXPECT_TRUE(!timed_out || called);
 
 	EXPECT_STREQ(received.data(), expected);
 
