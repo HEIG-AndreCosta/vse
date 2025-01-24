@@ -27,11 +27,11 @@ Auteur: **Andrè Costa & Alexandre Iorio**
 
 Professeur: **Yann Thoma**
 
-Assistant : **-**
+Assistant : **Clément Dieperink**
 
 Salle de labo : **A07**
 
-Date : **13.12.2024**
+Date : **24.01.2025**
 
 <!--pagebreak-->
 
