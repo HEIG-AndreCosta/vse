@@ -74,18 +74,20 @@ Date : **13.12.2024**
 - [5. Tests d'intégration](#5-tests-dintégration)
   - [5.1 Définition du fichier de simulation](#51-définition-du-fichier-de-simulation)
     - [5.1.2 Génération des fichiers de simulation](#512-génération-des-fichiers-de-simulation)
-      - [Finalisation de la simulation](#finalisation-de-la-simulation)
-      - [Gestion du port TCP pour l’exécution parallèle](#gestion-du-port-tcp-pour-lexécution-parallèle)
-  - [2.4 Définition du fichier de simulation](#24-définition-du-fichier-de-simulation)
-  - [2.5 Génération des fichiers de simulation](#25-génération-des-fichiers-de-simulation)
-  - [2.6 Finalisation de la simulation](#26-finalisation-de-la-simulation)
-  - [2.7 Définition du Port](#27-définition-du-port)
-  - [2.8 Généralisation des tests d'intégration](#28-généralisation-des-tests-dintégration)
-  - [2.9 Tests d'intégration](#29-tests-dintégration)
-  - [2.10 Lancement des tests manuellement](#210-lancement-des-tests-manuellement)
-    - [2.10.1 Tests unitaires](#2101-tests-unitaires)
-    - [2.10.2 Tests d'intégration](#2102-tests-dintégration)
-    - [2.10.3 Script pour lancer les tests](#2103-script-pour-lancer-les-tests)
+  - [5.2. Finalisation de la simulation](#52-finalisation-de-la-simulation)
+  - [5.3. Gestion du port TCP pour l’exécution parallèle](#53-gestion-du-port-tcp-pour-lexécution-parallèle)
+  - [5.4 Généralisation des tests d'intégration](#54-généralisation-des-tests-dintégration)
+  - [5.5 Exécution des tests d'intégration](#55-exécution-des-tests-dintégration)
+      - [`Integration.LinearNoSpikes`](#integrationlinearnospikes)
+      - [`Integration.Zeros`](#integrationzeros)
+      - [`Integration.StopAcquisitionsWhileReading`](#integrationstopacquisitionswhilereading)
+      - [`Integration.AccumulateAndReadAtTheEnd`](#integrationaccumulateandreadattheend)
+      - [`Integration.RandomSpikes`](#integrationrandomspikes)
+  - [5.6 Exécution des tests](#56-exécution-des-tests)
+    - [5.6.1 Tests unitaires](#561-tests-unitaires)
+    - [5.6.2 Tests d'intégration](#562-tests-dintégration)
+    - [5.6.3 Script pour exécuter tous les tests](#563-script-pour-exécuter-tous-les-tests)
+- [6. Conclusion](#6-conclusion)
 
 <!-- /code_chunk_output -->
 
@@ -99,9 +101,9 @@ Il nous est demandé de refactoriser le code fourni pour le rendre plus lisible 
 
 ## 2. Refactorisation
 
-Actuellement, la classe `FPGAAccess` mélange des fonctionnalités de bas niveau permettant de faire des accès direct aux registres du FPGA, et de plus haut niveau, permettant de gerer les commandes et les interruptions. Cette architecture n'est pas optimale et ne permet pas la séparation et les généralisation du code.
+Actuellement, la classe `FPGAAccess` mélange des fonctionnalités de bas niveau permettant de faire des accès directs aux registres du FPGA, et de plus haut niveau, permettant de gerer les commandes et les interruptions. Cette architecture n'est pas optimale et ne permet pas la séparation et les généralisations du code.
 
-Pour résoudre ce problème, nous avons décider de factoriser le code en créant une interface `FpgaAccess` qui définit les methodes necessaire à la communication avec la `FPGA`, `FpgaAccessRemote`qui implément `FpgaAccess` qui s'occupe de l'accès au FPGA via un serveur TCP par le biais de la simulation, et pour terminer, une classe `SpikeDetector` qui s'occupe de la détection des spikes.
+Pour résoudre ce problème, nous avons décidé de factoriser le code en créant une interface `FpgaAccess` qui définit les méthodes nécessaires à la communication avec la `FPGA`, `FpgaAccessRemote`qui implément `FpgaAccess` qui s'occupe de l'accès au FPGA via un serveur TCP par le biais de la simulation, et pour terminer, une classe `SpikeDetector` qui s'occupe de la détection des spikes.
 
 ### 2.1. FpgaAccess
 
@@ -156,9 +158,10 @@ class FpgaAccessRemote : public FpgaAccess {
 }
 ```
 
+
 ### 2.3. SpikeDetector
 
-Grace à cette classe, nous avons la possibilité de nous abstraire de l'accès au DUV. Ici, on ne parle plus de registres, nous sommes maintenant dans un concept plus haut niveau. On parle d'`Acquisition`, `DataReady`, etc.
+Grâce à cette classe, nous avons la possibilité de nous abstraire de l'accès au DUV. Ici, on ne parle plus de registres, nous sommes maintenant dans un concept plus haut niveau. On parle d'`Acquisition`, `DataReady`, etc.
 
 La classe `SpikeDetector` est construite avec un objet de type `FpgaAccess`, elle pourra ainsi faire abstraction du protocole de communication utlisé pour accéder à la FPGA.
 
@@ -207,17 +210,18 @@ void FpgaAccessRemote::write_register(uint16_t reg, uint16_t value)
   this->do_send(stream.str());
 }
 ```
+
 ## 3. Intéractions avec l'acquisition des données
 
 Dans cette partie, nous allons modifier le code pour permettre d'arrêter et de redémarrer l'acquisition des données.
 
 ### 3.1. Détecter la demande d'arrêt de l'acquisition
 
-Dans un premier temps, il est necessaire de pouvoir détecter une demande d'arrêt d'acquisition.
+Dans un premier temps, il est nécessaire de pouvoir détecter une demande d'arrêt d'acquisition.
 
-Afin de résoudre ce problème, tout d'abord il faut detécter les demandes.
+Afin de résoudre ce problème, tout d'abord, il faut détecter les demandes.
 
-Pour cela, nous ecrivons une valeur `0`ou `1` dans le registre situé à l'adresse `0x1`, respectivement pour arrêter et redémarrer l'acquisition.
+Pour cela, nous écrivons une valeur `0`ou `1` dans le registre situé à l'adresse `0x1`, respectivement pour arrêter et redémarrer l'acquisition.
 
 ```verilog
 task avalon_write(int address, int data);
@@ -252,16 +256,16 @@ end
 
 ## 4. Tests unitaires
 
-Cette partie décrie les tests unitaires que nous avons implémenté pour valider le bon fonctionnement du système.
-Grace à la décomposition décrite au chapitre [2. Refactorisation](#2-refactorisation), il est très simple de mettre en place des tests unitaires.
+Cette partie décrie les tests unitaires que nous avons implémentés pour valider le bon fonctionnement du système.
+Grâce à la décomposition décrite au chapitre [2. Refactorisation](#2-refactorisation), il est très simple de mettre en place des tests unitaires.
 
 ### 4.1. Spike Detector
 
-Pour tester le Spike Detector, il n'est pas forcement necessaire d'avoir un accès à la `FPGA`. Nous allons donc créer une classe `MockFpgaAccess` qui implémente l'interface `FpgaAccess` et qui permet de simuler les accès aux registres et ainsi tester le bon fonctionnement de la classe `SpikeDetector`.
+Pour tester le Spike Detector, il n'est pas forcément nécessaire d'avoir un accès à la `FPGA`. Nous allons donc créer une classe `MockFpgaAccess` qui implémente l'interface `FpgaAccess` et qui permet de simuler les accès aux registres et ainsi tester le bon fonctionnement de la classe `SpikeDetector`.
 
 #### 4.1.1. Implémentation de MockFpgaAccess
 
-Dans ce mock, nous avonc besoin de deux `struct`, la première, `Access` permet de stocker les accès aux registres, la deuxième, `Register` permet de stocker les valeurs à retourner lors de la lecture.
+Dans ce mock, nous avons besoin de deux `struct`, la première, `Access` permet de stocker les accès aux registres, la deuxième, `Register` permet de stocker les valeurs à retourner lors de la lecture.
 
 ```c
 struct Access {
@@ -330,9 +334,9 @@ uint16_t MockFpgaAccess::read_register(uint16_t reg)
 
 #### 4.1.2. Tests unitaires de Spike Detector
 
-Comme nous avons un contrôle complet sur la classe `MockFpgaAccess` nous pouvons vérifier la totalité des methodes de l'interface `FpgaAccess`.
+Comme nous avons un contrôle complet sur la classe `MockFpgaAccess` nous pouvons vérifier la totalité des méthodes de l'interface `FpgaAccess`.
 
-Voici l'explication des tests unitaires que nous avons implémenté pour valider le bon fonctionnement de la classe `SpikeDetector`.
+Voici l'explication des tests unitaires que nous avons implémentée pour valider le bon fonctionnement de la classe `SpikeDetector`.
 
 
 ##### `TestSpikeDetector.SetupGetsCalledAndHandlerGetsSet`
@@ -429,16 +433,16 @@ Voici les tests unitaires que nous avons implémenté pour valider le bon foncti
    - Après `setup()`, la connexion doit être acceptée avec succès.  
 
 ##### `TestFpgaAccessRemote.WriteRegister`
-   **Objectif** : Vérifier que `write_register()` envoie correctement une commande d’écriture sur la socket TCP.  
+   **Objectif** : Vérifier que `write_register()` envoie correctement une commande d’écriture sur le socket TCP.  
    **Méthode** :  
    - `write_register(1, 2)` doit envoyer la commande `"wr 1 2\n"`.  
-   - Vérifie que la commande envoyée est correctement reçue sur la socket.  
+   - Vérifie que la commande envoyée est correctement reçue sur le socket.  
 
 ##### `TestFpgaAccessRemote.ReadRegister`  
    **Objectif** : Vérifier que `read_register()` envoie bien la commande et lit correctement la réponse du serveur.  
    **Méthode** :  
    - Envoie la commande `"rd 1\n"`.  
-   - Écrit manuellement `"1 10\n"` sur la socket pour simuler une réponse.  
+   - Écrit manuellement `"1 10\n"` sur le socket pour simuler une réponse.  
    - Vérifie que `read_register(1)` retourne bien `10`.  
 
 ##### `TestFpgaAccessRemote.HandlerIsCalledOnIrq`
@@ -452,6 +456,7 @@ Voici les tests unitaires que nous avons implémenté pour valider le bon foncti
    **Objectif** : Vérifier que lors de la destruction d’un objet `FpgaAccessRemote`, un message `"end_test\n"` est bien envoyé.  
    **Méthode** :  
    - Ferme proprement la connexion et vérifie que le message `"end_test\n"` est reçu sur la socket.
+
 
 ## 5. Tests d'intégration
 
